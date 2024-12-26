@@ -7,9 +7,14 @@ import clsx from "clsx";
 
 export default function Home() {
   // User Info and Notifications
-  const [userName, setUserName] = useState<string>("Amon Vanderlei");
+  const [userName, setUserName] = useState<string>("UserName");
   // const [profilePic, setProfilePic] = useState<string>("url here");
-  const [newNotifications, SetNewNotifications] = useState<boolean>(true);
+  const [newNotifications, SetNewNotifications] = useState<boolean>(false);
+
+  function hideNewNotifications() {
+    SetNewNotifications(!newNotifications);
+    setUserName("Amon Vanderlei");
+  }
 
   return (
     <div className="grow">
@@ -28,7 +33,10 @@ export default function Home() {
             <p className="text-lg font-bold">{userName}</p>
           </div>
         </div>
-        <div className="flex items-center relative">
+        <div
+          className="flex items-center relative"
+          onClick={hideNewNotifications}
+        >
           <FaRegBell className="text-2xl" />
           <div
             className={clsx(
