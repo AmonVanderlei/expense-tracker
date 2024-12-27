@@ -64,7 +64,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="grow flex flex-col items-center gap-5">
+    <div className="grow flex flex-col items-center gap-10">
       {/* User Info and Notifications */}
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
