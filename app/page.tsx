@@ -5,6 +5,7 @@ import { FaRegBell } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { formatCurrency } from "./utils/formatCurrency";
 
 export default function Home() {
   // User Info and Notifications
@@ -68,7 +69,7 @@ export default function Home() {
       <div className="w-11/12 bg-slate-900 rounded-lg p-4 flex flex-col gap-6">
         <div>
           <h2 className="text-base">Total Balance</h2>
-          <p className="text-3xl font-semibold">R$ {balance}</p>
+          <p className="text-3xl font-semibold">{formatCurrency(balance)}</p>
         </div>
         <div className="flex w-full justify-between">
           <div className="flex flex-col items-start justify-center">
@@ -78,7 +79,7 @@ export default function Home() {
               </div>
               <h3 className="font-semibold">Income</h3>
             </div>
-            <p className="font-medium text-lg">R$ {income}</p>
+            <p className="font-medium text-lg">{formatCurrency(income)}</p>
           </div>
           <div className="flex flex-col items-end justify-center">
             <div className="flex items-center gap-2">
@@ -87,7 +88,7 @@ export default function Home() {
               </div>
               <h3 className="font-semibold">Expenses</h3>
             </div>
-            <p className="font-medium text-lg">R$ {expenses}</p>
+            <p className="font-medium text-lg">{formatCurrency(expenses)}</p>
           </div>
         </div>
       </div>
@@ -96,7 +97,9 @@ export default function Home() {
       <div className={clsx("w-11/12", budget == 0 && "hidden")}>
         <div className="flex justify-between items-center">
           <h2 className="text-lg text-blue-500 font-bold">Monthly Budget</h2>
-          <p className="text-lg text-blue-700 font-black">R$ {budget}</p>
+          <p className="text-lg text-blue-700 font-black">
+            {formatCurrency(budget)}
+          </p>
         </div>
         <div className="h-2 bg-gray-900 rounded-full overflow-hidden">
           <div
@@ -106,10 +109,11 @@ export default function Home() {
         </div>
         <div className="flex justify-between text-sm">
           <p className="text-blue-500">
-            Spent: R$ {expenses}/{Math.round((100 * expenses) / budget) || 0}%
+            Spent: {formatCurrency(expenses)}/
+            {Math.round((100 * expenses) / budget) || 0}%
           </p>
           <p className="text-blue-300">
-            Left: R$ {budget - expenses}/
+            Left: {formatCurrency(budget - expenses)}/
             {100 - Math.round((100 * expenses) / budget) || 100}%
           </p>
         </div>
