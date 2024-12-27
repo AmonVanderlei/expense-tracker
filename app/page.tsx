@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import profilePic from "@/public/blank-profile-picture.png";
-import { FaRegBell } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
@@ -9,12 +8,12 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import Transactions from "@/components/Transactions";
 import Transaction from "@/types/Transaction";
+import Notifications from "@/components/Notifications";
 
 export default function Home() {
   // User Info and Notifications
   const [userName, setUserName] = useState<string>("UserName");
   // const [profilePic, setProfilePic] = useState<string>("url here");
-  const [newNotifications, SetNewNotifications] = useState<boolean>(false);
 
   // Balance, Income and Expenses
   const [balance, setBalance] = useState<number>(0);
@@ -27,13 +26,8 @@ export default function Home() {
     Transaction[] | null
   >(null);
 
-  function hideNewNotifications() {
-    SetNewNotifications(!newNotifications);
-  }
-
   useEffect(() => {
     setUserName("Amon Vanderlei");
-    SetNewNotifications(true);
     setBalance(12843.2);
     setIncome(1242.29);
     setExpenses(1999.99);
@@ -52,6 +46,48 @@ export default function Home() {
       },
       {
         id: new Date().getTime() + 1,
+        type: "expense",
+        origin: "Amon Vanderlei",
+        destiny: "TIM",
+        date: new Date("2024-12-12"),
+        amount: 50,
+        method: "pix",
+        category: "Celular",
+      },
+      {
+        id: new Date().getTime() + 2,
+        type: "income",
+        origin: "Bolsa",
+        description: "Bolsa do NES",
+        destiny: "Amon Vanderlei",
+        date: new Date("2024-12-20"),
+        amount: 500,
+        method: "pix",
+        category: "Estudos",
+      },
+      {
+        id: new Date().getTime() + 3,
+        type: "expense",
+        origin: "Amon Vanderlei",
+        destiny: "TIM",
+        date: new Date("2024-12-12"),
+        amount: 50,
+        method: "pix",
+        category: "Celular",
+      },
+      {
+        id: new Date().getTime() + 4,
+        type: "income",
+        origin: "Bolsa",
+        description: "Bolsa do NES",
+        destiny: "Amon Vanderlei",
+        date: new Date("2024-12-20"),
+        amount: 500,
+        method: "pix",
+        category: "Estudos",
+      },
+      {
+        id: new Date().getTime() + 5,
         type: "expense",
         origin: "Amon Vanderlei",
         destiny: "TIM",
@@ -80,20 +116,7 @@ export default function Home() {
             <p className="text-lg font-bold">{userName}</p>
           </div>
         </div>
-        <div
-          className="flex items-center relative"
-          onClick={hideNewNotifications}
-        >
-          <FaRegBell className="text-2xl" />
-          <div
-            className={clsx(
-              "w-3 h-3 text-transparent absolute top-3 right-0 rounded-full bg-none",
-              newNotifications && "bg-red-600"
-            )}
-          >
-            .
-          </div>
-        </div>
+        <Notifications />
       </div>
 
       {/* Incomes and Expenses */}
