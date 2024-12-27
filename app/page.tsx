@@ -67,9 +67,20 @@ export default function Home() {
 
       {/* Incomes and Expenses */}
       <div className="w-11/12 bg-slate-900 rounded-lg p-4 flex flex-col gap-6">
-        <div>
-          <h2 className="text-base">Total Balance</h2>
-          <p className="text-3xl font-semibold">{formatCurrency(balance)}</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-base">Total Balance</h2>
+            <p className="text-3xl font-semibold">{formatCurrency(balance)}</p>
+          </div>
+          <p
+            className={clsx(
+              "text-lg",
+              income - expenses > 0 && "text-green-500",
+              income - expenses < 0 && "text-red-500"
+            )}
+          >
+            {formatCurrency(income - expenses)}
+          </p>
         </div>
         <div className="flex w-full justify-between">
           <div className="flex flex-col items-start justify-center">
