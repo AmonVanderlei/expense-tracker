@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { formatCurrency } from "./utils/formatCurrency";
+import Link from "next/link";
+import Transactions from "@/components/Transactions";
+import Transaction from "./types/Transaction";
 
 export default function Home() {
   // User Info and Notifications
@@ -19,6 +22,11 @@ export default function Home() {
   const [expenses, setExpenses] = useState<number>(0);
   const [budget, setBudget] = useState<number>(0);
 
+  // Transactions
+  const [transactionsList, setTransactionsList] = useState<
+    Transaction[] | null
+  >(null);
+
   function hideNewNotifications() {
     SetNewNotifications(!newNotifications);
   }
@@ -30,6 +38,29 @@ export default function Home() {
     setIncome(1242.29);
     setExpenses(1999.99);
     setBudget(5000.0);
+    setTransactionsList([
+      {
+        id: new Date().getTime(),
+        type: "income",
+        origin: "Bolsa",
+        description: "Bolsa do NES",
+        destiny: "Amon Vanderlei",
+        date: new Date("2024-12-20"),
+        amount: 500,
+        method: "pix",
+        category: "Estudos",
+      },
+      {
+        id: new Date().getTime() + 1,
+        type: "expense",
+        origin: "Amon Vanderlei",
+        destiny: "TIM",
+        date: new Date("2024-12-12"),
+        amount: 50,
+        method: "pix",
+        category: "Celular",
+      },
+    ]);
   }, []);
 
   return (
@@ -128,6 +159,19 @@ export default function Home() {
             {100 - Math.round((100 * expenses) / budget) || 100}%
           </p>
         </div>
+      </div>
+
+      {/* Recent Transactions */}
+      <div className="w-11/12">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl text-blue-500 font-bold">
+            Recent Transactions
+          </h2>
+          <Link href="/transactions" className="text-sm">
+            See All
+          </Link>
+        </div>
+        <Transactions transactionsList={transactionsList} />
       </div>
     </div>
   );
