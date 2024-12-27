@@ -13,9 +13,10 @@ export default function Home() {
   const [newNotifications, SetNewNotifications] = useState<boolean>(false);
 
   // Balance, Income and Expenses
-  const [balance, setBalance] = useState<string>("0.000,00");
-  const [income, setIncome] = useState<string>("0.000,00");
-  const [expenses, setExpenses] = useState<string>("0.000,00");
+  const [balance, setBalance] = useState<number>(0);
+  const [income, setIncome] = useState<number>(0);
+  const [expenses, setExpenses] = useState<number>(0);
+  const [budget, setBudget] = useState<number>(0);
 
   function hideNewNotifications() {
     SetNewNotifications(!newNotifications);
@@ -24,9 +25,10 @@ export default function Home() {
   useEffect(() => {
     setUserName("Amon Vanderlei");
     SetNewNotifications(true);
-    setBalance("12.843,27");
-    setIncome("1.242,29");
-    setExpenses("199,99");
+    setBalance(12843.2);
+    setIncome(1242.29);
+    setExpenses(1999.99);
+    setBudget(5000.0);
   }, []);
 
   return (
@@ -87,6 +89,29 @@ export default function Home() {
             </div>
             <p className="font-medium text-lg">R$ {expenses}</p>
           </div>
+        </div>
+      </div>
+
+      {/* Monthly Budget */}
+      <div className={clsx("w-11/12", budget == 0 && "hidden")}>
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg text-blue-500 font-bold">Monthly Budget</h2>
+          <p className="text-lg text-blue-700 font-black">R$ {budget}</p>
+        </div>
+        <div className="h-2 bg-gray-900 rounded-full overflow-hidden">
+          <div
+            className="h-2 bg-blue-200 w-0 transition-all"
+            style={{ width: `${Math.max((100 * expenses) / budget, 0)}%` }}
+          ></div>
+        </div>
+        <div className="flex justify-between text-sm">
+          <p className="text-blue-500">
+            Spent: R$ {expenses}/{Math.round((100 * expenses) / budget) || 0}%
+          </p>
+          <p className="text-blue-300">
+            Left: R$ {budget - expenses}/
+            {100 - Math.round((100 * expenses) / budget) || 100}%
+          </p>
         </div>
       </div>
     </div>
