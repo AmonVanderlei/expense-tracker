@@ -16,7 +16,7 @@ export default function Navigation() {
   }
 
   return (
-    <div className="flex justify-around items-center bg-slate-900 border-slate-600 w-full h-16 absolute bottom-0 border-t rounded-t-lg md:w-24 md:h-full md:relative md:flex-col md:border-r md:border-t-0 md:rounded-l-none md:rounded-r-lg">
+    <div className="flex justify-around items-center fixed bg-slate-900 border-slate-600 w-full h-16 bottom-0 border-t rounded-t-lg md:w-24 md:h-full md:flex-col md:left-0 md:border-r md:border-t-0 md:rounded-l-none md:rounded-r-lg">
       <Link
         href={"/"}
         onClick={changeActivePage}
