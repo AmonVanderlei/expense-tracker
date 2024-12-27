@@ -1,6 +1,6 @@
 "use client";
 
-import Transaction from "@/app/types/Transaction";
+import Transaction from "@/types/Transaction";
 import TransactionComponent from "@/components/TransactionComponent";
 
 interface Props {

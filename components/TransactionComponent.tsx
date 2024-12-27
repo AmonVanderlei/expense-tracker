@@ -1,6 +1,6 @@
 "use client";
-import Transaction from "@/app/types/Transaction";
-import { formatCurrency } from "@/app/utils/formatCurrency";
+import Transaction from "@/types/Transaction";
+import { formatCurrency } from "@/utils/formatCurrency";
 import clsx from "clsx";
 
 interface Props {

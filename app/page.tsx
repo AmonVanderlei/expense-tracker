@@ -5,10 +5,10 @@ import { FaRegBell } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { formatCurrency } from "./utils/formatCurrency";
+import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import Transactions from "@/components/Transactions";
-import Transaction from "./types/Transaction";
+import Transaction from "@/types/Transaction";
 
 export default function Home() {
   // User Info and Notifications
