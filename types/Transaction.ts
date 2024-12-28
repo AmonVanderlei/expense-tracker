@@ -7,5 +7,5 @@ export default interface Transaction {
   date: Date;
   amount: number;
   method: "cash" | "credit-card" | "debit-card" | "pix";
-  category: string
+  categoryId: number;
 }

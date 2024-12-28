@@ -1,13 +1,16 @@
 "use client";
+import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
 import { formatCurrency } from "@/utils/formatCurrency";
 import clsx from "clsx";
 
 interface Props {
   obj: Transaction;
+  categories: Category[];
 }
 
-export default function Transactions({ obj }: Props) {
+export default function Transactions({ categories, obj }: Props) {
+  const category = categories.find((cat) => cat.id === obj.categoryId);
   return (
     <div className="flex flex-col items-center w-full gap-2">
       <div className="flex justify-between items-center w-full">
@@ -17,7 +20,7 @@ export default function Transactions({ obj }: Props) {
           </h1>
           <p className="text-sm">{obj.date.toDateString()}</p>
         </div>
-        <p>{obj.category}</p>
+        <p>{category ? category.name : "Sem Categoria"}</p>
         <p
           className={clsx(
             obj.type == "income" && "text-green-500",

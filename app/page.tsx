@@ -10,6 +10,7 @@ import Transactions from "@/components/Transactions";
 import Transaction from "@/types/Transaction";
 import Notifications from "@/components/Notifications";
 import Budget from "@/components/Budget";
+import { TRANSACTIONS, CATEGORIES } from "@/utils/constants";
 
 export default function Home() {
   // User Info and Notifications
@@ -33,71 +34,7 @@ export default function Home() {
     setIncome(1242.29);
     setExpenses(1999.99);
     setBudget(5000.0);
-    setTransactionsList([
-      {
-        id: new Date().getTime(),
-        type: "income",
-        origin: "Bolsa",
-        description: "Bolsa do NES",
-        destiny: "Amon Vanderlei",
-        date: new Date("2024-12-20"),
-        amount: 500,
-        method: "pix",
-        category: "Estudos",
-      },
-      {
-        id: new Date().getTime() + 1,
-        type: "expense",
-        origin: "Amon Vanderlei",
-        destiny: "TIM",
-        date: new Date("2024-12-12"),
-        amount: 50,
-        method: "pix",
-        category: "Celular",
-      },
-      {
-        id: new Date().getTime() + 2,
-        type: "income",
-        origin: "Bolsa",
-        description: "Bolsa do NES",
-        destiny: "Amon Vanderlei",
-        date: new Date("2024-12-20"),
-        amount: 500,
-        method: "pix",
-        category: "Estudos",
-      },
-      {
-        id: new Date().getTime() + 3,
-        type: "expense",
-        origin: "Amon Vanderlei",
-        destiny: "TIM",
-        date: new Date("2024-12-12"),
-        amount: 50,
-        method: "pix",
-        category: "Celular",
-      },
-      {
-        id: new Date().getTime() + 4,
-        type: "income",
-        origin: "Bolsa",
-        description: "Bolsa do NES",
-        destiny: "Amon Vanderlei",
-        date: new Date("2024-12-20"),
-        amount: 500,
-        method: "pix",
-        category: "Estudos",
-      },
-      {
-        id: new Date().getTime() + 5,
-        type: "expense",
-        origin: "Amon Vanderlei",
-        destiny: "TIM",
-        date: new Date("2024-12-12"),
-        amount: 50,
-        method: "pix",
-        category: "Celular",
-      },
-    ]);
+    setTransactionsList(TRANSACTIONS);
   }, []);
 
   return (
@@ -172,7 +109,10 @@ export default function Home() {
             See All
           </Link>
         </div>
-        <Transactions transactionsList={transactionsList} />
+        <Transactions
+          transactionsList={transactionsList}
+          categories={CATEGORIES}
+        />
       </div>
     </div>
   );
