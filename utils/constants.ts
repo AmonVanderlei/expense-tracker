@@ -1,5 +1,6 @@
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
+import User from "@/types/User";
 
 export const CATEGORIES: Category[] = [
   { id: 1, name: "Celular", color: "#0f0" },
@@ -69,5 +70,17 @@ export const TRANSACTIONS: Transaction[] = [
     amount: 50,
     method: "pix",
     categoryId: 2,
+  },
+];
+
+export const USERS: User[] = [
+  {
+    id: 1,
+    firstName: "Amon",
+    lastName: "Vanderlei",
+    email: "amon.chalegre@gmail.com",
+    password: "12345",
+    balance: 12834,
+    monthlyBudget: 2500,
   },
 ];

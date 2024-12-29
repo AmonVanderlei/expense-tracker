@@ -1,41 +1,27 @@
 "use client";
 import Image from "next/image";
 import profilePic from "@/public/blank-profile-picture.png";
-import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import Transactions from "@/components/Transactions";
-import Transaction from "@/types/Transaction";
 import Notifications from "@/components/Notifications";
 import Budget from "@/components/Budget";
-import { TRANSACTIONS, CATEGORIES } from "@/utils/constants";
+import { TRANSACTIONS, CATEGORIES, USERS } from "@/utils/constants";
+import { getDataPerMonth, getRecentTransactions, getUser } from "@/utils/data";
 
 export default function Home() {
-  // User Info and Notifications
-  const [userName, setUserName] = useState<string>("UserName");
-  // const [profilePic, setProfilePic] = useState<string>("url here");
+  const { firstName, lastName, balance, monthlyBudget } = getUser(USERS);
 
-  // Balance, Income and Expenses
-  const [balance, setBalance] = useState<number>(0);
-  const [income, setIncome] = useState<number>(0);
-  const [expenses, setExpenses] = useState<number>(0);
-  const [budget, setBudget] = useState<number>(0);
+  const { income, expenses, diff } = getDataPerMonth(
+    TRANSACTIONS,
+    CATEGORIES,
+    new Date().getFullYear(),
+    new Date().getMonth()
+  );
 
-  // Transactions
-  const [transactionsList, setTransactionsList] = useState<
-    Transaction[] | null
-  >(null);
-
-  useEffect(() => {
-    setUserName("Amon Vanderlei");
-    setBalance(12843.2);
-    setIncome(1242.29);
-    setExpenses(1999.99);
-    setBudget(5000.0);
-    setTransactionsList(TRANSACTIONS);
-  }, []);
+  const transactionsList = getRecentTransactions(TRANSACTIONS, 5);
 
   return (
     <div className="grow flex flex-col items-center gap-10">
@@ -51,7 +37,9 @@ export default function Home() {
           />
           <div className="flex flex-col">
             <p className="text-sm">Hello,</p>
-            <p className="text-lg font-bold">{userName}</p>
+            <p className="text-lg font-bold">
+              {firstName} {lastName}
+            </p>
           </div>
         </div>
         <Notifications />
@@ -67,11 +55,11 @@ export default function Home() {
           <p
             className={clsx(
               "text-lg",
-              income - expenses > 0 && "text-green-500",
-              income - expenses < 0 && "text-red-500"
+              diff > 0 && "text-green-500",
+              diff < 0 && "text-red-500"
             )}
           >
-            {formatCurrency(income - expenses)}
+            {formatCurrency(diff)}
           </p>
         </div>
         <div className="flex w-full justify-between">
@@ -97,7 +85,7 @@ export default function Home() {
       </div>
 
       {/* Monthly Budget */}
-      <Budget budget={budget} expenses={expenses} />
+      <Budget budget={monthlyBudget} expenses={expenses} />
 
       {/* Recent Transactions */}
       <div className="w-11/12">

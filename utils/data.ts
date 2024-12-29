@@ -1,5 +1,6 @@
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
+import User from "@/types/User";
 
 export function getDataPerYear(
   transactions: Transaction[],
@@ -79,6 +80,7 @@ export function getDataPerMonth(
   transactions: Transaction[],
   categories: Category[],
   year: number,
+  month: number
 ) {
   const months = [
     "January",
@@ -95,45 +97,61 @@ export function getDataPerMonth(
     "December",
   ];
 
-  const data = months.map((month, index) => {
-    const monthlyTransactions = transactions.filter(
-      (t: Transaction) =>
-        t.date.getMonth() === index && t.date.getFullYear() === year
-    );
+  const monthlyTransactions = transactions.filter(
+    (t: Transaction) =>
+      t.date.getMonth() === month && t.date.getFullYear() === year
+  );
 
-    const income = monthlyTransactions
-      .filter((t: Transaction) => t.type === "income")
-      .reduce((sum, t) => sum + t.amount, 0);
+  const income = monthlyTransactions
+    .filter((t: Transaction) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-    const expenses = monthlyTransactions
-      .filter((t: Transaction) => t.type === "expense")
-      .reduce((sum, t) => sum + t.amount, 0);
+  const expenses = monthlyTransactions
+    .filter((t: Transaction) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
 
-    const diff = income - expenses;
+  const diff = income - expenses;
 
-    const expensesPerCategory = categories.map((category) => {
-      const totalSpent = monthlyTransactions
-        .filter(
-          (transaction) =>
-            transaction.categoryId === category.id &&
-            transaction.type === "expense"
-        )
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
+  const monthStr = months[month];
 
-      return {
-        id: category.id,
-        label: category.name,
-        value: totalSpent,
-      };
-    });
+  const expensesPerCategory = categories.map((category) => {
+    const totalSpent = monthlyTransactions
+      .filter(
+        (transaction) =>
+          transaction.categoryId === category.id &&
+          transaction.type === "expense"
+      )
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
 
     return {
-      income,
-      expenses,
-      diff,
-      month,
-      expensesPerCategory,
+      id: category.id,
+      label: category.name,
+      value: totalSpent,
     };
   });
-  return data;
+
+  return {
+    income,
+    expenses,
+    diff,
+    monthStr,
+    expensesPerCategory,
+  };
+}
+
+export function getUser(users: User[]) {
+  const currentUser = users.filter(
+    (u: User) => u.email === "amon.chalegre@gmail.com" && u.password === "12345"
+  )[0];
+  return currentUser;
+}
+
+export function getRecentTransactions(
+  transactions: Transaction[],
+  limit?: number
+) {
+  const sortedTransactions = transactions.sort(
+    (a, b) => b.date.getTime() - a.date.getTime()
+  );
+  return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
 }
