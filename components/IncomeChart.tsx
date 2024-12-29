@@ -28,7 +28,11 @@ export default function IncomeChart({
     (obj) => obj.year === setYear
   )[0];
 
-  const dataset = data.map(({ expensesPerCategory, ...rest }) => rest);
+  const dataset = data.map((item) => {
+    let { income, expenses, diff, month } = item;
+    expenses = -expenses;
+    return { income, expenses, diff, month };
+  });
 
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg py-4">
