@@ -29,7 +29,8 @@ export default function IncomeChart({
   )[0];
 
   const dataset = data.map((item) => {
-    let { income, expenses, diff, month } = item;
+    const { income, diff, month } = item;
+    let { expenses } = item;
     expenses = -expenses;
     return { income, expenses, diff, month };
   });
