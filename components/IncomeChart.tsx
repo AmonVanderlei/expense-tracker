@@ -11,13 +11,25 @@ import {
   ChartsTooltip,
   MarkPlot,
 } from "@mui/x-charts";
-import { getDataPerMonth } from "@/utils/data";
+import { getDataPerYear } from "@/utils/data";
 
 interface Props {
   transactions: Transaction[];
+  categories: Category[];
+  setYear: number;
 }
 
-export default function IncomeChart({ transactions }: Props) {
+export default function IncomeChart({
+  transactions,
+  categories,
+  setYear,
+}: Props) {
+  const { data } = getDataPerYear(transactions, categories).filter(
+    (obj) => obj.year === setYear
+  )[0];
+
+  const dataset = data.map(({ expensesPerCategory, ...rest }) => rest);
+
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg py-4">
       <h1 className="text-xl font-bold ml-4">Income and Expenses</h1>
@@ -53,7 +65,7 @@ export default function IncomeChart({ transactions }: Props) {
                 dataKey: "month",
               },
             ]}
-            dataset={getDataPerMonth(transactions)}
+            dataset={dataset}
           >
             <ChartsGrid horizontal />
             <BarPlot />
