@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
-import Transactions from "@/components/Transactions";
+import TransactionsComponent from "@/components/TransactionsComponent";
 import Notifications from "@/components/Notifications";
 import Budget from "@/components/Budget";
 import { TRANSACTIONS, CATEGORIES, USERS } from "@/utils/constants";
@@ -97,7 +97,7 @@ export default function Home() {
             See All
           </Link>
         </div>
-        <Transactions
+        <TransactionsComponent
           transactionsList={transactionsList}
           categories={CATEGORIES}
         />

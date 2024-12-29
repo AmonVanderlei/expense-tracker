@@ -6,14 +6,21 @@ import Category from "@/types/Category";
 
 interface Props {
   transactionsList: Transaction[] | null;
-  categories: Category[]
+  categories: Category[];
 }
 
-export default function Transactions({ categories, transactionsList }: Props) {
+export default function TransactionsComponent({
+  categories,
+  transactionsList,
+}: Props) {
   return (
     <div className="flex flex-col items-center w-full gap-4">
       {transactionsList?.map((transaction: Transaction) => (
-        <TransactionComponent obj={transaction} key={transaction.id} categories={categories}/>
+        <TransactionComponent
+          obj={transaction}
+          key={transaction.id}
+          categories={categories}
+        />
       ))}
     </div>
   );
