@@ -4,6 +4,7 @@ import Budget from "@/components/Budget";
 import { useEffect, useState } from "react";
 import ExpensesChart from "@/components/ExpensesChart";
 import { CATEGORIES, TRANSACTIONS } from "@/utils/constants";
+import IncomeChart from "@/components/IncomeChart";
 
 export default function Reports() {
   const [expenses, setExpenses] = useState<number>(0);
@@ -15,7 +16,7 @@ export default function Reports() {
   }, []);
 
   return (
-    <div className="grow flex flex-col items-center gap-10">
+    <div className="grow flex flex-col items-center gap-10 pb-20">
       {/* Header and Notifications */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Reports</h1>
@@ -31,6 +32,7 @@ export default function Reports() {
       <ExpensesChart transactions={TRANSACTIONS} categories={CATEGORIES} />
 
       {/* Incomes and Expenses Graph */}
+      <IncomeChart transactions={TRANSACTIONS} />
     </div>
   );
 }
