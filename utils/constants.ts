@@ -1,3 +1,4 @@
+import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
 import User from "@/types/User";
@@ -82,5 +83,22 @@ export const USERS: User[] = [
     password: "12345",
     balance: 12834,
     monthlyBudget: 2500,
+  },
+];
+
+export const BILLS: Bill[] = [
+  {
+    id: 1,
+    destiny: "YouTube",
+    paymentDay: 31,
+    amount: 300,
+    categoryId: 1,
+  },
+  {
+    id: 2,
+    destiny: "Spotify",
+    paymentDay: 29,
+    amount: 300,
+    categoryId: 1,
   },
 ];
