@@ -7,13 +7,14 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import Budget from "@/components/Budget";
-import { TRANSACTIONS, CATEGORIES, USERS } from "@/utils/constants";
+import { TRANSACTIONS, CATEGORIES, USERS, BILLS } from "@/utils/constants";
 import {
   getBalance,
   getDataPerMonth,
   getRecentTransactions,
   getUser,
 } from "@/utils/data";
+import BillsComponent from "@/components/BillsComponent";
 
 export default function Home() {
   const { firstName, lastName, monthlyBudget } = getUser(USERS);
@@ -90,6 +91,22 @@ export default function Home() {
 
       {/* Monthly Budget */}
       <Budget budget={monthlyBudget} expenses={expenses} />
+
+      {/* Recent Transactions */}
+      <div className="w-11/12">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-xl text-blue-500 font-bold">
+            Upcoming Bills
+          </h2>
+          <Link href="/transactions" className="text-sm">
+            See All
+          </Link>
+        </div>
+        <BillsComponent
+          bills={BILLS}
+          categories={CATEGORIES}
+        />
+      </div>
 
       {/* Recent Transactions */}
       <div className="w-11/12">
