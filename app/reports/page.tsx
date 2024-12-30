@@ -1,5 +1,4 @@
 "use client";
-import Notifications from "@/components/Notifications";
 import { useState } from "react";
 import ExpensesChart from "@/components/ExpensesChart";
 import { CATEGORIES, TRANSACTIONS } from "@/utils/constants";
@@ -30,12 +29,9 @@ export default function Reports() {
 
   return (
     <div className="grow flex flex-col items-center gap-10 pb-20">
-      {/* Header and Notifications */}
+      {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Reports</h1>
-        <div className="absolute right-4">
-          <Notifications />
-        </div>
       </header>
 
       {/* Date Picker */}

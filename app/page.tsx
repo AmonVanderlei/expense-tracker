@@ -6,14 +6,18 @@ import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import TransactionsComponent from "@/components/TransactionsComponent";
-import Notifications from "@/components/Notifications";
 import Budget from "@/components/Budget";
 import { TRANSACTIONS, CATEGORIES, USERS } from "@/utils/constants";
-import { getBalance, getDataPerMonth, getRecentTransactions, getUser } from "@/utils/data";
+import {
+  getBalance,
+  getDataPerMonth,
+  getRecentTransactions,
+  getUser,
+} from "@/utils/data";
 
 export default function Home() {
   const { firstName, lastName, monthlyBudget } = getUser(USERS);
-  const balance = getBalance(TRANSACTIONS)
+  const balance = getBalance(TRANSACTIONS);
 
   const { income, expenses, diff } = getDataPerMonth(
     TRANSACTIONS,
@@ -26,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="grow flex flex-col items-center gap-10">
-      {/* User Info and Notifications */}
+      {/* User Info */}
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
           <Image
@@ -43,7 +47,6 @@ export default function Home() {
             </p>
           </div>
         </div>
-        <Notifications />
       </div>
 
       {/* Incomes and Expenses */}

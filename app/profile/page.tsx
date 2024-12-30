@@ -2,14 +2,13 @@
 import Image from "next/image";
 import profilePic from "@/public/blank-profile-picture.png";
 import { useEffect, useState } from "react";
-import Notifications from "@/components/Notifications";
 import { MdOutlineBookmarkAdd } from "react-icons/md";
 import { FiUser } from "react-icons/fi";
 import { LiaInfoSolid } from "react-icons/lia";
 import { VscSignOut } from "react-icons/vsc";
 
 export default function Profile() {
-  // User Info and Notifications
+  // User Info
   const [userName, setUserName] = useState<string>("UserName");
   const [email, setEmail] = useState<string>("user@example.com");
   // const [profilePic, setProfilePic] = useState<string>("url here");
@@ -21,12 +20,9 @@ export default function Profile() {
 
   return (
     <div className="grow">
-      {/* Header and Notifications */}
+      {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Profile</h1>
-        <div className="absolute right-4">
-          <Notifications />
-        </div>
       </header>
 
       {/* User Info */}

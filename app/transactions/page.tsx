@@ -1,5 +1,4 @@
 "use client";
-import Notifications from "@/components/Notifications";
 import { getBalance } from "@/utils/data";
 import { CATEGORIES, TRANSACTIONS, BILLS } from "@/utils/constants";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -15,12 +14,9 @@ export default function Transactions() {
 
   return (
     <div className="grow flex flex-col items-center gap-6 pb-20">
-      {/* Header and Notifications */}
+      {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Transactions</h1>
-        <div className="absolute right-4">
-          <Notifications />
-        </div>
       </header>
 
       {/* Total Balance */}
