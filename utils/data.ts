@@ -155,3 +155,17 @@ export function getRecentTransactions(
   );
   return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
 }
+
+export function getBalance(transactions: Transaction[]) {
+  const income = transactions
+    .filter((t: Transaction) => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const expenses = transactions
+    .filter((t: Transaction) => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const balance = income - expenses;
+
+  return balance;
+}

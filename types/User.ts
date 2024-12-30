@@ -4,6 +4,5 @@ export default interface User {
   lastName: string;
   email: string;
   password: string;
-  balance: number;
   monthlyBudget: number;
 }

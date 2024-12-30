@@ -1,7 +1,7 @@
 "use client";
 import Notifications from "@/components/Notifications";
-import { getUser } from "@/utils/data";
-import { USERS, CATEGORIES, TRANSACTIONS, BILLS } from "@/utils/constants";
+import { getBalance } from "@/utils/data";
+import { CATEGORIES, TRANSACTIONS, BILLS } from "@/utils/constants";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useState } from "react";
 import clsx from "clsx";
@@ -10,7 +10,7 @@ import TransactionsComponent from "@/components/TransactionsComponent";
 import BillsComponent from "@/components/BillsComponent";
 
 export default function Transactions() {
-  const { balance } = getUser(USERS);
+  const balance = getBalance(TRANSACTIONS);
   const [show, setShow] = useState<string>("transactions");
 
   return (

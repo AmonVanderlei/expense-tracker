@@ -9,10 +9,11 @@ import TransactionsComponent from "@/components/TransactionsComponent";
 import Notifications from "@/components/Notifications";
 import Budget from "@/components/Budget";
 import { TRANSACTIONS, CATEGORIES, USERS } from "@/utils/constants";
-import { getDataPerMonth, getRecentTransactions, getUser } from "@/utils/data";
+import { getBalance, getDataPerMonth, getRecentTransactions, getUser } from "@/utils/data";
 
 export default function Home() {
-  const { firstName, lastName, balance, monthlyBudget } = getUser(USERS);
+  const { firstName, lastName, monthlyBudget } = getUser(USERS);
+  const balance = getBalance(TRANSACTIONS)
 
   const { income, expenses, diff } = getDataPerMonth(
     TRANSACTIONS,

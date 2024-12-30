@@ -81,7 +81,6 @@ export const USERS: User[] = [
     lastName: "Vanderlei",
     email: "amon.chalegre@gmail.com",
     password: "12345",
-    balance: 12834,
     monthlyBudget: 2500,
   },
 ];
