@@ -28,8 +28,10 @@ export interface DataContextType {
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
   transactions: Transaction[];
   recentTransactions: Transaction[];
+  addTransaction: (transaction: Transaction) => void;
   bills: Bill[];
   nextBills: Bill[];
+  updateBill: (bill: Bill) => void;
   categories: Category[];
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
@@ -42,44 +44,62 @@ interface Props {
 }
 
 export default function DataContextProvider({ children }: Props) {
+  const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
+    []
+  );
   const [bills, setBills] = useState<Bill[]>([]);
+  const [nextBills, setNextBills] = useState<Bill[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [dataCurrentMonth, setDataCurrentMonth] = useState<MonthData>({
+    income: 0,
+    expenses: 0,
+    diff: 0,
+    monthStr: "",
+    expensesPerCategory: [],
+  });
+  const [dataPerYear, setDataPerYear] = useState<YearData[]>([]);
   const [showTransactionOrBill, setShowTransactionOrBill] =
     useState<string>("transactions");
 
   useEffect(() => {
     setTimeout(() => {
       setTransactions(getRecentTransactions(TRANSACTIONS));
-      setBills(BILLS);
+      setBills(getNextBills(BILLS));
       setCategories(CATEGORIES);
     }, 1);
   }, []);
 
   const user = getUser(USERS);
-  let balance = getBalance(transactions);
-  let recentTransactions = getRecentTransactions(transactions, 5);
-  let nextBills = getNextBills(bills, 5);
-  let dataCurrentMonth = getDataPerMonth(
-    transactions,
-    categories,
-    new Date().getFullYear(),
-    new Date().getMonth()
-  );
-  let dataPerYear = getDataPerYear(transactions, categories);
 
   useEffect(() => {
-    balance = getBalance(transactions);
-    recentTransactions = getRecentTransactions(transactions, 5);
-    nextBills = getNextBills(bills, 5);
-    dataCurrentMonth = getDataPerMonth(
-      transactions,
-      categories,
-      new Date().getFullYear(),
-      new Date().getMonth()
+    setBalance(getBalance(transactions));
+    setRecentTransactions(getRecentTransactions(transactions, 5));
+    setNextBills(getNextBills(bills, 5));
+    setDataCurrentMonth(
+      getDataPerMonth(
+        transactions,
+        categories,
+        new Date().getFullYear(),
+        new Date().getMonth()
+      )
     );
-    dataPerYear = getDataPerYear(transactions, categories);
+    setDataPerYear(getDataPerYear(transactions, categories));
   }, [transactions, bills, categories]);
+
+  function addTransaction(transaction: Transaction) {
+    setTransactions((prevState) => {
+      return [...prevState, transaction];
+    });
+  }
+
+  function updateBill(bill: Bill) {
+    setBills((prevState) => {
+      const oldBills: Bill[] = prevState.filter((b: Bill) => b.id != bill.id);
+      return [...oldBills, bill];
+    });
+  }
 
   const values: DataContextType = {
     user,
@@ -88,8 +108,10 @@ export default function DataContextProvider({ children }: Props) {
     setShowTransactionOrBill,
     transactions,
     recentTransactions,
+    addTransaction,
     bills,
     nextBills,
+    updateBill,
     categories,
     dataCurrentMonth,
     dataPerYear,

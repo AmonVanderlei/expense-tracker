@@ -96,7 +96,7 @@ export default function Home() {
         expenses={dataCurrentMonth.expenses}
       />
 
-      {/* Recent Transactions */}
+      {/* Upcoming Bills */}
       <div className="w-11/12">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl text-blue-500 font-bold">Upcoming Bills</h2>
@@ -110,7 +110,7 @@ export default function Home() {
             See All
           </Link>
         </div>
-        <BillsComponent bills={nextBills} categories={categories} />
+        <BillsComponent bills={nextBills} />
       </div>
 
       {/* Recent Transactions */}

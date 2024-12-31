@@ -72,7 +72,7 @@ export default function Transactions() {
             />
           </div>
         ) : (
-          <BillsComponent bills={bills} categories={categories} />
+          <BillsComponent bills={bills} />
         )}
       </div>
     </div>
