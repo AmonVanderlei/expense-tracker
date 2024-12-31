@@ -161,7 +161,12 @@ export function getRecentTransactions(
 }
 
 export function getNextBills(bills: Bill[], limit?: number): Bill[] {
-  const sortedTransactions = bills.sort((a, b) => a.paymentDay - b.paymentDay);
+  const validBills = bills.filter((bill) => {
+    return !bill.paid && bill.nextPayment.getTime() <= new Date().getTime();
+  });
+  const sortedTransactions = validBills.sort(
+    (a, b) => a.paymentDay - b.paymentDay
+  );
   return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
 }
 

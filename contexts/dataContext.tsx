@@ -90,14 +90,16 @@ export default function DataContextProvider({ children }: Props) {
 
   function addTransaction(transaction: Transaction) {
     setTransactions((prevState) => {
-      return [...prevState, transaction];
+      return getRecentTransactions([...prevState, transaction]);
     });
   }
 
   function updateBill(bill: Bill) {
     setBills((prevState) => {
-      const oldBills: Bill[] = prevState.filter((b: Bill) => b.id != bill.id);
-      return [...oldBills, bill];
+      const updatedBills = prevState.map((b) =>
+        b.id === bill.id ? { ...b, ...bill } : b
+      );
+      return getNextBills(updatedBills);
     });
   }
 

@@ -97,21 +97,23 @@ export default function Home() {
       />
 
       {/* Upcoming Bills */}
-      <div className="w-11/12">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl text-blue-500 font-bold">Upcoming Bills</h2>
-          <Link
-            href="/transactions"
-            className="text-sm"
-            onClick={() => {
-              setShowTransactionOrBill("bills");
-            }}
-          >
-            See All
-          </Link>
+      {nextBills?.length > 0 ? (
+        <div className="w-11/12">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl text-blue-500 font-bold">Upcoming Bills</h2>
+            <Link
+              href="/transactions"
+              className="text-sm"
+              onClick={() => {
+                setShowTransactionOrBill("bills");
+              }}
+            >
+              See All
+            </Link>
+          </div>
+          <BillsComponent bills={nextBills} />
         </div>
-        <BillsComponent bills={nextBills} />
-      </div>
+      ) : null}
 
       {/* Recent Transactions */}
       <div className="w-11/12">
