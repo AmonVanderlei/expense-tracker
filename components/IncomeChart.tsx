@@ -29,7 +29,6 @@ export default function ExpensesChart({ setYear, dataPerYear }: Props) {
   const [dataset, setDataset] = useState<Dataset[]>([]);
 
   useEffect(() => {
-    const dataYear = dataPerYear.filter((obj) => obj.year === setYear)[0];
     const dataYear = dataPerYear.find((obj) => obj.year === setYear);
     const data = dataYear?.data || [];
 
