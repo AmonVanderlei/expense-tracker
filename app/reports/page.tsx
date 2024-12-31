@@ -24,7 +24,7 @@ export default function Reports() {
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { transactions, categories, dataPerYear } = context;
+  const { transactions, dataPerYear } = context;
 
   const [month, setMonth] = useState<string>(months[new Date().getMonth()]);
   const [year, setYear] = useState<number>(new Date().getFullYear());
@@ -88,10 +88,7 @@ export default function Reports() {
       />
 
       {/* Incomes and Expenses Graph */}
-      <IncomeChart
-        dataPerYear={dataPerYear}
-        setYear={year}
-      />
+      <IncomeChart dataPerYear={dataPerYear} setYear={year} />
     </div>
   );
 }

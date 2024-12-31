@@ -12,32 +12,36 @@ import {
 import { YearData } from "@/types/Data";
 import { useEffect, useState } from "react";
 
+interface Dataset {
+  [key: string]: string | number | null | undefined;
+  income: number;
+  expenses: number;
+  diff: number;
+  monthStr: string;
+}
+
 interface Props {
   setYear: number;
   dataPerYear: YearData[];
 }
 
 export default function ExpensesChart({ setYear, dataPerYear }: Props) {
-  const [dataset, setDataset] = useState<any>({
-    income: 0,
-    expenses: 0,
-    diff: 0,
-    monthStr: "",
-  });
+  const [dataset, setDataset] = useState<Dataset[]>([]);
 
   useEffect(() => {
     const dataYear = dataPerYear.filter((obj) => obj.year === setYear)[0];
+    const dataYear = dataPerYear.find((obj) => obj.year === setYear);
     const data = dataYear?.data || [];
 
-    const dataset = data.map((item) => {
+    const mappedDataset: Dataset[] = data.map((item) => {
       const { income, diff, monthStr } = item;
       let { expenses } = item;
       expenses = -expenses;
       return { income, expenses, diff, monthStr };
     });
 
-    setDataset(dataset);
-  }, [dataPerYear]);
+    setDataset(mappedDataset);
+  }, [dataPerYear, setYear]);
 
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg py-4">

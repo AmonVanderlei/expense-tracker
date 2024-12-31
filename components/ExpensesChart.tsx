@@ -23,14 +23,14 @@ export default function ExpensesChart({
   >([]);
 
   useEffect(() => {
-    const yearObj = dataPerYear.filter((obj) => obj.year === setYear)[0];
+    const yearObj = dataPerYear.find((obj) => obj.year === setYear);
     const data = yearObj?.data || [];
-    const monthObj = data.filter((obj) => obj.monthStr === setMonth)[0];
+    const monthObj = data.find((obj) => obj.monthStr === setMonth);
     if (monthObj) {
       setExpenses(monthObj.expenses);
       setExpensesPerCategory(monthObj.expensesPerCategory);
     }
-  }, [dataPerYear]);
+  }, [dataPerYear, setMonth, setYear]);
 
   const StyledText = styled("text")(() => ({
     fill: "white",
