@@ -7,30 +7,27 @@ import { formatCurrency } from "@/utils/formatCurrency";
 import Link from "next/link";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import Budget from "@/components/Budget";
-import { TRANSACTIONS, CATEGORIES, USERS, BILLS } from "@/utils/constants";
-import {
-  getBalance,
-  getDataPerMonth,
-  getRecentTransactions,
-  getUser,
-} from "@/utils/data";
 import BillsComponent from "@/components/BillsComponent";
+import { useContext } from "react";
+import { DataContext } from "@/contexts/dataContext";
 
 export default function Home() {
-  const { firstName, lastName, monthlyBudget } = getUser(USERS);
-  const balance = getBalance(TRANSACTIONS);
-
-  const { income, expenses, diff } = getDataPerMonth(
-    TRANSACTIONS,
-    CATEGORIES,
-    new Date().getFullYear(),
-    new Date().getMonth()
-  );
-
-  const transactionsList = getRecentTransactions(TRANSACTIONS, 5);
+  const context = useContext(DataContext);
+  if (!context) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const {
+    user,
+    dataCurrentMonth,
+    balance,
+    recentTransactions,
+    nextBills,
+    categories,
+    setShowTransactionOrBill,
+  } = context;
 
   return (
-    <div className="grow flex flex-col items-center gap-10">
+    <div className="grow flex flex-col items-center gap-10 pb-32">
       {/* User Info */}
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
@@ -44,7 +41,7 @@ export default function Home() {
           <div className="flex flex-col">
             <p className="text-sm">Hello,</p>
             <p className="text-lg font-bold">
-              {firstName} {lastName}
+              {user.firstName} {user.lastName}
             </p>
           </div>
         </div>
@@ -60,11 +57,11 @@ export default function Home() {
           <p
             className={clsx(
               "text-lg",
-              diff > 0 && "text-green-500",
-              diff < 0 && "text-red-500"
+              dataCurrentMonth.diff > 0 && "text-green-500",
+              dataCurrentMonth.diff < 0 && "text-red-500"
             )}
           >
-            {formatCurrency(diff)}
+            {formatCurrency(dataCurrentMonth.diff)}
           </p>
         </div>
         <div className="flex w-full justify-between">
@@ -75,7 +72,9 @@ export default function Home() {
               </div>
               <h3 className="font-semibold">Income</h3>
             </div>
-            <p className="font-medium text-lg">{formatCurrency(income)}</p>
+            <p className="font-medium text-lg">
+              {formatCurrency(dataCurrentMonth.income)}
+            </p>
           </div>
           <div className="flex flex-col items-end justify-center">
             <div className="flex items-center gap-2">
@@ -84,28 +83,34 @@ export default function Home() {
               </div>
               <h3 className="font-semibold">Expenses</h3>
             </div>
-            <p className="font-medium text-lg">{formatCurrency(expenses)}</p>
+            <p className="font-medium text-lg">
+              {formatCurrency(dataCurrentMonth.expenses)}
+            </p>
           </div>
         </div>
       </div>
 
       {/* Monthly Budget */}
-      <Budget budget={monthlyBudget} expenses={expenses} />
+      <Budget
+        budget={user.monthlyBudget}
+        expenses={dataCurrentMonth.expenses}
+      />
 
       {/* Recent Transactions */}
       <div className="w-11/12">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xl text-blue-500 font-bold">
-            Upcoming Bills
-          </h2>
-          <Link href="/transactions" className="text-sm">
+          <h2 className="text-xl text-blue-500 font-bold">Upcoming Bills</h2>
+          <Link
+            href="/transactions"
+            className="text-sm"
+            onClick={() => {
+              setShowTransactionOrBill("bills");
+            }}
+          >
             See All
           </Link>
         </div>
-        <BillsComponent
-          bills={BILLS}
-          categories={CATEGORIES}
-        />
+        <BillsComponent bills={nextBills} categories={categories} />
       </div>
 
       {/* Recent Transactions */}
@@ -114,13 +119,19 @@ export default function Home() {
           <h2 className="text-xl text-blue-500 font-bold">
             Recent Transactions
           </h2>
-          <Link href="/transactions" className="text-sm">
+          <Link
+            href="/transactions"
+            className="text-sm"
+            onClick={() => {
+              setShowTransactionOrBill("transactions");
+            }}
+          >
             See All
           </Link>
         </div>
         <TransactionsComponent
-          transactionsList={transactionsList}
-          categories={CATEGORIES}
+          transactionsList={recentTransactions}
+          categories={categories}
         />
       </div>
     </div>

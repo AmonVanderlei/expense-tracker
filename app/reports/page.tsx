@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import ExpensesChart from "@/components/ExpensesChart";
-import { CATEGORIES, TRANSACTIONS } from "@/utils/constants";
 import IncomeChart from "@/components/IncomeChart";
+import { DataContext } from "@/contexts/dataContext";
 
 const months = [
   "January",
@@ -20,11 +20,17 @@ const months = [
 ];
 
 export default function Reports() {
+  const context = useContext(DataContext);
+  if (!context) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const { transactions, categories, dataPerYear } = context;
+
   const [month, setMonth] = useState<string>(months[new Date().getMonth()]);
   const [year, setYear] = useState<number>(new Date().getFullYear());
 
   const years = Array.from(
-    new Set(TRANSACTIONS.map((t) => t.date.getFullYear()))
+    new Set(transactions.map((t) => t.date.getFullYear()))
   );
 
   return (
@@ -76,16 +82,14 @@ export default function Reports() {
 
       {/* Expenses Graph */}
       <ExpensesChart
-        transactions={TRANSACTIONS}
-        categories={CATEGORIES}
+        dataPerYear={dataPerYear}
         setMonth={month}
         setYear={year}
       />
 
       {/* Incomes and Expenses Graph */}
       <IncomeChart
-        transactions={TRANSACTIONS}
-        categories={CATEGORIES}
+        dataPerYear={dataPerYear}
         setYear={year}
       />
     </div>

@@ -1,6 +1,4 @@
 "use client";
-import Category from "@/types/Category";
-import Transaction from "@/types/Transaction";
 import {
   ResponsiveChartContainer,
   BarPlot,
@@ -11,29 +9,35 @@ import {
   ChartsTooltip,
   MarkPlot,
 } from "@mui/x-charts";
-import { getDataPerYear } from "@/utils/data";
+import { YearData } from "@/types/Data";
+import { useEffect, useState } from "react";
 
 interface Props {
-  transactions: Transaction[];
-  categories: Category[];
   setYear: number;
+  dataPerYear: YearData[];
 }
 
-export default function IncomeChart({
-  transactions,
-  categories,
-  setYear,
-}: Props) {
-  const { data } = getDataPerYear(transactions, categories).filter(
-    (obj) => obj.year === setYear
-  )[0];
-
-  const dataset = data.map((item) => {
-    const { income, diff, month } = item;
-    let { expenses } = item;
-    expenses = -expenses;
-    return { income, expenses, diff, month };
+export default function ExpensesChart({ setYear, dataPerYear }: Props) {
+  const [dataset, setDataset] = useState<any>({
+    income: 0,
+    expenses: 0,
+    diff: 0,
+    monthStr: "",
   });
+
+  useEffect(() => {
+    const dataYear = dataPerYear.filter((obj) => obj.year === setYear)[0];
+    const data = dataYear?.data || [];
+
+    const dataset = data.map((item) => {
+      const { income, diff, monthStr } = item;
+      let { expenses } = item;
+      expenses = -expenses;
+      return { income, expenses, diff, monthStr };
+    });
+
+    setDataset(dataset);
+  }, [dataPerYear]);
 
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg py-4">
@@ -67,7 +71,7 @@ export default function IncomeChart({
             xAxis={[
               {
                 scaleType: "band",
-                dataKey: "month",
+                dataKey: "monthStr",
               },
             ]}
             dataset={dataset}

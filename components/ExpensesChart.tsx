@@ -3,23 +3,35 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material";
 import { useDrawingArea } from "@mui/x-charts";
 import { formatCurrency } from "@/utils/formatCurrency";
-import Category from "@/types/Category";
-import Transaction from "@/types/Transaction";
-import { getDataPerYear } from "@/utils/data";
+import { useEffect, useState } from "react";
+import { ExpensesPerCategory, YearData } from "@/types/Data";
 
 interface Props {
-  transactions: Transaction[];
-  categories: Category[];
   setMonth: string;
   setYear: number;
+  dataPerYear: YearData[];
 }
 
 export default function ExpensesChart({
-  transactions,
-  categories,
   setMonth,
   setYear,
+  dataPerYear,
 }: Props) {
+  const [expenses, setExpenses] = useState<number>(0);
+  const [expensesPerCategory, setExpensesPerCategory] = useState<
+    ExpensesPerCategory[]
+  >([]);
+
+  useEffect(() => {
+    const yearObj = dataPerYear.filter((obj) => obj.year === setYear)[0];
+    const data = yearObj?.data || [];
+    const monthObj = data.filter((obj) => obj.monthStr === setMonth)[0];
+    if (monthObj) {
+      setExpenses(monthObj.expenses);
+      setExpensesPerCategory(monthObj.expensesPerCategory);
+    }
+  }, [dataPerYear]);
+
   const StyledText = styled("text")(() => ({
     fill: "white",
     textAnchor: "middle",
@@ -36,16 +48,11 @@ export default function ExpensesChart({
     );
   }
 
-  const { year, data } = getDataPerYear(
-    transactions,
-    categories,
-  ).filter((obj) => obj.year === setYear)[0];
-
-  const { month, expenses, expensesPerCategory } = data.filter((obj) => obj.month === setMonth)[0];
-
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg p-4">
-      <h1 className="text-xl font-bold">Expenses - {month} {year}</h1>
+      <h1 className="text-xl font-bold">
+        Expenses - {setMonth} {setYear}
+      </h1>
       <div className="flex items-center">
         <PieChart
           className="w-full"

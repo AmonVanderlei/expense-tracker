@@ -1,22 +1,19 @@
 "use client";
 import Image from "next/image";
 import profilePic from "@/public/blank-profile-picture.png";
-import { useEffect, useState } from "react";
 import { MdOutlineBookmarkAdd } from "react-icons/md";
 import { FiUser } from "react-icons/fi";
 import { LiaInfoSolid } from "react-icons/lia";
 import { VscSignOut } from "react-icons/vsc";
+import { useContext } from "react";
+import { DataContext } from "@/contexts/dataContext";
 
 export default function Profile() {
-  // User Info
-  const [userName, setUserName] = useState<string>("UserName");
-  const [email, setEmail] = useState<string>("user@example.com");
-  // const [profilePic, setProfilePic] = useState<string>("url here");
-
-  useEffect(() => {
-    setUserName("Amon Vanderlei");
-    setEmail("amon.chalegre@gmail.com");
-  }, []);
+  const context = useContext(DataContext);
+  if (!context) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const { user } = context;
 
   return (
     <div className="grow">
@@ -35,8 +32,10 @@ export default function Profile() {
           className="rounded-full -translate-y-1/2"
         />
         <div className="absolute bottom-4 w-full flex flex-col items-center">
-          <p className="text-2xl font-bold">{userName}</p>
-          <p className="text-base">{email}</p>
+          <p className="text-2xl font-bold">
+            {user.firstName} {user.lastName}
+          </p>
+          <p className="text-base">{user.email}</p>
         </div>
       </div>
 

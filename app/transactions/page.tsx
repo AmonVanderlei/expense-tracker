@@ -1,16 +1,24 @@
 "use client";
-import { getBalance } from "@/utils/data";
-import { CATEGORIES, TRANSACTIONS, BILLS } from "@/utils/constants";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useState } from "react";
+import { useContext } from "react";
 import clsx from "clsx";
-import { getRecentTransactions } from "@/utils/data";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import BillsComponent from "@/components/BillsComponent";
+import { DataContext } from "@/contexts/dataContext";
 
 export default function Transactions() {
-  const balance = getBalance(TRANSACTIONS);
-  const [show, setShow] = useState<string>("transactions");
+  const context = useContext(DataContext);
+  if (!context) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const {
+    showTransactionOrBill,
+    setShowTransactionOrBill,
+    transactions,
+    bills,
+    categories,
+    balance,
+  } = context;
 
   return (
     <div className="grow flex flex-col items-center gap-6 pb-20">
@@ -30,11 +38,11 @@ export default function Transactions() {
         <button
           className={clsx(
             "w-5/12 py-1 rounded-md",
-            show == "transactions" && "bg-slate-800"
+            showTransactionOrBill == "transactions" && "bg-slate-800"
           )}
           onClick={(e) => {
             e.preventDefault();
-            setShow("transactions");
+            setShowTransactionOrBill("transactions");
           }}
         >
           Transactions
@@ -43,11 +51,11 @@ export default function Transactions() {
         <button
           className={clsx(
             "w-5/12 py-1 rounded-md",
-            show == "bills" && "bg-slate-800"
+            showTransactionOrBill == "bills" && "bg-slate-800"
           )}
           onClick={(e) => {
             e.preventDefault();
-            setShow("bills");
+            setShowTransactionOrBill("bills");
           }}
         >
           Upcoming Bills
@@ -55,16 +63,16 @@ export default function Transactions() {
       </div>
 
       <div className="w-11/12">
-        {show === "transactions" ? (
+        {showTransactionOrBill === "transactions" ? (
           <div className="flex flex-col gap-2 items-center">
             <h1 className="text-2xl font-bold">Histórico</h1>
             <TransactionsComponent
-              transactionsList={getRecentTransactions(TRANSACTIONS)}
-              categories={CATEGORIES}
+              transactionsList={transactions}
+              categories={categories}
             />
           </div>
         ) : (
-          <BillsComponent bills={BILLS} categories={CATEGORIES} />
+          <BillsComponent bills={bills} categories={categories} />
         )}
       </div>
     </div>
