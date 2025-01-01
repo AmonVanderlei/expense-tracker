@@ -8,8 +8,11 @@ import Link from "next/link";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import Budget from "@/components/Budget";
 import BillsComponent from "@/components/BillsComponent";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "@/contexts/dataContext";
+import TransactionBillModal from "@/components/TransactionBillModal";
+import Transaction from "@/types/Transaction";
+import Bill from "@/types/Bill";
 
 export default function Home() {
   const context = useContext(DataContext);
@@ -26,8 +29,22 @@ export default function Home() {
     setShowTransactionOrBill,
   } = context;
 
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
+  const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
+    null
+  );
+
   return (
     <div className="grow flex flex-col items-center gap-10 pb-32">
+      {selectedObj && (
+        <TransactionBillModal
+          show={modalIsOpen}
+          onClose={setModalIsOpen}
+          selectedObj={selectedObj}
+          setSelectedObj={setSelectedObj}
+        />
+      )}
+
       {/* User Info */}
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
@@ -111,7 +128,11 @@ export default function Home() {
               See All
             </Link>
           </div>
-          <BillsComponent bills={nextBills} />
+          <BillsComponent
+            bills={nextBills}
+            setSelectedObj={setSelectedObj}
+            openModal={setModalIsOpen}
+          />
         </div>
       ) : null}
 
@@ -134,6 +155,8 @@ export default function Home() {
         <TransactionsComponent
           transactionsList={recentTransactions}
           categories={categories}
+          setSelectedObj={setSelectedObj}
+          openModal={setModalIsOpen}
         />
       </div>
     </div>

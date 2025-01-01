@@ -12,8 +12,7 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime(),
     type: "income",
-    origin: "Bolsa",
-    destiny: "Amon Vanderlei",
+    destiny: "Bolsa",
     date: new Date("2024-12-20"),
     amount: 500,
     categoryId: 2,
@@ -21,7 +20,6 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime() + 1,
     type: "expense",
-    origin: "Amon Vanderlei",
     destiny: "TIM",
     date: new Date("2024-12-12"),
     amount: 50,
@@ -30,8 +28,7 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime() + 2,
     type: "income",
-    origin: "Bolsa",
-    destiny: "Amon Vanderlei",
+    destiny: "Bolsa",
     date: new Date("2024-12-20"),
     amount: 500,
     categoryId: 2,
@@ -39,7 +36,6 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime() + 3,
     type: "expense",
-    origin: "Amon Vanderlei",
     destiny: "TIM",
     date: new Date("2024-12-12"),
     amount: 50,
@@ -48,8 +44,7 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime() + 4,
     type: "income",
-    origin: "Bolsa",
-    destiny: "Amon Vanderlei",
+    destiny: "Bolsa",
     date: new Date("2024-12-20"),
     amount: 500,
     categoryId: 2,
@@ -57,7 +52,6 @@ export const TRANSACTIONS: Transaction[] = [
   {
     id: new Date().getTime() + 5,
     type: "expense",
-    origin: "Amon Vanderlei",
     destiny: "Empresa",
     date: new Date("2024-12-12"),
     amount: 50,

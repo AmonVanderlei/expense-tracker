@@ -29,10 +29,13 @@ export interface DataContextType {
   transactions: Transaction[];
   recentTransactions: Transaction[];
   addTransaction: (transaction: Transaction) => void;
+  updateTransaction: (transaction: Transaction) => void;
+  deleteTransaction: (transaction: Transaction) => void;
   bills: Bill[];
   nextBills: Bill[];
   addBill: (bill: Bill) => void;
   updateBill: (bill: Bill) => void;
+  deleteBill: (bill: Bill) => void;
   categories: Category[];
   addCategory: (category: Category) => void;
   updateCategory: (category: Category) => void;
@@ -98,6 +101,24 @@ export default function DataContextProvider({ children }: Props) {
     });
   }
 
+  function updateTransaction(transaction: Transaction) {
+    setTransactions((prevState) => {
+      const updatedTransactions = prevState.map((t) =>
+        t.id === transaction.id ? { ...t, ...transaction } : t
+      );
+      return getRecentTransactions(updatedTransactions);
+    });
+  }
+
+  function deleteTransaction(transaction: Transaction) {
+    setTransactions((prevState) => {
+      const updatedTransactions = prevState.filter(
+        (t) => t.id !== transaction.id
+      );
+      return getRecentTransactions(updatedTransactions);
+    });
+  }
+
   function addBill(bill: Bill) {
     setBills((prevState) => {
       return getNextBills([...prevState, bill]);
@@ -109,6 +130,13 @@ export default function DataContextProvider({ children }: Props) {
       const updatedBills = prevState.map((b) =>
         b.id === bill.id ? { ...b, ...bill } : b
       );
+      return getNextBills(updatedBills);
+    });
+  }
+
+  function deleteBill(bill: Bill) {
+    setBills((prevState) => {
+      const updatedBills = prevState.filter((b) => b.id !== bill.id);
       return getNextBills(updatedBills);
     });
   }
@@ -145,10 +173,13 @@ export default function DataContextProvider({ children }: Props) {
     transactions,
     recentTransactions,
     addTransaction,
+    updateTransaction,
+    deleteTransaction,
     bills,
     nextBills,
     addBill,
     updateBill,
+    deleteBill,
     categories,
     addCategory,
     updateCategory,

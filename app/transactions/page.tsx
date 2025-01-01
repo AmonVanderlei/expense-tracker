@@ -1,10 +1,13 @@
 "use client";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import clsx from "clsx";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import BillsComponent from "@/components/BillsComponent";
 import { DataContext } from "@/contexts/dataContext";
+import Transaction from "@/types/Transaction";
+import Bill from "@/types/Bill";
+import TransactionBillModal from "@/components/TransactionBillModal";
 
 export default function Transactions() {
   const context = useContext(DataContext);
@@ -20,8 +23,22 @@ export default function Transactions() {
     balance,
   } = context;
 
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
+  const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
+    null
+  );
+
   return (
     <div className="grow flex flex-col items-center gap-6 pb-20">
+      {selectedObj && (
+        <TransactionBillModal
+          show={modalIsOpen}
+          onClose={setModalIsOpen}
+          selectedObj={selectedObj}
+          setSelectedObj={setSelectedObj}
+        />
+      )}
+
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Transactions</h1>
@@ -69,10 +86,16 @@ export default function Transactions() {
             <TransactionsComponent
               transactionsList={transactions}
               categories={categories}
+              setSelectedObj={setSelectedObj}
+              openModal={setModalIsOpen}
             />
           </div>
         ) : (
-          <BillsComponent bills={bills} />
+          <BillsComponent
+            bills={bills}
+            setSelectedObj={setSelectedObj}
+            openModal={setModalIsOpen}
+          />
         )}
       </div>
     </div>

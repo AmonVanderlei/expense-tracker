@@ -26,22 +26,26 @@ export default function Add() {
     const name = nameRef.current?.value.trim();
     const amount = amountRef.current?.value.trim();
 
-    if (!name || !amount || !type || !user || !categoryId) return;
+    if (!name || !amount || !type || !user || !categoryId) {
+      alert("Please fill out all fields.");
+      return;
+    }
 
     if (show === "Transaction") {
       addTransaction({
         id: Date.now(),
         type: type.toLowerCase() as "income" | "expense",
-        origin: type === "Income" ? name : `${user.firstName} ${user.lastName}`,
-        destiny:
-          type === "Income" ? `${user.firstName} ${user.lastName}` : name,
+        destiny: name,
         date: new Date(),
         amount: +amount,
         categoryId: +categoryId,
       });
     } else if (show === "Bill") {
       const paymentDay = paymentDayRef.current?.value.trim();
-      if (!paymentDay) return;
+      if (!paymentDay) {
+        alert("Please provide a payment day.");
+        return;
+      }
 
       addBill({
         id: Date.now(),
