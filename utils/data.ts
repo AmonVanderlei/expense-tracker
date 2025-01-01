@@ -56,6 +56,7 @@ export function getDataPerYear(
 
           return {
             id: category.id,
+            color: category.color,
             label: category.name,
             value: totalSpent,
           };
@@ -129,6 +130,7 @@ export function getDataPerMonth(
 
     return {
       id: category.id,
+      color: category.color,
       label: category.name,
       value: totalSpent,
     };

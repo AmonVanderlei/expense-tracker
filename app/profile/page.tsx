@@ -2,11 +2,11 @@
 import Image from "next/image";
 import profilePic from "@/public/blank-profile-picture.png";
 import { MdOutlineBookmarkAdd } from "react-icons/md";
-import { FiUser } from "react-icons/fi";
 import { LiaInfoSolid } from "react-icons/lia";
 import { VscSignOut } from "react-icons/vsc";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "@/contexts/dataContext";
+import CategoryModal from "@/components/CategoryModal";
 
 export default function Profile() {
   const context = useContext(DataContext);
@@ -15,8 +15,11 @@ export default function Profile() {
   }
   const { user } = context;
 
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
   return (
     <div className="grow">
+      <CategoryModal show={modalIsOpen} onClose={setModalIsOpen} />
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">Profile</h1>
@@ -49,12 +52,14 @@ export default function Profile() {
         >
           <LiaInfoSolid className="text-3xl" /> About
         </a>
-        <li className="flex gap-2">
-          <MdOutlineBookmarkAdd className="text-3xl" /> Add Category
-        </li>
-        <li className="flex gap-2">
-          <FiUser className="text-3xl" />
-          Change Name
+        <li
+          className="flex gap-2"
+          onClick={(e) => {
+            e.preventDefault;
+            setModalIsOpen(true);
+          }}
+        >
+          <MdOutlineBookmarkAdd className="text-3xl" /> Manage Category
         </li>
         <li className="flex gap-2">
           <VscSignOut className="text-3xl" />

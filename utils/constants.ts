@@ -4,8 +4,8 @@ import Transaction from "@/types/Transaction";
 import User from "@/types/User";
 
 export const CATEGORIES: Category[] = [
-  { id: 1, name: "Celular", color: "#0f0" },
-  { id: 2, name: "Estudos", color: "#00f" },
+  { id: 1, name: "Celular", color: "#00ff00" },
+  { id: 2, name: "Estudos", color: "#0000ff" },
 ];
 
 export const TRANSACTIONS: Transaction[] = [

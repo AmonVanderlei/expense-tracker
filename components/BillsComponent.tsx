@@ -13,7 +13,9 @@ export default function BillsComponent({ bills }: Props) {
       {bills?.length > 0 ? (
         bills?.map((bill: Bill) => <BillComponent obj={bill} key={bill.id} />)
       ) : (
-        <p className="text-center text-lg text-blue-500">There are not bills to pay or salaries to receive anymore!</p>
+        <p className="text-center text-lg text-blue-500">
+          There are not bills to pay or salaries to receive anymore!
+        </p>
       )}
     </div>
   );

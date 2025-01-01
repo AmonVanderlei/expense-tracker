@@ -33,6 +33,9 @@ export interface DataContextType {
   nextBills: Bill[];
   updateBill: (bill: Bill) => void;
   categories: Category[];
+  addCategory: (category: Category) => void;
+  updateCategory: (category: Category) => void;
+  deleteCategory: (category: Category) => void;
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
 }
@@ -103,6 +106,30 @@ export default function DataContextProvider({ children }: Props) {
     });
   }
 
+  function addCategory(category: Category) {
+    setCategories((prevState) => {
+      return [...prevState, category];
+    });
+  }
+
+  function updateCategory(category: Category) {
+    setCategories((prevState) => {
+      const updatedCategories = prevState.map((c) =>
+        c.id === category.id ? { ...c, ...category } : c
+      );
+      return updatedCategories;
+    });
+  }
+
+  function deleteCategory(category: Category) {
+    setCategories((prevState) => {
+      const updatedCategories = prevState.filter(
+        (cat) => cat.id !== category.id
+      );
+      return updatedCategories;
+    });
+  }
+
   const values: DataContextType = {
     user,
     balance,
@@ -115,6 +142,9 @@ export default function DataContextProvider({ children }: Props) {
     nextBills,
     updateBill,
     categories,
+    addCategory,
+    updateCategory,
+    deleteCategory,
     dataCurrentMonth,
     dataPerYear,
   };
