@@ -1,5 +1,5 @@
 import { useRef, useState, useContext, Dispatch, SetStateAction } from "react";
-import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 import Modal from "@/components/ModalComponent";
 import { DataContext } from "@/contexts/dataContext";
 import Category from "@/types/Category";

@@ -55,7 +55,7 @@ export default function Profile() {
         <li
           className="flex gap-2"
           onClick={(e) => {
-            e.preventDefault;
+            e.preventDefault();
             setModalIsOpen(true);
           }}
         >
