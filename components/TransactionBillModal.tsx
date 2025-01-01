@@ -31,17 +31,17 @@ export default function TransactionBillModal({
     deleteBill,
   } = context;
 
-  if (!selectedObj) return null;
-
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [type, setType] = useState<"income" | "expense">("income");
   const [categoryId, setCategoryId] = useState<string>(
-    selectedObj.categoryId.toString()
+    selectedObj?.categoryId.toString() || ""
   );
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const amountRef = useRef<HTMLInputElement | null>(null);
   const paymentDayRef = useRef<HTMLInputElement | null>(null);
+
+  if (!selectedObj) return null;
 
   const isTransaction = (obj: Transaction | Bill): obj is Transaction => {
     return (obj as Transaction).date !== undefined;
