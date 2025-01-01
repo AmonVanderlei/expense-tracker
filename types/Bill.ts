@@ -1,6 +1,6 @@
 export default interface Bill {
   id: number;
-  type: "expense" | "salary";
+  type: "income" | "expense";
   paid: boolean;
   destiny: string;
   paymentDay: number;

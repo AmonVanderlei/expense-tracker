@@ -23,7 +23,7 @@ export default function BillComponent({ obj }: Props) {
   } = context;
 
   function bill2transactionHandler(bill: Bill) {
-    if (bill.type === "salary") {
+    if (bill.type === "income") {
       addTransaction({
         id: new Date().getMilliseconds(),
         type: "income",
@@ -74,13 +74,13 @@ export default function BillComponent({ obj }: Props) {
         <p>{category ? category.name : "Sem Categoria"}</p>
         <p
           className={clsx(
-            obj.type == "salary" && "text-green-500",
+            obj.type == "income" && "text-green-500",
             obj.type == "expense" && "text-red-500"
           )}
         >
           {formatCurrency(obj.amount)}
         </p>
-        {obj.type === "salary" ? (
+        {obj.type === "income" ? (
           <button
             className="bg-green-500 bg-opacity-75 py-2 px-4 rounded-lg"
             onClick={(e) => {

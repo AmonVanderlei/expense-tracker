@@ -100,7 +100,7 @@ export const BILLS: Bill[] = [
   {
     id: 11,
     paid: false,
-    type: "salary",
+    type: "income",
     destiny: "Bolsa",
     paymentDay: 31,
     nextPayment: new Date("2024-12-01"),

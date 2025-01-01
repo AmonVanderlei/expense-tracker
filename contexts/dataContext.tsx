@@ -31,6 +31,7 @@ export interface DataContextType {
   addTransaction: (transaction: Transaction) => void;
   bills: Bill[];
   nextBills: Bill[];
+  addBill: (bill: Bill) => void;
   updateBill: (bill: Bill) => void;
   categories: Category[];
   addCategory: (category: Category) => void;
@@ -97,6 +98,12 @@ export default function DataContextProvider({ children }: Props) {
     });
   }
 
+  function addBill(bill: Bill) {
+    setBills((prevState) => {
+      return getNextBills([...prevState, bill]);
+    });
+  }
+
   function updateBill(bill: Bill) {
     setBills((prevState) => {
       const updatedBills = prevState.map((b) =>
@@ -140,6 +147,7 @@ export default function DataContextProvider({ children }: Props) {
     addTransaction,
     bills,
     nextBills,
+    addBill,
     updateBill,
     categories,
     addCategory,

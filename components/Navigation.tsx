@@ -40,10 +40,18 @@ export default function Navigation() {
         <TbFileReport className="text-2xl" />
         <p className="text-sm">Reports</p>
       </Link>
-      <div className="justify-items-center">
+      <Link
+        href={"/add"}
+        onClick={changeActivePage}
+        id="Add"
+        className={clsx(
+          "justify-items-center",
+          activePage == "Add" && "text-blue-300"
+        )}
+      >
         <GrAddCircle className="text-2xl" />
         <p className="text-sm">Add</p>
-      </div>
+      </Link>
       <Link
         href={"/transactions"}
         onClick={changeActivePage}
