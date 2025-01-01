@@ -26,8 +26,8 @@ export default function Reports() {
   }
   const { transactions, dataPerYear } = context;
 
-  const [month, setMonth] = useState<string>(months[new Date().getMonth()]);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<string>("");
+  const [year, setYear] = useState<string>("");
 
   const years = Array.from(
     new Set(transactions.map((t) => t.date.getFullYear()))
@@ -44,14 +44,12 @@ export default function Reports() {
       <div className="flex items-center justify-evenly w-11/12">
         <select
           name="selectMonth"
-          defaultValue={months[new Date().getMonth()]}
+          value={month}
           id="selectMonth"
           className="text-slate-800 rounded-md p-2 w-2/5"
-          onChange={(e) => {
-            e.preventDefault();
-            setMonth(e.target.value);
-          }}
+          onChange={(e) => setMonth(e.target.value)}
         >
+          <option value="">Choose a Month</option>
           {months.map((month) => {
             return (
               <option key={month} value={month}>
@@ -62,14 +60,12 @@ export default function Reports() {
         </select>
         <select
           name="selectYear"
-          defaultValue={new Date().getFullYear()}
+          value={year}
           id="selectYear"
           className="text-slate-800 rounded-md p-2 w-2/5"
-          onChange={(e) => {
-            e.preventDefault();
-            setYear(+e.target.value);
-          }}
+          onChange={(e) => setYear(e.target.value)}
         >
+          <option value="">Choose a Year</option>
           {years.map((year) => {
             return (
               <option key={year} value={year}>
@@ -80,15 +76,21 @@ export default function Reports() {
         </select>
       </div>
 
-      {/* Expenses Graph */}
-      <ExpensesChart
-        dataPerYear={dataPerYear}
-        setMonth={month}
-        setYear={year}
-      />
+      {month && year ? (
+        <>
+          {/* Expenses Graph */}
+          <ExpensesChart
+            dataPerYear={dataPerYear}
+            setMonth={month}
+            setYear={+year}
+          />
 
-      {/* Incomes and Expenses Graph */}
-      <IncomeChart dataPerYear={dataPerYear} setYear={year} />
+          {/* Incomes and Expenses Graph */}
+          <IncomeChart dataPerYear={dataPerYear} setYear={+year} />
+        </>
+      ) : (
+        <p className="text-slate-400">Please select both month and year.</p>
+      )}
     </div>
   );
 }
