@@ -5,6 +5,7 @@ import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import clsx from "clsx";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { toast } from "react-toastify";
 
 interface Props {
   show: boolean;
@@ -54,7 +55,7 @@ export default function TransactionBillModal({
     const amount = amountRef.current?.value.trim();
 
     if (!name || !amount || !type || !categoryId) {
-      alert("Please fill out all fields.");
+      toast.warning("Please fill out all fields.");
       return;
     }
 
@@ -71,7 +72,7 @@ export default function TransactionBillModal({
     } else {
       const paymentDay = paymentDayRef.current?.value.trim();
       if (!paymentDay) {
-        alert("Please provide a payment day.");
+        toast.warning("Please provide a payment day.");
         return;
       }
 

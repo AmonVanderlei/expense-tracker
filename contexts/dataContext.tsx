@@ -20,6 +20,7 @@ import User from "@/types/User";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
+import { toast } from "react-toastify";
 
 export interface DataContextType {
   user: User;
@@ -28,13 +29,13 @@ export interface DataContextType {
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
   transactions: Transaction[];
   recentTransactions: Transaction[];
-  addTransaction: (transaction: Transaction) => void;
+  addTransaction: (transaction: Transaction, showToast?: boolean) => void;
   updateTransaction: (transaction: Transaction) => void;
   deleteTransaction: (transaction: Transaction) => void;
   bills: Bill[];
   nextBills: Bill[];
   addBill: (bill: Bill) => void;
-  updateBill: (bill: Bill) => void;
+  updateBill: (bill: Bill, showToast?: boolean) => void;
   deleteBill: (bill: Bill) => void;
   categories: Category[];
   addCategory: (category: Category) => void;
@@ -95,10 +96,12 @@ export default function DataContextProvider({ children }: Props) {
     setDataPerYear(getDataPerYear(transactions, categories));
   }, [transactions, bills, categories]);
 
-  function addTransaction(transaction: Transaction) {
+  function addTransaction(transaction: Transaction, showToast: boolean = true) {
     setTransactions((prevState) => {
       return getRecentTransactions([...prevState, transaction]);
     });
+    if (showToast)
+      toast.success(transaction.destiny + " was successfully added!");
   }
 
   function updateTransaction(transaction: Transaction) {
@@ -108,6 +111,7 @@ export default function DataContextProvider({ children }: Props) {
       );
       return getRecentTransactions(updatedTransactions);
     });
+    toast.success(transaction.destiny + " was successfully updated!");
   }
 
   function deleteTransaction(transaction: Transaction) {
@@ -117,21 +121,24 @@ export default function DataContextProvider({ children }: Props) {
       );
       return getRecentTransactions(updatedTransactions);
     });
+    toast.success(transaction.destiny + " was successfully deleted!");
   }
 
   function addBill(bill: Bill) {
     setBills((prevState) => {
       return getNextBills([...prevState, bill]);
     });
+    toast.success(bill.destiny + " was successfully added!");
   }
 
-  function updateBill(bill: Bill) {
+  function updateBill(bill: Bill, showToast: boolean = true) {
     setBills((prevState) => {
       const updatedBills = prevState.map((b) =>
         b.id === bill.id ? { ...b, ...bill } : b
       );
       return getNextBills(updatedBills);
     });
+    if (showToast) toast.success(bill.destiny + " was successfully updated!");
   }
 
   function deleteBill(bill: Bill) {
@@ -139,12 +146,14 @@ export default function DataContextProvider({ children }: Props) {
       const updatedBills = prevState.filter((b) => b.id !== bill.id);
       return getNextBills(updatedBills);
     });
+    toast.success(bill.destiny + " was successfully deleted!");
   }
 
   function addCategory(category: Category) {
     setCategories((prevState) => {
       return [...prevState, category];
     });
+    toast.success(category.name + " was successfully added!");
   }
 
   function updateCategory(category: Category) {
@@ -154,6 +163,7 @@ export default function DataContextProvider({ children }: Props) {
       );
       return updatedCategories;
     });
+    toast.success(category.name + " was successfully updated!");
   }
 
   function deleteCategory(category: Category) {
@@ -163,6 +173,7 @@ export default function DataContextProvider({ children }: Props) {
       );
       return updatedCategories;
     });
+    toast.success(category.name + " was successfully deleted!");
   }
 
   const values: DataContextType = {

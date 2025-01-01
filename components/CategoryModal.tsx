@@ -3,6 +3,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import Modal from "@/components/ModalComponent";
 import { DataContext } from "@/contexts/dataContext";
 import Category from "@/types/Category";
+import { toast } from "react-toastify";
 
 interface Props {
   show: boolean;
@@ -29,7 +30,10 @@ export default function CategoryModal({ show, onClose }: Props) {
     const name = nameRef.current?.value.trim();
     const color = colorRef.current?.value.trim();
 
-    if (!name || !color) return;
+    if (!name || !color) {
+      toast.warning("Please fill out all fields.");
+      return;
+    }
 
     if (selectedCategory) {
       updateCategory({ ...selectedCategory, color, name });

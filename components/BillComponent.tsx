@@ -5,6 +5,7 @@ import Transaction from "@/types/Transaction";
 import { formatCurrency } from "@/utils/formatCurrency";
 import clsx from "clsx";
 import { Dispatch, SetStateAction, useContext } from "react";
+import { toast } from "react-toastify";
 
 interface Props {
   obj: Bill;
@@ -26,41 +27,55 @@ export default function BillComponent({
 
   function bill2transactionHandler(bill: Bill) {
     if (bill.type === "income") {
-      addTransaction({
-        id: new Date().getMilliseconds(),
-        type: "income",
-        destiny: bill.destiny,
-        date: new Date(),
-        amount: bill.amount,
-        categoryId: bill.categoryId,
-      });
+      addTransaction(
+        {
+          id: new Date().getMilliseconds(),
+          type: "income",
+          destiny: bill.destiny,
+          date: new Date(),
+          amount: bill.amount,
+          categoryId: bill.categoryId,
+        },
+        false
+      );
     } else {
-      addTransaction({
-        id: new Date().getMilliseconds(),
-        type: "expense",
-        destiny: bill.destiny,
-        date: new Date(),
-        amount: bill.amount,
-        categoryId: bill.categoryId,
-      });
+      addTransaction(
+        {
+          id: new Date().getMilliseconds(),
+          type: "expense",
+          destiny: bill.destiny,
+          date: new Date(),
+          amount: bill.amount,
+          categoryId: bill.categoryId,
+        },
+        false
+      );
     }
 
-    updateBill({
-      id: bill.id,
-      type: bill.type,
-      paid: true,
-      destiny: bill.destiny,
-      paymentDay: bill.paymentDay,
-      nextPayment: new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        1
-      ),
-      amount: bill.amount,
-      categoryId: bill.categoryId,
-    });
+    updateBill(
+      {
+        id: bill.id,
+        type: bill.type,
+        paid: true,
+        destiny: bill.destiny,
+        paymentDay: bill.paymentDay,
+        nextPayment: new Date(
+          new Date().getFullYear(),
+          new Date().getMonth() + 1,
+          1
+        ),
+        amount: bill.amount,
+        categoryId: bill.categoryId,
+      },
+      false
+    );
 
     setShowTransactionOrBill("transactions");
+    if (bill.type === "income") {
+      toast.success(bill.destiny + " was successfully received!");
+    } else {
+      toast.success(bill.destiny + " was successfully paid!");
+    }
   }
 
   const category = categories.find((cat) => cat.id === obj.categoryId);

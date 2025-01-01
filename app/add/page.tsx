@@ -3,6 +3,7 @@ import { useRef, useState, useContext } from "react";
 import { DataContext } from "@/contexts/dataContext";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function Add() {
   const context = useContext(DataContext);
@@ -27,7 +28,7 @@ export default function Add() {
     const amount = amountRef.current?.value.trim();
 
     if (!name || !amount || !type || !user || !categoryId) {
-      alert("Please fill out all fields.");
+      toast.warning("Please fill out all fields.");
       return;
     }
 
@@ -43,7 +44,7 @@ export default function Add() {
     } else if (show === "Bill") {
       const paymentDay = paymentDayRef.current?.value.trim();
       if (!paymentDay) {
-        alert("Please provide a payment day.");
+        toast.warning("Please provide a payment day.");
         return;
       }
 
