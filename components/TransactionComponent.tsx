@@ -1,4 +1,3 @@
-"use client";
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
 import { formatCurrency } from "@/utils/formatCurrency";

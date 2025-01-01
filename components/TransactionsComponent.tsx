@@ -1,5 +1,3 @@
-"use client";
-
 import Transaction from "@/types/Transaction";
 import TransactionComponent from "@/components/TransactionComponent";
 import Category from "@/types/Category";

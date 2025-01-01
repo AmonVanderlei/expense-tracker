@@ -1,5 +1,3 @@
-"use client";
-
 import Bill from "@/types/Bill";
 import BillComponent from "./BillComponent";
 
