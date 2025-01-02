@@ -1,8 +1,8 @@
 export default interface Transaction {
-  id: number;
+  id: string;
   type: "income" | "expense";
   destiny: string;
   date: Date;
   amount: number;
-  categoryId: number;
+  categoryId: string;
 }

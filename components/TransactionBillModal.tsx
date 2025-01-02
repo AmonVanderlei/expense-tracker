@@ -59,7 +59,7 @@ export default function TransactionBillModal({
         type,
         destiny: name,
         amount: +amount,
-        categoryId: +categoryId,
+        categoryId: categoryId,
       };
 
       updateObj(updatedTransaction);
@@ -76,7 +76,7 @@ export default function TransactionBillModal({
         destiny: name,
         amount: +amount,
         paymentDay: +paymentDay,
-        categoryId: +categoryId,
+        categoryId: categoryId,
       };
 
       updateObj(updatedBill);
@@ -223,7 +223,7 @@ export default function TransactionBillModal({
                 name="category"
                 className="text-slate-800 rounded-md p-2 w-full"
                 onChange={(e) => setCategoryId(e.target.value)}
-                defaultValue={selectedObj.categoryId}
+                defaultValue={selectedObj.categoryId || ""}
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>

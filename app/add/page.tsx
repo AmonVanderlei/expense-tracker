@@ -34,12 +34,12 @@ export default function Add() {
 
     if (show === "Transaction") {
       addObj({
-        id: Date.now(),
+        id: "",
         type: type.toLowerCase() as "income" | "expense",
         destiny: name,
         date: new Date(),
         amount: +amount,
-        categoryId: +categoryId,
+        categoryId: categoryId,
       });
     } else if (show === "Bill") {
       const paymentDay = paymentDayRef.current?.value.trim();
@@ -49,14 +49,14 @@ export default function Add() {
       }
 
       addObj({
-        id: Date.now(),
+        id: "",
         type: type.toLowerCase() as "income" | "expense",
         paid: false,
         destiny: name,
         paymentDay: +paymentDay,
         nextPayment: new Date(),
         amount: +amount,
-        categoryId: +categoryId,
+        categoryId: categoryId,
       });
     }
 

@@ -39,7 +39,7 @@ export default function CategoryModal({ show, onClose }: Props) {
       updateObj({ ...selectedCategory, color, name });
     } else {
       addObj({
-        id: Date.now(),
+        id: "",
         color,
         name,
       });

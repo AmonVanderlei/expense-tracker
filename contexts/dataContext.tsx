@@ -13,15 +13,18 @@ import {
   getRecentTransactions,
   getDataPerYear,
   getNextBills,
+  addDocument,
+  getDocuments,
+  deleteDocument,
+  updateDocument,
 } from "@/utils/data";
-import { TRANSACTIONS, USERS, CATEGORIES, BILLS } from "@/utils/constants";
+import { USERS } from "@/utils/constants";
 import { YearData, MonthData } from "@/types/Data";
 import User from "@/types/User";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import { toast, ToastContentProps } from "react-toastify";
-import Transactions from "@/components/TransactionComponent";
 
 export interface DataContextType {
   user: User;
@@ -35,9 +38,9 @@ export interface DataContextType {
   categories: Category[];
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
-  addObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
-  updateObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
-  deleteObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
+  addObj: (obj: Transaction | Bill | Category) => void;
+  updateObj: (obj: Transaction | Bill | Category) => void;
+  deleteObj: (obj: Transaction | Bill | Category) => void;
 }
 
 export const DataContext = createContext<DataContextType | null>(null);
@@ -67,90 +70,143 @@ export default function DataContextProvider({ children }: Props) {
     useState<string>("transactions");
 
   useEffect(() => {
-    setTimeout(() => {
-      setTransactions(getRecentTransactions(TRANSACTIONS));
-      setBills(getNextBills(BILLS));
-      setCategories(CATEGORIES);
-    }, 1);
+    const fetchData = async () => {
+      try {
+        const transactionsData = await getDocuments("transactions");
+        const billsData = await getDocuments("bills");
+        const categoriesData = await getDocuments("categories");
+
+        setTransactions(
+          getRecentTransactions(transactionsData as Transaction[])
+        );
+        setBills(getNextBills(billsData as Bill[]));
+        setCategories(categoriesData as Category[]);
+      } catch (error) {
+        toast.error("Error fetching data from Firebase:" + error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const user = getUser(USERS);
 
   useEffect(() => {
-    setBalance(getBalance(transactions));
-    setRecentTransactions(getRecentTransactions(transactions, 5));
-    setNextBills(getNextBills(bills, 5));
-    setDataCurrentMonth(
-      getDataPerMonth(
-        transactions,
-        categories,
-        new Date().getFullYear(),
-        new Date().getMonth()
-      )
-    );
-    setDataPerYear(getDataPerYear(transactions, categories));
+    const updateData = async () => {
+      try {
+        setBalance(getBalance(transactions));
+        setRecentTransactions(getRecentTransactions(transactions, 5));
+        setNextBills(getNextBills(bills, 5));
+        setDataCurrentMonth(
+          getDataPerMonth(
+            transactions,
+            categories,
+            new Date().getFullYear(),
+            new Date().getMonth()
+          )
+        );
+        setDataPerYear(getDataPerYear(transactions, categories));
+      } catch (error) {
+        toast.error("Error updating data:" + error);
+      }
+    };
+
+    updateData();
   }, [transactions, bills, categories]);
 
-  function addObj(
-    obj: Transaction | Bill | Category,
-    showToast: boolean = true
-  ) {
+  async function addObj(obj: Transaction | Bill | Category) {
+    const { id, ...objWithoutId } = obj;
     if ("date" in obj) {
+      // Add to firebase
+      const newId = await toast.promise(addDocument("transactions", obj), {
+        pending: "Adding transaction...",
+        success: "Transaction added!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Add locally
       setTransactions((prevState) => {
-        return getRecentTransactions([...prevState, obj as Transaction]);
+        return getRecentTransactions([
+          ...prevState,
+          { id: newId, ...objWithoutId } as Transaction,
+        ]) as Transaction[];
       });
-      if (showToast)
-        toast.success(
-          (obj as Transaction).destiny + " was successfully added!"
-        );
     } else if ("paymentDay" in obj) {
+      // Add to firebase
+      const newId = await toast.promise(addDocument("bills", obj), {
+        pending: "Adding bill...",
+        success: "Bill added!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Add locally
       setBills((prevState) => {
-        return getNextBills([...prevState, obj as Bill]);
+        return getNextBills([
+          ...prevState,
+          { id: newId, ...objWithoutId } as Bill,
+        ]);
       });
-      if (showToast)
-        toast.success((obj as Bill).destiny + " was successfully added!");
     } else {
-      setCategories((prevState) => {
-        return [...prevState, obj as Category];
+      // Add to firebase
+      const newId = await toast.promise(addDocument("categories", obj), {
+        pending: "Adding category...",
+        success: "Category added!",
+        error: "Sorry! Something wrong happened.",
       });
-      if (showToast)
-        toast.success((obj as Category).name + " was successfully added!");
+
+      // Add locally
+      setCategories((prevState) => {
+        return [...prevState, { id: newId, ...objWithoutId } as Category];
+      });
     }
   }
 
-  function updateObj(
-    obj: Transaction | Bill | Category,
-    showToast: boolean = true
-  ) {
+  function updateObj(obj: Transaction | Bill | Category) {
     if ("date" in obj) {
+      // Update on firebase
+      toast.promise(updateDocument("transactions", obj), {
+        pending: "Updating transaction...",
+        success: "Transaction updated!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Update locally
       setTransactions((prevState) => {
         const updatedTransactions = prevState.map((t) =>
           t.id === obj.id ? { ...t, ...obj } : t
         );
         return getRecentTransactions(updatedTransactions);
       });
-      if (showToast)
-        toast.success(
-          (obj as Transaction).destiny + " was successfully updated!"
-        );
     } else if ("paymentDay" in obj) {
+      // Update on firebase
+      toast.promise(updateDocument("bills", obj), {
+        pending: "Updating bill...",
+        success: "Bill updated!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Update locally
       setBills((prevState) => {
         const updatedBills = prevState.map((b) =>
           b.id === obj.id ? { ...b, ...obj } : b
         );
         return getNextBills(updatedBills);
       });
-      if (showToast)
-        toast.success((obj as Bill).destiny + " was successfully updated!");
     } else {
       setCategories((prevState) => {
+        // Update on firebase
+        toast.promise(updateDocument("categories", obj), {
+          pending: "Updating category...",
+          success: "Category updated!",
+          error: "Sorry! Something wrong happened.",
+        });
+
+        // Update locally
         const updatedCategories = prevState.map((c) =>
           c.id === obj.id ? { ...c, ...obj } : c
         );
         return updatedCategories;
       });
-      if (showToast)
-        toast.success((obj as Category).name + " was successfully updated!");
     }
   }
 
@@ -176,10 +232,7 @@ export default function DataContextProvider({ children }: Props) {
     );
   }
 
-  function deleteObj(
-    obj: Transaction | Bill | Category,
-    showToast: boolean = true
-  ) {
+  function deleteObj(obj: Transaction | Bill | Category) {
     toast(CustomNotification, {
       closeButton: false,
       position: "bottom-center",
@@ -189,31 +242,43 @@ export default function DataContextProvider({ children }: Props) {
         switch (reason) {
           case "delete":
             if ("date" in obj) {
+              // Delete on firebase
+              toast.promise(deleteDocument("transactions", obj.id), {
+                pending: "Deleting transaction...",
+                success: "Transaction deleted!",
+                error: "Sorry! Something wrong happened.",
+              });
+
+              // Delete locally
               setTransactions((prevState) => {
                 return getRecentTransactions(
                   prevState.filter((t) => t.id !== obj.id)
                 );
               });
-              if (showToast)
-                toast.success(
-                  (obj as Transaction).destiny + " was successfully deleted!"
-                );
             } else if ("paymentDay" in obj) {
+              // Delete on firebase
+              toast.promise(deleteDocument("bills", obj.id), {
+                pending: "Deleting bill...",
+                success: "Bill deleted!",
+                error: "Sorry! Something wrong happened.",
+              });
+
+              // Delete locally
               setBills((prevState) => {
                 return getNextBills(prevState.filter((b) => b.id !== obj.id));
               });
-              if (showToast)
-                toast.success(
-                  (obj as Bill).destiny + " was successfully deleted!"
-                );
             } else {
+              // Delete on firebase
+              toast.promise(deleteDocument("categories", obj.id), {
+                pending: "Deleting category...",
+                success: "Category deleted!",
+                error: "Sorry! Something wrong happened.",
+              });
+
+              // Delete locally
               setCategories((prevState) => {
                 return prevState.filter((cat) => cat.id !== obj.id);
               });
-              if (showToast)
-                toast.success(
-                  (obj as Category).name + " was successfully deleted!"
-                );
             }
         }
       },

@@ -22,53 +22,43 @@ export default function BillComponent({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { categories, addObj, updateObj, setShowTransactionOrBill } =
-    context;
+  const { categories, addObj, updateObj, setShowTransactionOrBill } = context;
 
   function bill2transactionHandler(bill: Bill) {
     if (bill.type === "income") {
-      addObj(
-        {
-          id: new Date().getMilliseconds(),
-          type: "income",
-          destiny: bill.destiny,
-          date: new Date(),
-          amount: bill.amount,
-          categoryId: bill.categoryId,
-        },
-        false
-      );
-    } else {
-      addObj(
-        {
-          id: new Date().getMilliseconds(),
-          type: "expense",
-          destiny: bill.destiny,
-          date: new Date(),
-          amount: bill.amount,
-          categoryId: bill.categoryId,
-        },
-        false
-      );
-    }
-
-    updateObj(
-      {
-        id: bill.id,
-        type: bill.type,
-        paid: true,
+      addObj({
+        id: "",
+        type: "income",
         destiny: bill.destiny,
-        paymentDay: bill.paymentDay,
-        nextPayment: new Date(
-          new Date().getFullYear(),
-          new Date().getMonth() + 1,
-          1
-        ),
+        date: new Date(),
         amount: bill.amount,
         categoryId: bill.categoryId,
-      },
-      false
-    );
+      });
+    } else {
+      addObj({
+        id: "",
+        type: "expense",
+        destiny: bill.destiny,
+        date: new Date(),
+        amount: bill.amount,
+        categoryId: bill.categoryId,
+      });
+    }
+
+    updateObj({
+      id: bill.id,
+      type: bill.type,
+      paid: true,
+      destiny: bill.destiny,
+      paymentDay: bill.paymentDay,
+      nextPayment: new Date(
+        new Date().getFullYear(),
+        new Date().getMonth() + 1,
+        1
+      ),
+      amount: bill.amount,
+      categoryId: bill.categoryId,
+    });
 
     setShowTransactionOrBill("transactions");
     if (bill.type === "income") {
