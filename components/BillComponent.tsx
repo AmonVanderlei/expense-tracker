@@ -22,12 +22,12 @@ export default function BillComponent({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { categories, addTransaction, updateBill, setShowTransactionOrBill } =
+  const { categories, addObj, updateObj, setShowTransactionOrBill } =
     context;
 
   function bill2transactionHandler(bill: Bill) {
     if (bill.type === "income") {
-      addTransaction(
+      addObj(
         {
           id: new Date().getMilliseconds(),
           type: "income",
@@ -39,7 +39,7 @@ export default function BillComponent({
         false
       );
     } else {
-      addTransaction(
+      addObj(
         {
           id: new Date().getMilliseconds(),
           type: "expense",
@@ -52,7 +52,7 @@ export default function BillComponent({
       );
     }
 
-    updateBill(
+    updateObj(
       {
         id: bill.id,
         type: bill.type,

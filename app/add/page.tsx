@@ -10,7 +10,7 @@ export default function Add() {
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { user, addTransaction, addBill, categories } = context;
+  const { user, addObj, categories } = context;
 
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export default function Add() {
     }
 
     if (show === "Transaction") {
-      addTransaction({
+      addObj({
         id: Date.now(),
         type: type.toLowerCase() as "income" | "expense",
         destiny: name,
@@ -48,7 +48,7 @@ export default function Add() {
         return;
       }
 
-      addBill({
+      addObj({
         id: Date.now(),
         type: type.toLowerCase() as "income" | "expense",
         paid: false,

@@ -24,13 +24,7 @@ export default function TransactionBillModal({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const {
-    categories,
-    updateTransaction,
-    deleteTransaction,
-    updateBill,
-    deleteBill,
-  } = context;
+  const { categories, updateObj, deleteObj } = context;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [type, setType] = useState<"income" | "expense">("income");
@@ -68,7 +62,7 @@ export default function TransactionBillModal({
         categoryId: +categoryId,
       };
 
-      updateTransaction(updatedTransaction);
+      updateObj(updatedTransaction);
     } else {
       const paymentDay = paymentDayRef.current?.value.trim();
       if (!paymentDay) {
@@ -85,7 +79,7 @@ export default function TransactionBillModal({
         categoryId: +categoryId,
       };
 
-      updateBill(updatedBill);
+      updateObj(updatedBill);
     }
 
     setIsEditing(false);
@@ -94,11 +88,7 @@ export default function TransactionBillModal({
   };
 
   const handleDelete = (obj: Transaction | Bill) => {
-    if (isTransaction(obj)) {
-      deleteTransaction(obj);
-    } else {
-      deleteBill(obj);
-    }
+    deleteObj(obj);
 
     setSelectedObj(null);
     onClose(false);
@@ -161,7 +151,7 @@ export default function TransactionBillModal({
                 onClick={() => handleDelete(selectedObj)}
               >
                 Delete
-              </button>{" "}
+              </button>
             </div>
           </div>
         ) : (

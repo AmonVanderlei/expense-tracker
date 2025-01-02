@@ -15,7 +15,7 @@ export default function CategoryModal({ show, onClose }: Props) {
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { categories, addCategory, updateCategory, deleteCategory } = context;
+  const { categories, addObj, updateObj, deleteObj } = context;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -36,9 +36,9 @@ export default function CategoryModal({ show, onClose }: Props) {
     }
 
     if (selectedCategory) {
-      updateCategory({ ...selectedCategory, color, name });
+      updateObj({ ...selectedCategory, color, name });
     } else {
-      addCategory({
+      addObj({
         id: Date.now(),
         color,
         name,
@@ -55,7 +55,7 @@ export default function CategoryModal({ show, onClose }: Props) {
   };
 
   const handleDelete = (category: Category) => {
-    deleteCategory(category);
+    deleteObj(category);
   };
 
   const handleCreate = () => {

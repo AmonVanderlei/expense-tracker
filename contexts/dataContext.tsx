@@ -20,7 +20,8 @@ import User from "@/types/User";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
-import { toast } from "react-toastify";
+import { toast, ToastContentProps } from "react-toastify";
+import Transactions from "@/components/TransactionComponent";
 
 export interface DataContextType {
   user: User;
@@ -29,20 +30,14 @@ export interface DataContextType {
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
   transactions: Transaction[];
   recentTransactions: Transaction[];
-  addTransaction: (transaction: Transaction, showToast?: boolean) => void;
-  updateTransaction: (transaction: Transaction) => void;
-  deleteTransaction: (transaction: Transaction) => void;
   bills: Bill[];
   nextBills: Bill[];
-  addBill: (bill: Bill) => void;
-  updateBill: (bill: Bill, showToast?: boolean) => void;
-  deleteBill: (bill: Bill) => void;
   categories: Category[];
-  addCategory: (category: Category) => void;
-  updateCategory: (category: Category) => void;
-  deleteCategory: (category: Category) => void;
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
+  addObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
+  updateObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
+  deleteObj: (obj: Transaction | Bill | Category, showToast?: boolean) => void;
 }
 
 export const DataContext = createContext<DataContextType | null>(null);
@@ -96,84 +91,133 @@ export default function DataContextProvider({ children }: Props) {
     setDataPerYear(getDataPerYear(transactions, categories));
   }, [transactions, bills, categories]);
 
-  function addTransaction(transaction: Transaction, showToast: boolean = true) {
-    setTransactions((prevState) => {
-      return getRecentTransactions([...prevState, transaction]);
-    });
-    if (showToast)
-      toast.success(transaction.destiny + " was successfully added!");
+  function addObj(
+    obj: Transaction | Bill | Category,
+    showToast: boolean = true
+  ) {
+    if ("date" in obj) {
+      setTransactions((prevState) => {
+        return getRecentTransactions([...prevState, obj as Transaction]);
+      });
+      if (showToast)
+        toast.success(
+          (obj as Transaction).destiny + " was successfully added!"
+        );
+    } else if ("paymentDay" in obj) {
+      setBills((prevState) => {
+        return getNextBills([...prevState, obj as Bill]);
+      });
+      if (showToast)
+        toast.success((obj as Bill).destiny + " was successfully added!");
+    } else {
+      setCategories((prevState) => {
+        return [...prevState, obj as Category];
+      });
+      if (showToast)
+        toast.success((obj as Category).name + " was successfully added!");
+    }
   }
 
-  function updateTransaction(transaction: Transaction) {
-    setTransactions((prevState) => {
-      const updatedTransactions = prevState.map((t) =>
-        t.id === transaction.id ? { ...t, ...transaction } : t
-      );
-      return getRecentTransactions(updatedTransactions);
-    });
-    toast.success(transaction.destiny + " was successfully updated!");
+  function updateObj(
+    obj: Transaction | Bill | Category,
+    showToast: boolean = true
+  ) {
+    if ("date" in obj) {
+      setTransactions((prevState) => {
+        const updatedTransactions = prevState.map((t) =>
+          t.id === obj.id ? { ...t, ...obj } : t
+        );
+        return getRecentTransactions(updatedTransactions);
+      });
+      if (showToast)
+        toast.success(
+          (obj as Transaction).destiny + " was successfully updated!"
+        );
+    } else if ("paymentDay" in obj) {
+      setBills((prevState) => {
+        const updatedBills = prevState.map((b) =>
+          b.id === obj.id ? { ...b, ...obj } : b
+        );
+        return getNextBills(updatedBills);
+      });
+      if (showToast)
+        toast.success((obj as Bill).destiny + " was successfully updated!");
+    } else {
+      setCategories((prevState) => {
+        const updatedCategories = prevState.map((c) =>
+          c.id === obj.id ? { ...c, ...obj } : c
+        );
+        return updatedCategories;
+      });
+      if (showToast)
+        toast.success((obj as Category).name + " was successfully updated!");
+    }
   }
 
-  function deleteTransaction(transaction: Transaction) {
-    setTransactions((prevState) => {
-      const updatedTransactions = prevState.filter(
-        (t) => t.id !== transaction.id
-      );
-      return getRecentTransactions(updatedTransactions);
-    });
-    toast.success(transaction.destiny + " was successfully deleted!");
+  function CustomNotification({ closeToast }: ToastContentProps) {
+    return (
+      <div className="flex flex-col gap-2 w-full">
+        Are you sure you want to delete it?
+        <div className="flex w-full gap-2">
+          <button
+            className="font-bold rounded-lg bg-slate-500 p-2 text-center w-1/2"
+            onClick={closeToast}
+          >
+            Cancel
+          </button>
+          <button
+            className="font-bold rounded-lg bg-red-500 p-2 text-center w-1/2"
+            onClick={() => closeToast("delete")}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    );
   }
 
-  function addBill(bill: Bill) {
-    setBills((prevState) => {
-      return getNextBills([...prevState, bill]);
+  function deleteObj(
+    obj: Transaction | Bill | Category,
+    showToast: boolean = true
+  ) {
+    toast(CustomNotification, {
+      closeButton: false,
+      position: "bottom-center",
+      autoClose: false,
+      draggable: false,
+      onClose(reason) {
+        switch (reason) {
+          case "delete":
+            if ("date" in obj) {
+              setTransactions((prevState) => {
+                return getRecentTransactions(
+                  prevState.filter((t) => t.id !== obj.id)
+                );
+              });
+              if (showToast)
+                toast.success(
+                  (obj as Transaction).destiny + " was successfully deleted!"
+                );
+            } else if ("paymentDay" in obj) {
+              setBills((prevState) => {
+                return getNextBills(prevState.filter((b) => b.id !== obj.id));
+              });
+              if (showToast)
+                toast.success(
+                  (obj as Bill).destiny + " was successfully deleted!"
+                );
+            } else {
+              setCategories((prevState) => {
+                return prevState.filter((cat) => cat.id !== obj.id);
+              });
+              if (showToast)
+                toast.success(
+                  (obj as Category).name + " was successfully deleted!"
+                );
+            }
+        }
+      },
     });
-    toast.success(bill.destiny + " was successfully added!");
-  }
-
-  function updateBill(bill: Bill, showToast: boolean = true) {
-    setBills((prevState) => {
-      const updatedBills = prevState.map((b) =>
-        b.id === bill.id ? { ...b, ...bill } : b
-      );
-      return getNextBills(updatedBills);
-    });
-    if (showToast) toast.success(bill.destiny + " was successfully updated!");
-  }
-
-  function deleteBill(bill: Bill) {
-    setBills((prevState) => {
-      const updatedBills = prevState.filter((b) => b.id !== bill.id);
-      return getNextBills(updatedBills);
-    });
-    toast.success(bill.destiny + " was successfully deleted!");
-  }
-
-  function addCategory(category: Category) {
-    setCategories((prevState) => {
-      return [...prevState, category];
-    });
-    toast.success(category.name + " was successfully added!");
-  }
-
-  function updateCategory(category: Category) {
-    setCategories((prevState) => {
-      const updatedCategories = prevState.map((c) =>
-        c.id === category.id ? { ...c, ...category } : c
-      );
-      return updatedCategories;
-    });
-    toast.success(category.name + " was successfully updated!");
-  }
-
-  function deleteCategory(category: Category) {
-    setCategories((prevState) => {
-      const updatedCategories = prevState.filter(
-        (cat) => cat.id !== category.id
-      );
-      return updatedCategories;
-    });
-    toast.success(category.name + " was successfully deleted!");
   }
 
   const values: DataContextType = {
@@ -183,20 +227,14 @@ export default function DataContextProvider({ children }: Props) {
     setShowTransactionOrBill,
     transactions,
     recentTransactions,
-    addTransaction,
-    updateTransaction,
-    deleteTransaction,
     bills,
     nextBills,
-    addBill,
-    updateBill,
-    deleteBill,
     categories,
-    addCategory,
-    updateCategory,
-    deleteCategory,
     dataCurrentMonth,
     dataPerYear,
+    addObj,
+    updateObj,
+    deleteObj,
   };
 
   return <DataContext.Provider value={values}>{children}</DataContext.Provider>;
