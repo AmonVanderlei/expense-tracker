@@ -156,6 +156,7 @@ export default function TransactionBillModal({
           </div>
         ) : (
           <form onSubmit={handleSave} className="flex flex-col gap-4 mt-4">
+            {/* Form type */}
             <select
               name="selectType"
               className="text-slate-800 rounded-md p-2 w-full"
@@ -166,6 +167,7 @@ export default function TransactionBillModal({
               <option value="expense">Expense</option>
             </select>
 
+            {/* Name */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="name">
                 {selectedObj.type === "income"
@@ -183,12 +185,15 @@ export default function TransactionBillModal({
               />
             </div>
 
+            {/* Amount */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="amount">
                 Amount
               </label>
               <input
                 type="number"
+                min={0}
+                step={0.01}
                 name="amount"
                 className="p-2 rounded-xl bg-slate-700 border"
                 ref={amountRef}
@@ -198,6 +203,7 @@ export default function TransactionBillModal({
               />
             </div>
 
+            {/* Payment Day */}
             {!isTransaction(selectedObj) && (
               <div className="flex flex-col gap-1">
                 <label className="font-bold text-sm" htmlFor="paymentDay">
@@ -205,6 +211,8 @@ export default function TransactionBillModal({
                 </label>
                 <input
                   type="number"
+                  min={1}
+                  max={31}
                   name="paymentDay"
                   className="p-2 rounded-xl bg-slate-700 border"
                   ref={paymentDayRef}
@@ -215,6 +223,7 @@ export default function TransactionBillModal({
               </div>
             )}
 
+            {/* Category */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="category">
                 Select category
@@ -233,6 +242,7 @@ export default function TransactionBillModal({
               </select>
             </div>
 
+            {/* Action Buttons */}
             <div className="flex gap-4">
               <button
                 type="submit"

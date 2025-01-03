@@ -100,6 +100,7 @@ export default function Add() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-11/12">
+        {/* Name */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="name">
             {type === "Income" ? "Payment sender" : "Payment receiver"}
@@ -114,6 +115,7 @@ export default function Add() {
           />
         </div>
 
+        {/* Payment day */}
         {show === "Bill" && (
           <div className="flex flex-col gap-1">
             <label className="font-bold text-sm" htmlFor="paymentDay">
@@ -121,6 +123,8 @@ export default function Add() {
             </label>
             <input
               type="number"
+              min={1}
+              max={31}
               name="paymentDay"
               className="p-2 rounded-xl bg-slate-700 border"
               ref={paymentDayRef}
@@ -130,12 +134,15 @@ export default function Add() {
           </div>
         )}
 
+        {/* Amount */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="amount">
             Amount of money
           </label>
           <input
             type="number"
+            min={0}
+            step={0.01}
             name="amount"
             className="p-2 rounded-xl bg-slate-700 border"
             ref={amountRef}
@@ -144,6 +151,7 @@ export default function Add() {
           />
         </div>
 
+        {/* Category */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="category">
             Select category
@@ -163,6 +171,7 @@ export default function Add() {
           </select>
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full font-bold rounded-lg bg-slate-500 p-2 text-center"
