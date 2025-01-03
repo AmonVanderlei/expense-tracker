@@ -3,11 +3,11 @@ import {
   createContext,
   Dispatch,
   SetStateAction,
+  useContext,
   useEffect,
   useState,
 } from "react";
 import {
-  getUser,
   getBalance,
   getDataPerMonth,
   getRecentTransactions,
@@ -18,16 +18,14 @@ import {
   deleteDocument,
   updateDocument,
 } from "@/utils/data";
-import { USERS } from "@/utils/constants";
 import { YearData, MonthData } from "@/types/Data";
-import User from "@/types/User";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import { toast, ToastContentProps } from "react-toastify";
+import { AuthContext } from "./authContext";
 
 export interface DataContextType {
-  user: User;
   balance: number;
   showTransactionOrBill: string;
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
@@ -50,6 +48,12 @@ interface Props {
 }
 
 export default function DataContextProvider({ children }: Props) {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user } = authContext;
+
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
@@ -70,11 +74,13 @@ export default function DataContextProvider({ children }: Props) {
     useState<string>("transactions");
 
   useEffect(() => {
+    if (!user) return;
+
     const fetchData = async () => {
       try {
-        const transactionsData = await getDocuments("transactions");
-        const billsData = await getDocuments("bills");
-        const categoriesData = await getDocuments("categories");
+        const transactionsData = await getDocuments("transactions", user.uid);
+        const billsData = await getDocuments("bills", user.uid);
+        const categoriesData = await getDocuments("categories", user.uid);
 
         setTransactions(
           getRecentTransactions(transactionsData as Transaction[])
@@ -87,9 +93,7 @@ export default function DataContextProvider({ children }: Props) {
     };
 
     fetchData();
-  }, []);
-
-  const user = getUser(USERS);
+  }, [user]);
 
   useEffect(() => {
     const updateData = async () => {
@@ -286,7 +290,6 @@ export default function DataContextProvider({ children }: Props) {
   }
 
   const values: DataContextType = {
-    user,
     balance,
     showTransactionOrBill,
     setShowTransactionOrBill,

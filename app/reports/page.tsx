@@ -1,8 +1,10 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import ExpensesChart from "@/components/ExpensesChart";
 import IncomeChart from "@/components/IncomeChart";
 import { DataContext } from "@/contexts/dataContext";
+import { AuthContext } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 const months = [
   "January",
@@ -32,6 +34,27 @@ export default function Reports() {
   const years = Array.from(
     new Set(transactions.map((t) => t.date.getFullYear()))
   );
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user, loading } = authContext;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth");
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grow w-full h-full flex items-center justify-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grow flex flex-col items-center gap-10 pb-20">

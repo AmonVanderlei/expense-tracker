@@ -1,22 +1,37 @@
 "use client";
 import Image from "next/image";
-import profilePic from "@/public/blank-profile-picture.png";
 import { MdOutlineBookmarkAdd } from "react-icons/md";
 import { LiaInfoSolid } from "react-icons/lia";
 import { VscSignOut } from "react-icons/vsc";
-import { useContext, useState } from "react";
-import { DataContext } from "@/contexts/dataContext";
+import { useContext, useEffect, useState } from "react";
 import CategoryModal from "@/components/CategoryModal";
+import { AuthContext } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 export default function Profile() {
-  const context = useContext(DataContext);
+  const context = useContext(AuthContext);
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { user } = context;
+  const { user, loading, logout } = context;
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth");
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grow w-full h-full flex items-center justify-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
   return (
     <div className="grow">
       <CategoryModal show={modalIsOpen} onClose={setModalIsOpen} />
@@ -28,17 +43,15 @@ export default function Profile() {
       {/* User Info */}
       <div className="flex flex-col items-center relative bg-slate-900 mt-28 pb-4 rounded-t-2xl">
         <Image
-          src={profilePic}
+          src={user?.photoURL as string}
           alt="Profile picture"
           width={150}
           height={150}
           className="rounded-full -translate-y-1/2"
         />
         <div className="absolute bottom-4 w-full flex flex-col items-center">
-          <p className="text-2xl font-bold">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-base">{user.email}</p>
+          <p className="text-2xl font-bold">{user?.displayName}</p>
+          <p className="text-base">{user?.email}</p>
         </div>
       </div>
 
@@ -61,7 +74,7 @@ export default function Profile() {
         >
           <MdOutlineBookmarkAdd className="text-3xl" /> Manage Category
         </li>
-        <li className="flex gap-2">
+        <li className="flex gap-2" onClick={logout}>
           <VscSignOut className="text-3xl" />
           Log Out
         </li>

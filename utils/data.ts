@@ -2,7 +2,6 @@ import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import { ExpensesPerCategory, MonthData, YearData } from "@/types/Data";
 import Transaction from "@/types/Transaction";
-import User from "@/types/User";
 import {
   addDoc,
   collection,
@@ -10,6 +9,8 @@ import {
   doc,
   deleteDoc,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
 import { db } from "@/utils/firebase/index";
 
@@ -53,11 +54,14 @@ export async function deleteDocument(col: string, objId: string) {
 }
 
 export async function getDocuments(
-  col: string
+  col: string,
+  uid: string
 ): Promise<Transaction[] | Bill[] | Category[]> {
   try {
     const collectionRef = collection(db, col);
-    const docsSnap = await getDocs(collectionRef);
+    const q = query(collectionRef, where("uid", "==", uid))
+
+    const docsSnap = await getDocs(q);
 
     if (col === "transactions") {
       return docsSnap.docs.map((doc) => {
@@ -236,13 +240,6 @@ export function getDataPerMonth(
     monthStr,
     expensesPerCategory,
   };
-}
-
-export function getUser(users: User[]): User {
-  const currentUser = users.filter(
-    (u: User) => u.email === "amon.chalegre@gmail.com" && u.password === "12345"
-  )[0];
-  return currentUser;
 }
 
 export function getRecentTransactions(

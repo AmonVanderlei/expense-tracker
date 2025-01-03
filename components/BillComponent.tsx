@@ -1,4 +1,5 @@
 "use client";
+import { AuthContext } from "@/contexts/authContext";
 import { DataContext } from "@/contexts/dataContext";
 import Bill from "@/types/Bill";
 import Transaction from "@/types/Transaction";
@@ -23,6 +24,11 @@ export default function BillComponent({
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const { categories, addObj, updateObj, setShowTransactionOrBill } = context;
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user } = authContext;
 
   function bill2transactionHandler(bill: Bill) {
     if (bill.type === "income") {
@@ -33,6 +39,7 @@ export default function BillComponent({
         date: new Date(),
         amount: bill.amount,
         categoryId: bill.categoryId,
+        uid: user?.uid as string,
       });
     } else {
       addObj({
@@ -42,6 +49,7 @@ export default function BillComponent({
         date: new Date(),
         amount: bill.amount,
         categoryId: bill.categoryId,
+        uid: user?.uid as string,
       });
     }
 
@@ -58,6 +66,7 @@ export default function BillComponent({
       ),
       amount: bill.amount,
       categoryId: bill.categoryId,
+      uid: user?.uid as string,
     });
 
     setShowTransactionOrBill("transactions");

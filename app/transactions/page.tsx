@@ -1,6 +1,6 @@
 "use client";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import clsx from "clsx";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import BillsComponent from "@/components/BillsComponent";
@@ -8,6 +8,8 @@ import { DataContext } from "@/contexts/dataContext";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import TransactionBillModal from "@/components/TransactionBillModal";
+import { useRouter } from "next/navigation";
+import { AuthContext } from "@/contexts/authContext";
 
 export default function Transactions() {
   const context = useContext(DataContext);
@@ -27,6 +29,27 @@ export default function Transactions() {
   const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
     null
   );
+
+  const authContext = useContext(AuthContext);
+    if (!authContext) {
+      throw new Error("AuthContext must be used within a AuthContextProvider");
+    }
+  const { user, loading } = authContext;
+  const router = useRouter();
+  
+    useEffect(() => {
+      if (!loading && !user) {
+        router.push("/auth");
+      }
+    }, [loading, user, router]);
+  
+    if (loading || !user) {
+      return (
+        <div className="grow w-full h-full flex items-center justify-center">
+          <p className="text-xl">Loading...</p>
+        </div>
+      );
+    }
 
   return (
     <div className="grow flex flex-col items-center gap-6 pb-20">

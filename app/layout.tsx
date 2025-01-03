@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import DataContextProvider from "@/contexts/dataContext";
 import { ToastContainer } from "react-toastify";
+import AuthContextProvider from "@/contexts/authContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +46,9 @@ export default function RootLayout({
           pauseOnHover={false}
           theme="dark"
         />
-        <DataContextProvider>{children}</DataContextProvider>
+        <AuthContextProvider>
+          <DataContextProvider>{children}</DataContextProvider>
+        </AuthContextProvider>
         <Navigation></Navigation>
       </body>
     </html>

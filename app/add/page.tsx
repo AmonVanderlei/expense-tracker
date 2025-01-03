@@ -1,16 +1,17 @@
 "use client";
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import { DataContext } from "@/contexts/dataContext";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/contexts/authContext";
 
 export default function Add() {
   const context = useContext(DataContext);
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { user, addObj, categories } = context;
+  const { addObj, categories } = context;
 
   const router = useRouter();
 
@@ -22,12 +23,18 @@ export default function Add() {
   const amountRef = useRef<HTMLInputElement | null>(null);
   const paymentDayRef = useRef<HTMLInputElement | null>(null);
 
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user, loading } = authContext;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const name = nameRef.current?.value.trim();
     const amount = amountRef.current?.value.trim();
 
-    if (!name || !amount || !type || !user || !categoryId) {
+    if (!name || !amount || !type || !categoryId) {
       toast.warning("Please fill out all fields.");
       return;
     }
@@ -40,6 +47,7 @@ export default function Add() {
         date: new Date(),
         amount: +amount,
         categoryId: categoryId,
+        uid: user?.uid as string,
       });
     } else if (show === "Bill") {
       const paymentDay = paymentDayRef.current?.value.trim();
@@ -57,11 +65,26 @@ export default function Add() {
         nextPayment: new Date(),
         amount: +amount,
         categoryId: categoryId,
+        uid: user?.uid as string,
       });
     }
 
     router.push("/");
   };
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth");
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grow w-full h-full flex items-center justify-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grow flex flex-col gap-4 items-center">

@@ -7,4 +7,5 @@ export default interface Bill {
   nextPayment: Date;
   amount: number;
   categoryId: string;
+  uid: string;
 }

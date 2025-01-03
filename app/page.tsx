@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import profilePic from "@/public/blank-profile-picture.png";
 import clsx from "clsx";
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -8,11 +7,13 @@ import Link from "next/link";
 import TransactionsComponent from "@/components/TransactionsComponent";
 import Budget from "@/components/Budget";
 import BillsComponent from "@/components/BillsComponent";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataContext } from "@/contexts/dataContext";
 import TransactionBillModal from "@/components/TransactionBillModal";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
+import { AuthContext } from "@/contexts/authContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const context = useContext(DataContext);
@@ -20,7 +21,6 @@ export default function Home() {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const {
-    user,
     dataCurrentMonth,
     balance,
     recentTransactions,
@@ -29,10 +29,32 @@ export default function Home() {
     setShowTransactionOrBill,
   } = context;
 
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user, loading } = authContext;
+
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
   const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
     null
   );
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth");
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grow w-full h-full flex items-center justify-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grow flex flex-col items-center gap-10 pb-32">
@@ -49,7 +71,7 @@ export default function Home() {
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
           <Image
-            src={profilePic}
+            src={user?.photoURL as string}
             alt="Profile picture"
             width={40}
             height={40}
@@ -57,9 +79,7 @@ export default function Home() {
           />
           <div className="flex flex-col">
             <p className="text-sm">Hello,</p>
-            <p className="text-lg font-bold">
-              {user.firstName} {user.lastName}
-            </p>
+            <p className="text-lg font-bold">{user?.displayName}</p>
           </div>
         </div>
       </div>
@@ -108,10 +128,7 @@ export default function Home() {
       </div>
 
       {/* Monthly Budget */}
-      <Budget
-        budget={user.monthlyBudget}
-        expenses={dataCurrentMonth.expenses}
-      />
+      <Budget budget={5000} expenses={dataCurrentMonth.expenses} />
 
       {/* Upcoming Bills */}
       {nextBills?.length > 0 ? (

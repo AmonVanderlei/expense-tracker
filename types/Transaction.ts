@@ -5,4 +5,5 @@ export default interface Transaction {
   date: Date;
   amount: number;
   categoryId: string;
+  uid: string;
 }

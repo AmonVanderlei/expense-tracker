@@ -4,6 +4,7 @@ import Modal from "@/components/ModalComponent";
 import { DataContext } from "@/contexts/dataContext";
 import Category from "@/types/Category";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/contexts/authContext";
 
 interface Props {
   show: boolean;
@@ -16,6 +17,12 @@ export default function CategoryModal({ show, onClose }: Props) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const { categories, addObj, updateObj, deleteObj } = context;
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user } = authContext;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -42,6 +49,7 @@ export default function CategoryModal({ show, onClose }: Props) {
         id: "",
         color,
         name,
+        uid: user?.uid as string,
       });
     }
 
