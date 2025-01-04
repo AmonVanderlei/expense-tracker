@@ -18,7 +18,7 @@ export default function Profile() {
   async function handleLogin() {
     const id = await googleLoginHandler();
     if (id) {
-      router.back();
+      router.push("/");
     } else {
       toast.error("Try again! Something wrong happened while logging in.");
     }
@@ -28,7 +28,7 @@ export default function Profile() {
     <div className="grow flex flex-col items-center justify-between h-[80vh]">
       <div className="flex flex-col items-center w-11/12 gap-16 mt-20">
         <img
-          src="favicon.ico"
+          src="android-chrome-512x512.png"
           alt="Logo"
           className="max-w-40 rounded-full border-4 border-slate-900"
         />
