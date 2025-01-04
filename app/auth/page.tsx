@@ -1,7 +1,7 @@
 "use client";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { LiaInfoSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
@@ -11,7 +11,7 @@ export default function Profile() {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { googleLoginHandler } = authContext;
+  const { googleLoginHandler, user, loading } = authContext;
 
   const router = useRouter();
 
@@ -23,6 +23,12 @@ export default function Profile() {
       toast.error("Try again! Something wrong happened while logging in.");
     }
   }
+
+  useEffect(() => {
+    if (user) {
+      router.push("/");
+    }
+  }, [loading, user, router]);
 
   return (
     <div className="grow flex flex-col items-center justify-between h-[80vh]">
