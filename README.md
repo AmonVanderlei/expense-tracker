@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1>Expense Tracker</h1>  
+<h4>Manage your finances easily and smartly.</h4>  
 
-## Getting Started
+<p align="center">  
+<image src="public/android-chrome-512x512.png" width="150"/></br>  
+</p>  
 
-First, run the development server:
+<p align="center">  
+<a href="#about-memo">About</a>&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;  
+<a href="#features-sparkles">Features</a>&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;  
+<a href="#how-to-contribute-🤔">How to Contribute</a>&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;  
+<a href="#license-scroll">License</a>  
+</p>  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">  
+<img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/AmonVanderlei/Expense-Tracker" />  
+<img alt="Github License" src="https://img.shields.io/github/license/AmonVanderlei/Expense-Tracker" />  
+<img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/AmonVanderlei/Expense-Tracker">  
+<img alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/AmonVanderlei/Expense-Tracker" />  
+<img alt="GitHub Issues" src="https://img.shields.io/github/issues/AmonVanderlei/Expense-Tracker" />  
+<img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/AmonVanderlei/Expense-Tracker" />  
+</p>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Read Portuguese version [HERE](README-pt-br.md)  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## About :memo:  
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Expense Tracker is an intuitive app designed to help you organize your personal finances. With features like transaction tracking, budget management, and bill monitoring, it helps users achieve financial goals and gain better control of their money.  
 
-## Learn More
+## Features :sparkles:  
 
-To learn more about Next.js, take a look at the following resources:
+- Record and categorize transactions (income/expenses).  
+- Track monthly budgets and spending habits.  
+- Generate detailed spending reports with charts.  
+- Secure authentication using Firebase.  
+- Progressive Web App (PWA) for an app-like experience.  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## How to Contribute 🤔
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Fork this repository;  
+2. Create a branch with your feature: `git checkout -b my-feature`;  
+3. Commit your changes: `git commit -m 'feat: my new feature'`;  
+4. Push to your branch: `git push origin my-feature`;  
+5. Create a new Pull Request.  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License :scroll:  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> This project is under the MIT license. See the archive [LICENSE](LICENSE) for more details.  
+
+---
+
+##### Made by Amon Vanderlei :wave:  
