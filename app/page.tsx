@@ -70,13 +70,15 @@ export default function Home() {
       {/* User Info */}
       <div className="w-full flex justify-between px-3 pt-3">
         <div className="flex items-center gap-3">
-          <Image
-            src={user?.photoURL as string}
-            alt="Profile picture"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
+          {user?.photoURL && (
+            <Image
+              src={user?.photoURL as string}
+              alt="Profile picture"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+          )}
           <div className="flex flex-col">
             <p className="text-sm">Hello,</p>
             <p className="text-lg font-bold">{user?.displayName}</p>
@@ -128,7 +130,7 @@ export default function Home() {
       </div>
 
       {/* Monthly Budget */}
-      <Budget budget={5000} expenses={dataCurrentMonth.expenses} />
+      <Budget expenses={dataCurrentMonth.expenses} />
 
       {/* Upcoming Bills */}
       {nextBills?.length > 0 ? (

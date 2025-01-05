@@ -1,4 +1,11 @@
-import { useRef, useState, useContext, Dispatch, SetStateAction } from "react";
+import {
+  useRef,
+  useState,
+  useContext,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
 import Modal from "@/components/ModalComponent";
 import { DataContext } from "@/contexts/dataContext";
 import Transaction from "@/types/Transaction";
@@ -27,7 +34,9 @@ export default function TransactionBillModal({
   const { categories, updateObj, deleteObj } = context;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [type, setType] = useState<"income" | "expense">("income");
+  const [type, setType] = useState<"income" | "expense">(
+    selectedObj?.type || "income"
+  );
   const [categoryId, setCategoryId] = useState<string>(
     selectedObj?.categoryId.toString() || ""
   );
@@ -93,6 +102,12 @@ export default function TransactionBillModal({
     setSelectedObj(null);
     onClose(false);
   };
+
+  useEffect(() => {
+    if (selectedObj) {
+      setType(selectedObj.type);
+    }
+  }, [selectedObj]);
 
   return (
     <Modal

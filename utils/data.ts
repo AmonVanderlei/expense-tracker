@@ -13,10 +13,11 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "@/utils/firebase/index";
+import Budget from "@/types/Budget";
 
 export async function addDocument(
   col: string,
-  obj: Transaction | Bill | Category
+  obj: Transaction | Bill | Category | Budget
 ) {
   try {
     const { id, ...objWithoutId } = obj;
@@ -31,7 +32,7 @@ export async function addDocument(
 
 export async function updateDocument(
   col: string,
-  obj: Transaction | Bill | Category
+  obj: Transaction | Bill | Category | Budget
 ) {
   try {
     const docRef = doc(db, col, obj.id);

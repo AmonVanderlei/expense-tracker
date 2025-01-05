@@ -42,13 +42,15 @@ export default function Profile() {
 
       {/* User Info */}
       <div className="flex flex-col items-center relative bg-slate-900 mt-28 pb-4 rounded-t-2xl">
-        <Image
-          src={user?.photoURL as string}
-          alt="Profile picture"
-          width={150}
-          height={150}
-          className="rounded-full -translate-y-1/2"
-        />
+        {user?.photoURL && (
+          <Image
+            src={user?.photoURL as string}
+            alt="Profile picture"
+            width={150}
+            height={150}
+            className="rounded-full -translate-y-1/2"
+          />
+        )}
         <div className="absolute bottom-4 w-full flex flex-col items-center">
           <p className="text-2xl font-bold">{user?.displayName}</p>
           <p className="text-base">{user?.email}</p>

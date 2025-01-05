@@ -24,9 +24,11 @@ import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import { toast, ToastContentProps } from "react-toastify";
 import { AuthContext } from "./authContext";
+import Budget from "@/types/Budget";
 
 export interface DataContextType {
   balance: number;
+  budget: Budget;
   showTransactionOrBill: string;
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
   transactions: Transaction[];
@@ -36,8 +38,8 @@ export interface DataContextType {
   categories: Category[];
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
-  addObj: (obj: Transaction | Bill | Category) => void;
-  updateObj: (obj: Transaction | Bill | Category) => void;
+  addObj: (obj: Transaction | Bill | Category | Budget) => void;
+  updateObj: (obj: Transaction | Bill | Category | Budget) => void;
   deleteObj: (obj: Transaction | Bill | Category) => void;
 }
 
@@ -62,6 +64,11 @@ export default function DataContextProvider({ children }: Props) {
   const [bills, setBills] = useState<Bill[]>([]);
   const [nextBills, setNextBills] = useState<Bill[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [budget, setBudget] = useState<Budget>({
+    id: "",
+    bdgt: 0,
+    uid: user?.uid as string | "",
+  });
   const [dataCurrentMonth, setDataCurrentMonth] = useState<MonthData>({
     income: 0,
     expenses: 0,
@@ -118,7 +125,7 @@ export default function DataContextProvider({ children }: Props) {
     updateData();
   }, [transactions, bills, categories]);
 
-  async function addObj(obj: Transaction | Bill | Category) {
+  async function addObj(obj: Transaction | Bill | Category | Budget) {
     const { id, ...objWithoutId } = obj;
     if ("date" in obj) {
       // Add to firebase
@@ -150,6 +157,20 @@ export default function DataContextProvider({ children }: Props) {
           { id: newId, ...objWithoutId } as Bill,
         ]);
       });
+    } else if ("bdgt" in obj) {
+      // Add to firebase
+      const newId = await toast.promise(addDocument("budgets", obj), {
+        pending: "Adding budget...",
+        success: "Budget added!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Add locally
+      setBudget({
+        id: newId,
+        bdgt: obj.bdgt,
+        uid: user?.uid as string,
+      });
     } else {
       // Add to firebase
       const newId = await toast.promise(addDocument("categories", obj), {
@@ -165,7 +186,7 @@ export default function DataContextProvider({ children }: Props) {
     }
   }
 
-  function updateObj(obj: Transaction | Bill | Category) {
+  function updateObj(obj: Transaction | Bill | Category | Budget) {
     if ("date" in obj) {
       // Update on firebase
       toast.promise(updateDocument("transactions", obj), {
@@ -196,6 +217,16 @@ export default function DataContextProvider({ children }: Props) {
         );
         return getNextBills(updatedBills);
       });
+    } else if ("bdgt" in obj) {
+      // Update on firebase
+      toast.promise(updateDocument("budgets", obj), {
+        pending: "Updating budget...",
+        success: "Budget updated!",
+        error: "Sorry! Something wrong happened.",
+      });
+
+      // Update locally
+      setBudget(obj);
     } else {
       setCategories((prevState) => {
         // Update on firebase
@@ -291,6 +322,7 @@ export default function DataContextProvider({ children }: Props) {
 
   const values: DataContextType = {
     balance,
+    budget,
     showTransactionOrBill,
     setShowTransactionOrBill,
     transactions,
