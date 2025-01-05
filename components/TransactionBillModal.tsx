@@ -45,6 +45,12 @@ export default function TransactionBillModal({
   const amountRef = useRef<HTMLInputElement | null>(null);
   const paymentDayRef = useRef<HTMLInputElement | null>(null);
 
+  useEffect(() => {
+    if (selectedObj) {
+      setType(selectedObj.type);
+    }
+  }, [selectedObj]);
+
   if (!selectedObj) return null;
 
   const isTransaction = (obj: Transaction | Bill): obj is Transaction => {
@@ -102,12 +108,6 @@ export default function TransactionBillModal({
     setSelectedObj(null);
     onClose(false);
   };
-
-  useEffect(() => {
-    if (selectedObj) {
-      setType(selectedObj.type);
-    }
-  }, [selectedObj]);
 
   return (
     <Modal

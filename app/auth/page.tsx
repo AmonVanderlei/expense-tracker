@@ -5,6 +5,7 @@ import { useContext, useEffect } from "react";
 import { LiaInfoSolid } from "react-icons/lia";
 import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
+import Image from "next/image";
 
 export default function Profile() {
   const authContext = useContext(AuthContext);
@@ -33,7 +34,7 @@ export default function Profile() {
   return (
     <div className="grow flex flex-col items-center justify-between h-[80vh]">
       <div className="flex flex-col items-center w-11/12 gap-16 mt-20">
-        <img
+        <Image
           src="android-chrome-512x512.png"
           alt="Logo"
           className="max-w-40 rounded-full border-4 border-slate-900"
