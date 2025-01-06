@@ -88,12 +88,14 @@ export default function DataContextProvider({ children }: Props) {
         const transactionsData = await getDocuments("transactions", user.uid);
         const billsData = await getDocuments("bills", user.uid);
         const categoriesData = await getDocuments("categories", user.uid);
+        const budgetsData = await getDocuments("budgets", user.uid);
 
         setTransactions(
           getRecentTransactions(transactionsData as Transaction[])
         );
         setBills(getNextBills(billsData as Bill[]));
         setCategories(categoriesData as Category[]);
+        setBudget(budgetsData[0] as Budget);
       } catch (error) {
         toast.error("Error fetching data from Firebase:" + error);
       }

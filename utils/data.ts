@@ -57,10 +57,10 @@ export async function deleteDocument(col: string, objId: string) {
 export async function getDocuments(
   col: string,
   uid: string
-): Promise<Transaction[] | Bill[] | Category[]> {
+): Promise<Transaction[] | Bill[] | Category[] | Budget[]> {
   try {
     const collectionRef = collection(db, col);
-    const q = query(collectionRef, where("uid", "==", uid))
+    const q = query(collectionRef, where("uid", "==", uid));
 
     const docsSnap = await getDocs(q);
 
@@ -87,6 +87,13 @@ export async function getDocuments(
           amount: +doc.data().amount,
           categoryId: doc.data().categoryId,
         } as Bill;
+      });
+    } else if (col == "budgets") {
+      return docsSnap.docs.map((doc) => {
+        return {
+          id: doc.id,
+          bdgt: doc.data().bdgt,
+        } as Budget;
       });
     } else {
       return docsSnap.docs.map((doc) => {
