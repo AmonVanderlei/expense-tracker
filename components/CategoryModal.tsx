@@ -22,7 +22,7 @@ export default function CategoryModal({ show, onClose }: Props) {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user } = authContext;
+  const { user, messages } = authContext;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -38,7 +38,7 @@ export default function CategoryModal({ show, onClose }: Props) {
     const color = colorRef.current?.value.trim();
 
     if (!name || !color) {
-      toast.warning("Please fill out all fields.");
+      toast.warning(messages.form.fillAll);
       return;
     }
 
@@ -74,7 +74,9 @@ export default function CategoryModal({ show, onClose }: Props) {
   return (
     <Modal show={show} onClose={onClose}>
       <div className="flex flex-col gap-4">
-        <h2 className="text-xl font-bold">Manage Categories</h2>
+        <h2 className="text-xl font-bold">
+          {messages.other.manage} {messages.other.categories}
+        </h2>
 
         {!isEditing ? (
           <div className="flex flex-col gap-4">
@@ -107,14 +109,14 @@ export default function CategoryModal({ show, onClose }: Props) {
               className="font-bold rounded-lg bg-slate-500 p-2 text-center"
               onClick={handleCreate}
             >
-              Add New Category
+              {messages.button.add} {messages.other.category}
             </button>
           </div>
         ) : (
           <form onSubmit={handleSave} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="name">
-                Category Name
+                {messages.other.category}
               </label>
               <input
                 type="text"
@@ -122,14 +124,14 @@ export default function CategoryModal({ show, onClose }: Props) {
                 className="p-2 rounded-xl bg-slate-700 border"
                 ref={nameRef}
                 defaultValue={selectedCategory?.name || ""}
-                placeholder="Enter category name"
+                placeholder={messages.form.type}
                 required
               />
             </div>
 
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="color">
-                Color
+                {messages.other.color}
               </label>
               <input
                 name="color"
@@ -137,7 +139,7 @@ export default function CategoryModal({ show, onClose }: Props) {
                 ref={colorRef}
                 type="color"
                 defaultValue={selectedCategory?.color || ""}
-                placeholder="Enter category color"
+                placeholder={messages.form.select}
                 required
               />
             </div>
@@ -147,7 +149,9 @@ export default function CategoryModal({ show, onClose }: Props) {
                 type="submit"
                 className="w-2/3 font-bold rounded-lg bg-slate-500 p-2 text-center"
               >
-                {selectedCategory ? "Save Changes" : "Add Category"}
+                {selectedCategory
+                  ? messages.button.save
+                  : messages.button.add + " " + messages.other.category}
               </button>
               <button
                 type="button"
@@ -157,7 +161,7 @@ export default function CategoryModal({ show, onClose }: Props) {
                   setSelectedCategory(null);
                 }}
               >
-                Cancel
+                {messages.button.cancel}
               </button>
             </div>
           </form>

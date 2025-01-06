@@ -28,7 +28,7 @@ export default function BillComponent({
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user } = authContext;
+  const { user, messages } = authContext;
 
   function bill2transactionHandler(bill: Bill) {
     if (bill.type === "income") {
@@ -71,9 +71,9 @@ export default function BillComponent({
 
     setShowTransactionOrBill("transactions");
     if (bill.type === "income") {
-      toast.success(bill.destiny + " was successfully received!");
+      toast.success(bill.destiny + messages.success.received);
     } else {
-      toast.success(bill.destiny + " was successfully paid!");
+      toast.success(bill.destiny + messages.success.paid);
     }
   }
 
@@ -90,9 +90,11 @@ export default function BillComponent({
         >
           <div>
             <h1 className="text-lg font-semibold">{obj.destiny}</h1>
-            <p className="text-sm">Payment Day: {obj.paymentDay}</p>
+            <p className="text-sm">
+              {messages.form.payDay}: {obj.paymentDay}
+            </p>
           </div>
-          <p>{category ? category.name : "Sem Categoria"}</p>
+          <p>{category ? category.name : messages.other.noCategory}</p>
           <p
             className={clsx(
               obj.type == "income" && "text-green-500",
@@ -110,7 +112,7 @@ export default function BillComponent({
               bill2transactionHandler(obj);
             }}
           >
-            Receive
+            {messages.button.receive}
           </button>
         ) : (
           <button
@@ -120,7 +122,7 @@ export default function BillComponent({
               bill2transactionHandler(obj);
             }}
           >
-            Pay
+            {messages.button.pay}
           </button>
         )}
       </div>

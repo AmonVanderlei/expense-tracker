@@ -1,9 +1,10 @@
+import { AuthContext } from "@/contexts/authContext";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
 import { formatCurrency } from "@/utils/formatCurrency";
 import clsx from "clsx";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 
 interface Props {
   obj: Transaction;
@@ -18,6 +19,11 @@ export default function Transactions({
   setSelectedObj,
   openModal,
 }: Props) {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
   const category = categories.find((cat) => cat.id === obj.categoryId);
   return (
     <div
@@ -31,7 +37,7 @@ export default function Transactions({
         <h1 className="text-lg font-semibold">{obj.destiny}</h1>
         <p className="text-sm">{obj.date.toDateString()}</p>
       </div>
-      <p>{category ? category.name : "Sem Categoria"}</p>
+      <p>{category ? category.name : messages.other.noCategory}</p>
       <p
         className={clsx(
           obj.type == "income" && "text-green-500",

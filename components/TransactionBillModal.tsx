@@ -13,6 +13,7 @@ import Bill from "@/types/Bill";
 import clsx from "clsx";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { toast } from "react-toastify";
+import { AuthContext } from "@/contexts/authContext";
 
 interface Props {
   show: boolean;
@@ -32,6 +33,12 @@ export default function TransactionBillModal({
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const { categories, updateObj, deleteObj } = context;
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [type, setType] = useState<"income" | "expense">(
@@ -64,7 +71,7 @@ export default function TransactionBillModal({
     const amount = amountRef.current?.value.trim();
 
     if (!name || !amount || !type || !categoryId) {
-      toast.warning("Please fill out all fields.");
+      toast.warning(messages.form.fillAll);
       return;
     }
 
@@ -81,7 +88,7 @@ export default function TransactionBillModal({
     } else {
       const paymentDay = paymentDayRef.current?.value.trim();
       if (!paymentDay) {
-        toast.warning("Please provide a payment day.");
+        toast.warning(messages.form.paymentDay);
         return;
       }
 
@@ -118,9 +125,11 @@ export default function TransactionBillModal({
     >
       <div className="flex flex-col">
         <h2 className="text-xl font-bold text-center">
-          {isEditing ? "Edit " : ""}
-          {isTransaction(selectedObj) ? "Transaction" : "Bill"}
-          {isEditing ? " " : " Details"}
+          {isEditing ? messages.button.edit + " " : ""}
+          {isTransaction(selectedObj)
+            ? messages.other.transaction
+            : messages.other.bill}
+          {isEditing ? " " : " " + messages.button.details}
         </h2>
 
         {!isEditing ? (
@@ -136,21 +145,26 @@ export default function TransactionBillModal({
               {selectedObj.type}
             </p>
             <div className="flex justify-between items-center mt-10">
-              <strong>{selectedObj.type === "income" ? "From" : "To"}:</strong>
+              <strong>
+                {selectedObj.type === "income"
+                  ? messages.form.from
+                  : messages.form.to}
+                :
+              </strong>
               <p>{selectedObj.destiny}</p>
             </div>
             <div className="flex justify-between items-center">
-              <strong>Amount:</strong>
+              <strong>{messages.form.amount}:</strong>
               <p>{formatCurrency(selectedObj.amount)}</p>
             </div>
             {isTransaction(selectedObj) ? (
               <div className="flex justify-between items-center">
-                <strong>Date:</strong>
+                <strong>{messages.form.date}:</strong>
                 <p>{selectedObj.date.toLocaleDateString()}</p>
               </div>
             ) : (
               <div className="flex justify-between items-center">
-                <strong>Payment Day:</strong>
+                <strong>{messages.form.payDay}:</strong>
                 <p>{selectedObj.paymentDay}</p>
               </div>
             )}
@@ -159,13 +173,13 @@ export default function TransactionBillModal({
                 className="w-full font-bold rounded-lg bg-blue-500 p-2 text-center"
                 onClick={() => setIsEditing(true)}
               >
-                Edit
+                {messages.button.edit}
               </button>
               <button
                 className="w-full font-bold rounded-lg bg-red-500 p-2 text-center"
                 onClick={() => handleDelete(selectedObj)}
               >
-                Delete
+                {messages.button.delete}
               </button>
             </div>
           </div>
@@ -178,16 +192,16 @@ export default function TransactionBillModal({
               onChange={(e) => setType(e.target.value as "income" | "expense")}
               defaultValue={selectedObj.type}
             >
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
+              <option value="income">{messages.other.income}</option>
+              <option value="expense">{messages.other.expense}</option>
             </select>
 
             {/* Name */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="name">
                 {selectedObj.type === "income"
-                  ? "Payment sender"
-                  : "Payment receiver"}
+                  ? messages.form.from
+                  : messages.form.to}
               </label>
               <input
                 type="text"
@@ -195,7 +209,7 @@ export default function TransactionBillModal({
                 className="p-2 rounded-xl bg-slate-700 border"
                 ref={nameRef}
                 defaultValue={selectedObj.destiny}
-                placeholder="Type here"
+                placeholder={messages.form.type}
                 required
               />
             </div>
@@ -203,7 +217,7 @@ export default function TransactionBillModal({
             {/* Amount */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="amount">
-                Amount
+                {messages.form.amount}
               </label>
               <input
                 type="number"
@@ -213,7 +227,7 @@ export default function TransactionBillModal({
                 className="p-2 rounded-xl bg-slate-700 border"
                 ref={amountRef}
                 defaultValue={selectedObj.amount}
-                placeholder="Enter amount"
+                placeholder={messages.form.type}
                 required
               />
             </div>
@@ -222,7 +236,7 @@ export default function TransactionBillModal({
             {!isTransaction(selectedObj) && (
               <div className="flex flex-col gap-1">
                 <label className="font-bold text-sm" htmlFor="paymentDay">
-                  Payment Day
+                  {messages.form.payDay}
                 </label>
                 <input
                   type="number"
@@ -232,7 +246,7 @@ export default function TransactionBillModal({
                   className="p-2 rounded-xl bg-slate-700 border"
                   ref={paymentDayRef}
                   defaultValue={selectedObj.paymentDay}
-                  placeholder="Enter payment day"
+                  placeholder={messages.form.type}
                   required
                 />
               </div>
@@ -241,7 +255,7 @@ export default function TransactionBillModal({
             {/* Category */}
             <div className="flex flex-col gap-1">
               <label className="font-bold text-sm" htmlFor="category">
-                Select category
+                {messages.form.select} {messages.other.category.toLowerCase()}
               </label>
               <select
                 name="category"
@@ -263,7 +277,7 @@ export default function TransactionBillModal({
                 type="submit"
                 className="w-2/3 font-bold rounded-lg bg-green-500 p-2 text-center"
               >
-                Save Changes
+                {messages.button.save}
               </button>
               <button
                 type="button"
@@ -272,7 +286,7 @@ export default function TransactionBillModal({
                   setIsEditing(false);
                 }}
               >
-                Cancel
+                {messages.button.cancel}
               </button>
             </div>
           </form>

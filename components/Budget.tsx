@@ -19,7 +19,7 @@ export default function Budget({ expenses }: Props) {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user } = authContext;
+  const { user, messages } = authContext;
 
   const budgetRef = useRef<HTMLInputElement | null>(null);
 
@@ -27,7 +27,7 @@ export default function Budget({ expenses }: Props) {
     const num = budgetRef.current?.value.trim();
 
     if (!num) {
-      toast.warning("Enter a valid budget!");
+      toast.warning(messages.form.valid);
       return;
     }
 
@@ -50,7 +50,7 @@ export default function Budget({ expenses }: Props) {
     return (
       <div className="flex flex-col gap-4 w-full">
         <label className="font-bold text-sm" htmlFor="amount">
-          Enter your monthly budget:
+          {messages.form.budget}:
         </label>
         <input
           type="number"
@@ -59,7 +59,7 @@ export default function Budget({ expenses }: Props) {
           name="amount"
           className="p-2 rounded-xl bg-slate-700 border"
           ref={budgetRef}
-          placeholder="Type here"
+          placeholder={messages.form.type}
           required
         />
         <div className="flex w-full gap-2">
@@ -67,13 +67,13 @@ export default function Budget({ expenses }: Props) {
             className="font-bold rounded-lg bg-slate-500 p-2 text-center w-1/2"
             onClick={closeToast}
           >
-            Cancel
+            {messages.button.cancel}
           </button>
           <button
             className="font-bold rounded-lg bg-blue-500 p-2 text-center w-1/2"
             onClick={() => closeToast("save")}
           >
-            Save
+            {messages.button.save}
           </button>
         </div>
       </div>
@@ -101,25 +101,25 @@ export default function Budget({ expenses }: Props) {
       className="w-11/12 bg-blue-950 p-2 rounded-lg bg-opacity-50"
     >
       <div className="flex justify-between items-center">
-        <h2 className="text-lg text-blue-500 font-bold">Monthly Budget</h2>
+        <h2 className="text-lg text-blue-500 font-bold">{messages.form.budget}</h2>
         <p className="text-lg text-blue-700 font-black">
-          {formatCurrency(budget.bdgt)}
+          {formatCurrency(budget?.bdgt)}
         </p>
       </div>
       <div className="h-2 bg-gray-900 rounded-full overflow-hidden">
         <div
           className="h-2 bg-blue-200 w-0 transition-all"
-          style={{ width: `${Math.max((100 * expenses) / budget.bdgt, 0)}%` }}
+          style={{ width: `${Math.max((100 * expenses) / budget?.bdgt, 0)}%` }}
         ></div>
       </div>
       <div className="flex justify-between text-sm">
         <p className="text-blue-500">
-          Spent: {formatCurrency(expenses)}/
-          {Math.round((100 * expenses) / budget.bdgt) || 0}%
+          {messages.other.spent}: {formatCurrency(expenses)}/
+          {Math.round((100 * expenses) / budget?.bdgt) || 0}%
         </p>
         <p className="text-blue-300">
-          Left: {formatCurrency(budget.bdgt - expenses)}/
-          {100 - Math.round((100 * expenses) / budget.bdgt) || 100}%
+          {messages.other.left}: {formatCurrency(budget?.bdgt - expenses)}/
+          {100 - Math.round((100 * expenses) / budget?.bdgt) || 100}%
         </p>
       </div>
     </div>

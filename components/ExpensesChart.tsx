@@ -3,8 +3,9 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { styled } from "@mui/material";
 import { useDrawingArea } from "@mui/x-charts";
 import { formatCurrency } from "@/utils/formatCurrency";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ExpensesPerCategory, YearData } from "@/types/Data";
+import { AuthContext } from "@/contexts/authContext";
 
 interface Props {
   setMonth: string;
@@ -17,6 +18,12 @@ export default function ExpensesChart({
   setYear,
   dataPerYear,
 }: Props) {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
+
   const [expenses, setExpenses] = useState<number>(0);
   const [expensesPerCategory, setExpensesPerCategory] = useState<
     ExpensesPerCategory[]
@@ -51,7 +58,7 @@ export default function ExpensesChart({
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg p-4">
       <h1 className="text-xl font-bold">
-        Expenses - {setMonth} {setYear}
+        {messages.other.expenses} - {setMonth} {setYear}
       </h1>
       <div className="flex items-center">
         <PieChart

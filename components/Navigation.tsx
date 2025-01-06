@@ -5,10 +5,17 @@ import { TbFileReport } from "react-icons/tb";
 import { GrAddCircle } from "react-icons/gr";
 import { TiArrowRepeatOutline } from "react-icons/ti";
 import { MdPersonOutline } from "react-icons/md";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import clsx from "clsx";
+import { AuthContext } from "@/contexts/authContext";
 
 export default function Navigation() {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
+
   const [activePage, setActivePage] = useState<string>("Home");
 
   function changeActivePage(e: React.MouseEvent<HTMLAnchorElement>) {
@@ -26,7 +33,8 @@ export default function Navigation() {
           activePage == "Home" && "text-blue-300"
         )}
       >
-        <BiHome className="text-2xl" /> <p className="text-sm">Home</p>
+        <BiHome className="text-2xl" />{" "}
+        <p className="text-sm">{messages.other.home}</p>
       </Link>
       <Link
         href={"/reports"}
@@ -38,7 +46,7 @@ export default function Navigation() {
         )}
       >
         <TbFileReport className="text-2xl" />
-        <p className="text-sm">Reports</p>
+        <p className="text-sm">{messages.other.reports}</p>
       </Link>
       <Link
         href={"/add"}
@@ -50,7 +58,7 @@ export default function Navigation() {
         )}
       >
         <GrAddCircle className="text-2xl" />
-        <p className="text-sm">Add</p>
+        <p className="text-sm">{messages.button.add}</p>
       </Link>
       <Link
         href={"/transactions"}
@@ -62,7 +70,7 @@ export default function Navigation() {
         )}
       >
         <TiArrowRepeatOutline className="text-2xl" />
-        <p className="text-sm">Transactions</p>
+        <p className="text-sm">{messages.other.transactions}</p>
       </Link>
       <Link
         href={"/profile"}
@@ -74,7 +82,7 @@ export default function Navigation() {
         )}
       >
         <MdPersonOutline className="text-2xl" />
-        <p className="text-sm">Profile</p>
+        <p className="text-sm">{messages.other.profile}</p>
       </Link>
     </div>
   );

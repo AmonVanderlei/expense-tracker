@@ -10,7 +10,8 @@ import {
   MarkPlot,
 } from "@mui/x-charts";
 import { YearData } from "@/types/Data";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "@/contexts/authContext";
 
 interface Dataset {
   [key: string]: string | number | null | undefined;
@@ -26,6 +27,12 @@ interface Props {
 }
 
 export default function ExpensesChart({ setYear, dataPerYear }: Props) {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
+
   const [dataset, setDataset] = useState<Dataset[]>([]);
 
   useEffect(() => {
@@ -44,7 +51,10 @@ export default function ExpensesChart({ setYear, dataPerYear }: Props) {
 
   return (
     <div className="w-11/12 bg-slate-900 rounded-lg py-4">
-      <h1 className="text-xl font-bold ml-4">Income and Expenses</h1>
+      <h1 className="text-xl font-bold ml-4">
+        {messages.other.income} {messages.other.and.toLowerCase()}{" "}
+        {messages.other.expenses}
+      </h1>
       <div className="w-full bg-slate-500 overflow-auto h-[26rem] sm:h-auto">
         <div className="w-[150vw] sm:w-full h-96 bg-slate-900">
           <ResponsiveChartContainer

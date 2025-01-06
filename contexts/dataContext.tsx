@@ -54,7 +54,7 @@ export default function DataContextProvider({ children }: Props) {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user } = authContext;
+  const { user, messages } = authContext;
 
   const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -88,16 +88,19 @@ export default function DataContextProvider({ children }: Props) {
         const transactionsData = await getDocuments("transactions", user.uid);
         const billsData = await getDocuments("bills", user.uid);
         const categoriesData = await getDocuments("categories", user.uid);
-        const budgetsData = await getDocuments("budgets", user.uid);
 
         setTransactions(
           getRecentTransactions(transactionsData as Transaction[])
         );
         setBills(getNextBills(billsData as Bill[]));
         setCategories(categoriesData as Category[]);
-        setBudget(budgetsData[0] as Budget);
+
+        if (budget.id) {
+          const budgetsData = await getDocuments("budgets", user.uid);
+          setBudget(budgetsData[0] as Budget);
+        }
       } catch (error) {
-        toast.error("Error fetching data from Firebase:" + error);
+        toast.error(messages.error.firebase + error);
       }
     };
 
@@ -120,7 +123,7 @@ export default function DataContextProvider({ children }: Props) {
         );
         setDataPerYear(getDataPerYear(transactions, categories));
       } catch (error) {
-        toast.error("Error updating data:" + error);
+        toast.error(messages.error.update + error);
       }
     };
 
@@ -132,9 +135,9 @@ export default function DataContextProvider({ children }: Props) {
     if ("date" in obj) {
       // Add to firebase
       const newId = await toast.promise(addDocument("transactions", obj), {
-        pending: "Adding transaction...",
-        success: "Transaction added!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.add,
+        success: messages.success.add,
+        error: messages.error.something,
       });
 
       // Add locally
@@ -147,9 +150,9 @@ export default function DataContextProvider({ children }: Props) {
     } else if ("paymentDay" in obj) {
       // Add to firebase
       const newId = await toast.promise(addDocument("bills", obj), {
-        pending: "Adding bill...",
-        success: "Bill added!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.add,
+        success: messages.success.add,
+        error: messages.error.something,
       });
 
       // Add locally
@@ -162,9 +165,9 @@ export default function DataContextProvider({ children }: Props) {
     } else if ("bdgt" in obj) {
       // Add to firebase
       const newId = await toast.promise(addDocument("budgets", obj), {
-        pending: "Adding budget...",
-        success: "Budget added!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.add,
+        success: messages.success.add,
+        error: messages.error.something,
       });
 
       // Add locally
@@ -176,9 +179,9 @@ export default function DataContextProvider({ children }: Props) {
     } else {
       // Add to firebase
       const newId = await toast.promise(addDocument("categories", obj), {
-        pending: "Adding category...",
-        success: "Category added!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.add,
+        success: messages.success.add,
+        error: messages.error.something,
       });
 
       // Add locally
@@ -192,9 +195,9 @@ export default function DataContextProvider({ children }: Props) {
     if ("date" in obj) {
       // Update on firebase
       toast.promise(updateDocument("transactions", obj), {
-        pending: "Updating transaction...",
-        success: "Transaction updated!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.update,
+        success: messages.success.update,
+        error: messages.error.something,
       });
 
       // Update locally
@@ -207,9 +210,9 @@ export default function DataContextProvider({ children }: Props) {
     } else if ("paymentDay" in obj) {
       // Update on firebase
       toast.promise(updateDocument("bills", obj), {
-        pending: "Updating bill...",
-        success: "Bill updated!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.update,
+        success: messages.success.update,
+        error: messages.error.something,
       });
 
       // Update locally
@@ -222,9 +225,9 @@ export default function DataContextProvider({ children }: Props) {
     } else if ("bdgt" in obj) {
       // Update on firebase
       toast.promise(updateDocument("budgets", obj), {
-        pending: "Updating budget...",
-        success: "Budget updated!",
-        error: "Sorry! Something wrong happened.",
+        pending: messages.loading.update,
+        success: messages.success.update,
+        error: messages.error.something,
       });
 
       // Update locally
@@ -233,9 +236,9 @@ export default function DataContextProvider({ children }: Props) {
       setCategories((prevState) => {
         // Update on firebase
         toast.promise(updateDocument("categories", obj), {
-          pending: "Updating category...",
-          success: "Category updated!",
-          error: "Sorry! Something wrong happened.",
+          pending: messages.loading.update,
+          success: messages.success.update,
+          error: messages.error.something,
         });
 
         // Update locally
@@ -250,19 +253,19 @@ export default function DataContextProvider({ children }: Props) {
   function CustomNotification({ closeToast }: ToastContentProps) {
     return (
       <div className="flex flex-col gap-2 w-full">
-        Are you sure you want to delete it?
+        {messages.button.confirmation}
         <div className="flex w-full gap-2">
           <button
             className="font-bold rounded-lg bg-slate-500 p-2 text-center w-1/2"
             onClick={closeToast}
           >
-            Cancel
+            {messages.button.cancel}
           </button>
           <button
             className="font-bold rounded-lg bg-red-500 p-2 text-center w-1/2"
             onClick={() => closeToast("delete")}
           >
-            Delete
+            {messages.button.delete}
           </button>
         </div>
       </div>
@@ -281,9 +284,9 @@ export default function DataContextProvider({ children }: Props) {
             if ("date" in obj) {
               // Delete on firebase
               toast.promise(deleteDocument("transactions", obj.id), {
-                pending: "Deleting transaction...",
-                success: "Transaction deleted!",
-                error: "Sorry! Something wrong happened.",
+                pending: messages.loading.delete,
+                success: messages.success.delete,
+                error: messages.error.something,
               });
 
               // Delete locally
@@ -295,9 +298,9 @@ export default function DataContextProvider({ children }: Props) {
             } else if ("paymentDay" in obj) {
               // Delete on firebase
               toast.promise(deleteDocument("bills", obj.id), {
-                pending: "Deleting bill...",
-                success: "Bill deleted!",
-                error: "Sorry! Something wrong happened.",
+                pending: messages.loading.delete,
+                success: messages.success.delete,
+                error: messages.error.something,
               });
 
               // Delete locally
@@ -307,9 +310,9 @@ export default function DataContextProvider({ children }: Props) {
             } else {
               // Delete on firebase
               toast.promise(deleteDocument("categories", obj.id), {
-                pending: "Deleting category...",
-                success: "Category deleted!",
-                error: "Sorry! Something wrong happened.",
+                pending: messages.loading.delete,
+                success: messages.success.delete,
+                error: messages.error.something,
               });
 
               // Delete locally

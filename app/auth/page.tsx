@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 
-export default function Profile() {
+export default function Auth() {
   const authContext = useContext(AuthContext);
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");

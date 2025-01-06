@@ -1,6 +1,7 @@
+import { AuthContext } from "@/contexts/authContext";
 import Bill from "@/types/Bill";
 import Transaction from "@/types/Transaction";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 
 interface Props {
   show: boolean;
@@ -17,6 +18,11 @@ export default function Modal({
   setSelectedObj,
   setIsEditing,
 }: Props) {
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { messages } = authContext;
   return (
     <div
       style={{
@@ -38,7 +44,7 @@ export default function Modal({
             }}
             className="font-bold rounded-lg bg-red-500 p-2 text-center"
           >
-            Close
+            {messages.button.close}
           </button>
         </div>
         {children}
