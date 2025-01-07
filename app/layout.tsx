@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     icon: [
       { rel: "icon", url: "/favicon.ico" },
       { rel: "icon", sizes: "16x16", url: "/favicon-16x16.png" },
-      { rel: "icon", sizes: "32x32", url: "/favicon-32x32.png" }
+      { rel: "icon", sizes: "32x32", url: "/favicon-32x32.png" },
     ],
     apple: "/apple-touch-icon.png",
   },
@@ -65,9 +65,8 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  manifest: "/manifest.json"
+  manifest: "/manifest.json",
 };
-
 
 export default function RootLayout({
   children,
@@ -97,8 +96,8 @@ export default function RootLayout({
         />
         <AuthContextProvider>
           <DataContextProvider>{children}</DataContextProvider>
+          <Navigation />
         </AuthContextProvider>
-        <Navigation></Navigation>
       </body>
     </html>
   );
