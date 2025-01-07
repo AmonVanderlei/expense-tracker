@@ -77,5 +77,6 @@ export interface Messages {
     google: string;
     learnMore: string;
     chooseA: string;
+    language: string
   };
 }

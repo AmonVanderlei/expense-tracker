@@ -7,6 +7,8 @@ import { useContext, useEffect, useState } from "react";
 import CategoryModal from "@/components/CategoryModal";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
+import { HiLanguage } from "react-icons/hi2";
+import { toast } from "react-toastify";
 
 export default function Profile() {
   const context = useContext(AuthContext);
@@ -16,8 +18,68 @@ export default function Profile() {
   const { user, loading, logout, messages } = context;
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [language, setLanguage] = useState<string>(
+    typeof window !== "undefined"
+      ? localStorage.getItem("language") || "en-us"
+      : "en-us"
+  );
 
   const router = useRouter();
+
+  const saveLanguage = () => {
+    if (language == "en-us") {
+      localStorage.setItem("language", "pt-br");
+      setLanguage("pt-br");
+    } else {
+      localStorage.setItem("language", "en-us");
+      setLanguage("en-us");
+    }
+    toast.success(messages.success.update);
+  };
+
+  const handleLanguage = () => {
+    toast(
+      ({ closeToast }) => (
+        <div className="flex flex-col gap-4 w-full">
+          <div>
+            <h1 className="font-bold text-lg">
+              {language == "en-us"
+                ? "Mudar para o português"
+                : "Change to English"}
+            </h1>
+            <p className="text-xs">
+              {language == "en-us"
+                ? "Você deve reiniciar a aplicação para a mudança ser aplicada."
+                : "You must refresh the app to apply the change."}
+            </p>
+          </div>
+          <div className="flex w-full gap-2">
+            <button
+              className="font-bold rounded-lg bg-slate-500 p-2 text-center w-1/2"
+              onClick={closeToast}
+            >
+              {messages.button.cancel}
+            </button>
+            <button
+              className="font-bold rounded-lg bg-blue-500 p-2 text-center w-1/2"
+              onClick={() => {
+                saveLanguage();
+                closeToast();
+              }}
+            >
+              {messages.button.save}
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        closeButton: false,
+        position: "bottom-center",
+        autoClose: false,
+        draggable: false,
+      }
+    );
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -76,6 +138,10 @@ export default function Profile() {
         >
           <MdOutlineBookmarkAdd className="text-3xl" />
           {messages.other.manage} {messages.other.category}
+        </li>
+        <li className="flex gap-2" onClick={handleLanguage}>
+          <HiLanguage className="text-3xl" />
+          {messages.form.select} {messages.other.language}
         </li>
         <li className="flex gap-2" onClick={logout}>
           <VscSignOut className="text-3xl" />

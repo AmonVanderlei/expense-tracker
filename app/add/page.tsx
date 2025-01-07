@@ -95,7 +95,10 @@ export default function Add() {
             type == "Income" ? "text-green-500" : "text-red-500"
           )}
         >
-          Add {show}
+          {messages.button.add}{" "}
+          {show == "Transaction"
+            ? messages.other.transaction
+            : messages.other.bill}
         </h1>
       </header>
 
@@ -201,7 +204,10 @@ export default function Add() {
           type="submit"
           className="w-full font-bold rounded-lg bg-slate-500 p-2 text-center"
         >
-          {messages.button.add} {show}
+          {messages.button.add}{" "}
+          {show == "Transaction"
+            ? messages.other.transaction
+            : messages.other.bill}
         </button>
       </form>
     </div>
