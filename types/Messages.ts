@@ -3,6 +3,7 @@ export interface Messages {
     firebase: string;
     update: string;
     something: string;
+    login: string;
   };
   success: {
     add: string;
@@ -15,6 +16,7 @@ export interface Messages {
     add: string;
     update: string;
     delete: string;
+    loading: string;
   };
   form: {
     fillAll: string;
@@ -28,6 +30,7 @@ export interface Messages {
     date: string;
     type: string;
     select: string;
+    selectBoth: string;
   };
   button: {
     confirmation: string;
@@ -46,6 +49,7 @@ export interface Messages {
     transaction: string;
     transactions: string;
     bill: string;
+    bills: string;
     income: string;
     expense: string;
     expenses: string;
@@ -60,5 +64,18 @@ export interface Messages {
     spent: string;
     left: string;
     noBills: string;
+    hello: string;
+    totalBalance: string;
+    upcoming: string;
+    recent: string;
+    all: string;
+    history: string;
+    about: string;
+    logout: string;
+    madeBy: string;
+    signin: string;
+    google: string;
+    learnMore: string;
+    chooseA: string;
   };
 }

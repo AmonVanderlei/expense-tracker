@@ -13,7 +13,7 @@ export default function Profile() {
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { user, loading, logout } = context;
+  const { user, loading, logout, messages } = context;
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
@@ -28,7 +28,7 @@ export default function Profile() {
   if (loading || !user) {
     return (
       <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl">{messages.loading.loading}</p>
       </div>
     );
   }
@@ -37,7 +37,7 @@ export default function Profile() {
       <CategoryModal show={modalIsOpen} onClose={setModalIsOpen} />
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
-        <h1 className="text-xl font-bold">Profile</h1>
+        <h1 className="text-xl font-bold">{messages.other.profile}</h1>
       </header>
 
       {/* User Info */}
@@ -65,7 +65,7 @@ export default function Profile() {
           rel="noopener noreferrer"
           className="flex gap-2"
         >
-          <LiaInfoSolid className="text-3xl" /> About
+          <LiaInfoSolid className="text-3xl" /> {messages.other.about}
         </a>
         <li
           className="flex gap-2"
@@ -74,11 +74,12 @@ export default function Profile() {
             setModalIsOpen(true);
           }}
         >
-          <MdOutlineBookmarkAdd className="text-3xl" /> Manage Category
+          <MdOutlineBookmarkAdd className="text-3xl" />
+          {messages.other.manage} {messages.other.category}
         </li>
         <li className="flex gap-2" onClick={logout}>
           <VscSignOut className="text-3xl" />
-          Log Out
+          {messages.other.logout}
         </li>
         <div className="flex justify-end w-full underline">
           <a
@@ -86,7 +87,7 @@ export default function Profile() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Made by Amon Vanderlei
+            {messages.other.madeBy} Amon Vanderlei
           </a>
         </div>
       </ul>

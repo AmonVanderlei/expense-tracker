@@ -33,7 +33,7 @@ export default function Home() {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user, loading } = authContext;
+  const { user, loading, messages } = authContext;
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(true);
   const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
@@ -51,7 +51,7 @@ export default function Home() {
   if (loading || !user) {
     return (
       <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl">{messages.loading.loading}</p>
       </div>
     );
   }
@@ -80,7 +80,7 @@ export default function Home() {
             />
           )}
           <div className="flex flex-col">
-            <p className="text-sm">Hello,</p>
+            <p className="text-sm">{messages.other.hello},</p>
             <p className="text-lg font-bold">{user?.displayName}</p>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function Home() {
       <div className="w-11/12 bg-slate-900 rounded-lg p-4 flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base">Total Balance</h2>
+            <h2 className="text-base">{messages.other.totalBalance}</h2>
             <p className="text-3xl font-semibold">{formatCurrency(balance)}</p>
           </div>
           <p
@@ -109,7 +109,7 @@ export default function Home() {
               <div className="bg-slate-50 bg-opacity-25 p-1 rounded-full">
                 <FaArrowDown />
               </div>
-              <h3 className="font-semibold">Income</h3>
+              <h3 className="font-semibold">{messages.other.income}</h3>
             </div>
             <p className="font-medium text-lg">
               {formatCurrency(dataCurrentMonth.income)}
@@ -120,7 +120,7 @@ export default function Home() {
               <div className="bg-slate-50 bg-opacity-25 p-1 rounded-full">
                 <FaArrowUp />
               </div>
-              <h3 className="font-semibold">Expenses</h3>
+              <h3 className="font-semibold">{messages.other.expenses}</h3>
             </div>
             <p className="font-medium text-lg">
               {formatCurrency(dataCurrentMonth.expenses)}
@@ -136,7 +136,9 @@ export default function Home() {
       {nextBills?.length > 0 ? (
         <div className="w-11/12">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl text-blue-500 font-bold">Upcoming Bills</h2>
+            <h2 className="text-xl text-blue-500 font-bold">
+              {messages.other.upcoming} {messages.other.bills}
+            </h2>
             <Link
               href="/transactions"
               className="text-sm"
@@ -144,7 +146,7 @@ export default function Home() {
                 setShowTransactionOrBill("bills");
               }}
             >
-              See All
+              {messages.other.all}
             </Link>
           </div>
           <BillsComponent
@@ -159,7 +161,7 @@ export default function Home() {
       <div className="w-11/12">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl text-blue-500 font-bold">
-            Recent Transactions
+            {messages.other.recent} {messages.other.transactions}
           </h2>
           <Link
             href="/transactions"
@@ -168,7 +170,7 @@ export default function Home() {
               setShowTransactionOrBill("transactions");
             }}
           >
-            See All
+            {messages.other.all}
           </Link>
         </div>
         <TransactionsComponent

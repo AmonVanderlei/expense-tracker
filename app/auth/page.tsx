@@ -12,7 +12,7 @@ export default function Auth() {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { googleLoginHandler, user, loading } = authContext;
+  const { googleLoginHandler, user, loading, messages } = authContext;
 
   const router = useRouter();
 
@@ -21,7 +21,7 @@ export default function Auth() {
     if (id) {
       router.push("/");
     } else {
-      toast.error("Try again! Something wrong happened while logging in.");
+      toast.error(messages.error.login);
     }
   }
 
@@ -43,16 +43,14 @@ export default function Auth() {
         />
         <div>
           <h1 className="text-2xl">Expense Tracker</h1>
-          <p className="text-sm text-slate-400">
-            Sign in to manage your finances easily and smartly.
-          </p>
+          <p className="text-sm text-slate-400">{messages.other.signin}</p>
         </div>
         <button
           onClick={handleLogin}
           className="flex items-center justify-center gap-2 rounded-lg bg-white py-2 w-full"
         >
           <FcGoogle className="text-2xl" />
-          <p className="text-lg text-black">Sign In with Google</p>
+          <p className="text-lg text-black">{messages.other.google}</p>
         </button>
       </div>
 
@@ -64,7 +62,7 @@ export default function Auth() {
           rel="noopener noreferrer"
           className="flex gap-1"
         >
-          <LiaInfoSolid className="text-2xl" /> Learn more about the project
+          <LiaInfoSolid className="text-2xl" /> {messages.other.learnMore}
         </a>
         <div className="flex justify-end w-full underline">
           <a
@@ -72,7 +70,7 @@ export default function Auth() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Made by Amon Vanderlei
+            {messages.other.madeBy} Amon Vanderlei
           </a>
         </div>
       </div>

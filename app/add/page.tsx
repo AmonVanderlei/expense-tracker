@@ -27,7 +27,7 @@ export default function Add() {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user, loading } = authContext;
+  const { user, loading, messages } = authContext;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +35,7 @@ export default function Add() {
     const amount = amountRef.current?.value.trim();
 
     if (!name || !amount || !type || !categoryId) {
-      toast.warning("Please fill out all fields.");
+      toast.warning(messages.form.fillAll);
       return;
     }
 
@@ -52,7 +52,7 @@ export default function Add() {
     } else if (show === "Bill") {
       const paymentDay = paymentDayRef.current?.value.trim();
       if (!paymentDay) {
-        toast.warning("Please provide a payment day.");
+        toast.warning(messages.form.paymentDay);
         return;
       }
 
@@ -81,7 +81,7 @@ export default function Add() {
   if (loading || !user) {
     return (
       <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl">{messages.loading.loading}</p>
       </div>
     );
   }
@@ -107,8 +107,8 @@ export default function Add() {
           className="text-slate-800 rounded-md p-2 w-1/2"
           onChange={(e) => setShow(e.target.value)}
         >
-          <option value="Transaction">Transaction</option>
-          <option value="Bill">Bill</option>
+          <option value="Transaction">{messages.other.transaction}</option>
+          <option value="Bill">{messages.other.bill}</option>
         </select>
 
         <select
@@ -117,8 +117,8 @@ export default function Add() {
           className="text-slate-800 rounded-md p-2 w-1/2"
           onChange={(e) => setType(e.target.value)}
         >
-          <option value="Income">Income</option>
-          <option value="Expense">Expense</option>
+          <option value="Income">{messages.other.income}</option>
+          <option value="Expense">{messages.other.expense}</option>
         </select>
       </div>
 
@@ -126,14 +126,14 @@ export default function Add() {
         {/* Name */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="name">
-            {type === "Income" ? "Payment sender" : "Payment receiver"}
+            {type === "Income" ? messages.form.from : messages.form.to}
           </label>
           <input
             type="text"
             name="name"
             className="p-2 rounded-xl bg-slate-700 border"
             ref={nameRef}
-            placeholder="Type here"
+            placeholder={messages.form.type}
             required
           />
         </div>
@@ -142,7 +142,7 @@ export default function Add() {
         {show === "Bill" && (
           <div className="flex flex-col gap-1">
             <label className="font-bold text-sm" htmlFor="paymentDay">
-              Which day will it be paid?
+              {messages.form.payDay}
             </label>
             <input
               type="number"
@@ -151,7 +151,7 @@ export default function Add() {
               name="paymentDay"
               className="p-2 rounded-xl bg-slate-700 border"
               ref={paymentDayRef}
-              placeholder="Type here"
+              placeholder={messages.form.type}
               required
             />
           </div>
@@ -160,7 +160,7 @@ export default function Add() {
         {/* Amount */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="amount">
-            Amount of money
+            {messages.form.amount}
           </label>
           <input
             type="number"
@@ -169,7 +169,7 @@ export default function Add() {
             name="amount"
             className="p-2 rounded-xl bg-slate-700 border"
             ref={amountRef}
-            placeholder="Type here"
+            placeholder={messages.form.type}
             required
           />
         </div>
@@ -177,7 +177,7 @@ export default function Add() {
         {/* Category */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="category">
-            Select category
+            {messages.form.select} {messages.other.category.toLowerCase()}
           </label>
           <select
             name="category"
@@ -185,7 +185,9 @@ export default function Add() {
             className="text-slate-800 rounded-md p-2 w-full"
             onChange={(e) => setCategoryId(e.target.value)}
           >
-            <option value="">Choose a category</option>
+            <option value="">
+              {messages.other.chooseA} {messages.other.category.toLowerCase()}
+            </option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -199,7 +201,7 @@ export default function Add() {
           type="submit"
           className="w-full font-bold rounded-lg bg-slate-500 p-2 text-center"
         >
-          Add {show}
+          {messages.button.add} {show}
         </button>
       </form>
     </div>

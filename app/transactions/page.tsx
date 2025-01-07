@@ -31,25 +31,25 @@ export default function Transactions() {
   );
 
   const authContext = useContext(AuthContext);
-    if (!authContext) {
-      throw new Error("AuthContext must be used within a AuthContextProvider");
-    }
-  const { user, loading } = authContext;
+  if (!authContext) {
+    throw new Error("AuthContext must be used within a AuthContextProvider");
+  }
+  const { user, loading, messages } = authContext;
   const router = useRouter();
-  
-    useEffect(() => {
-      if (!loading && !user) {
-        router.push("/auth");
-      }
-    }, [loading, user, router]);
-  
-    if (loading || !user) {
-      return (
-        <div className="grow w-full h-full flex items-center justify-center">
-          <p className="text-xl">Loading...</p>
-        </div>
-      );
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/auth");
     }
+  }, [loading, user, router]);
+
+  if (loading || !user) {
+    return (
+      <div className="grow w-full h-full flex items-center justify-center">
+        <p className="text-xl">{messages.loading.loading}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grow flex flex-col items-center gap-6 pb-20">
@@ -64,12 +64,12 @@ export default function Transactions() {
 
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
-        <h1 className="text-xl font-bold">Transactions</h1>
+        <h1 className="text-xl font-bold">{messages.other.transactions}</h1>
       </header>
 
       {/* Total Balance */}
       <div className="flex flex-col items-center">
-        <p className="text-base">Total Balance</p>
+        <p className="text-base">{messages.other.totalBalance}</p>
         <p className="text-xl font-bold">{formatCurrency(balance)}</p>
       </div>
 
@@ -85,7 +85,7 @@ export default function Transactions() {
             setShowTransactionOrBill("transactions");
           }}
         >
-          Transactions
+          {messages.other.transactions}
         </button>
         |
         <button
@@ -98,14 +98,14 @@ export default function Transactions() {
             setShowTransactionOrBill("bills");
           }}
         >
-          Upcoming Bills
+          {messages.other.upcoming} {messages.other.bills}
         </button>
       </div>
 
       <div className="w-11/12">
         {showTransactionOrBill === "transactions" ? (
           <div className="flex flex-col gap-2 items-center">
-            <h1 className="text-2xl font-bold">Histórico</h1>
+            <h1 className="text-2xl font-bold">{messages.other.history}</h1>
             <TransactionsComponent
               transactionsList={transactions}
               categories={categories}

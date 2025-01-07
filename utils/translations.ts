@@ -8,6 +8,7 @@ export const languages: { lang: string; messages: Messages }[] = [
         firebase: "Error fetching data from Firebase:",
         update: "Error updating data:",
         something: "Sorry! Something wrong happened.",
+        login: "Try again! Something wrong happened while logging in.",
       },
       success: {
         add: "Successfully added!",
@@ -20,6 +21,7 @@ export const languages: { lang: string; messages: Messages }[] = [
         add: "Adding...",
         update: "Updating...",
         delete: "Deleting...",
+        loading: "Loading...",
       },
       form: {
         fillAll: "Please fill out all fields.",
@@ -33,6 +35,7 @@ export const languages: { lang: string; messages: Messages }[] = [
         date: "Date",
         type: "Type here",
         select: "Select",
+        selectBoth: "Please select both month and year.",
       },
       button: {
         confirmation: "Are you sure you want to delete it?",
@@ -51,6 +54,7 @@ export const languages: { lang: string; messages: Messages }[] = [
         transaction: "Transaction",
         transactions: "Transactions",
         bill: "Bill",
+        bills: "Bills",
         income: "Income",
         expense: "Expense",
         expenses: "Expenses",
@@ -65,6 +69,19 @@ export const languages: { lang: string; messages: Messages }[] = [
         spent: "Spent", //Gasto
         left: "Left", //Faltam
         noBills: "There are not bills to pay or salaries to receive anymore!",
+        hello: "Hello",
+        totalBalance: "Total Balance", //Saldo total
+        upcoming: "Upcoming", //Futuras
+        recent: "Recent",
+        all: "See All",
+        history: "History", //Histórico
+        about: "About",
+        logout: "Log Out",
+        madeBy: "Made by",
+        signin: "Sign in to manage your finances easily and smartly.",
+        google: "Sign In with Google",
+        learnMore: "Learn more about the project",
+        chooseA: "Choose a", //Uma
       },
     },
   },

@@ -39,7 +39,7 @@ export default function Reports() {
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
-  const { user, loading } = authContext;
+  const { user, loading, messages } = authContext;
   const router = useRouter();
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function Reports() {
   if (loading || !user) {
     return (
       <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl">{messages.loading.loading}</p>
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function Reports() {
     <div className="grow flex flex-col items-center gap-10 pb-20">
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
-        <h1 className="text-xl font-bold">Reports</h1>
+        <h1 className="text-xl font-bold">{messages.other.reports}</h1>
       </header>
 
       {/* Date Picker */}
@@ -112,7 +112,7 @@ export default function Reports() {
           <IncomeChart dataPerYear={dataPerYear} setYear={+year} />
         </>
       ) : (
-        <p className="text-slate-400">Please select both month and year.</p>
+        <p className="text-slate-400">{messages.form.selectBoth}</p>
       )}
     </div>
   );
