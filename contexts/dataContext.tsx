@@ -95,7 +95,7 @@ export default function DataContextProvider({ children }: Props) {
         setBills(getNextBills(billsData as Bill[]));
         setCategories(categoriesData as Category[]);
 
-        if (budget.id) {
+        if (budget.id == "") {
           const budgetsData = await getDocuments("budgets", user.uid);
           setBudget(budgetsData[0] as Budget);
         }
