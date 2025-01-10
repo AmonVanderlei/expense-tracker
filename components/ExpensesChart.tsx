@@ -35,7 +35,11 @@ export default function ExpensesChart({
     const monthObj = data.find((obj) => obj.monthStr === setMonth);
     if (monthObj) {
       setExpenses(monthObj.expenses);
-      setExpensesPerCategory(monthObj.expensesPerCategory);
+      const dataset = monthObj.expensesPerCategory.filter(
+        (cat) => cat.value !== 0
+      );
+      console.log(dataset);
+      setExpensesPerCategory(dataset);
     }
   }, [dataPerYear, setMonth, setYear]);
 
@@ -78,7 +82,7 @@ export default function ExpensesChart({
             },
           ]}
           width={400}
-          height={250}
+          height={400}
           slotProps={{
             legend: {
               itemMarkWidth: 10,
@@ -89,6 +93,9 @@ export default function ExpensesChart({
                 fontSize: 20,
                 fill: "white",
               },
+              direction: "column",
+              position: { vertical: "top", horizontal: "right" },
+              padding: 0,
             },
           }}
         >
