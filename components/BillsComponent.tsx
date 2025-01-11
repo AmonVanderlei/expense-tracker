@@ -1,8 +1,7 @@
 import Bill from "@/types/Bill";
 import BillComponent from "./BillComponent";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 import Transaction from "@/types/Transaction";
-import { AuthContext } from "@/contexts/authContext";
 
 interface Props {
   bills: Bill[];
@@ -15,12 +14,6 @@ export default function BillsComponent({
   setSelectedObj,
   openModal,
 }: Props) {
-  const authContext = useContext(AuthContext);
-  if (!authContext) {
-    throw new Error("AuthContext must be used within a AuthContextProvider");
-  }
-  const { messages } = authContext;
-
   const unpaidBills = bills.filter(
     (bill) => !bill.paid && bill.nextPayment.getTime() <= new Date().getTime()
   );
