@@ -92,7 +92,7 @@ export default function DataContextProvider({ children }: Props) {
         setTransactions(
           getRecentTransactions(transactionsData as Transaction[])
         );
-        setBills(getNextBills(billsData as Bill[]));
+        setBills(getNextBills(billsData as Bill[], false));
         setCategories(categoriesData as Category[]);
 
         if (budget.id == "") {
@@ -112,7 +112,7 @@ export default function DataContextProvider({ children }: Props) {
       try {
         setBalance(getBalance(transactions));
         setRecentTransactions(getRecentTransactions(transactions, 5));
-        setNextBills(getNextBills(bills, 5));
+        setNextBills(getNextBills(bills, true, 5));
         setDataCurrentMonth(
           getDataPerMonth(
             transactions,
@@ -157,10 +157,10 @@ export default function DataContextProvider({ children }: Props) {
 
       // Add locally
       setBills((prevState) => {
-        return getNextBills([
-          ...prevState,
-          { id: newId, ...objWithoutId } as Bill,
-        ]);
+        return getNextBills(
+          [...prevState, { id: newId, ...objWithoutId } as Bill],
+          false
+        );
       });
     } else if ("bdgt" in obj) {
       // Add to firebase
@@ -220,7 +220,7 @@ export default function DataContextProvider({ children }: Props) {
         const updatedBills = prevState.map((b) =>
           b.id === obj.id ? { ...b, ...obj } : b
         );
-        return getNextBills(updatedBills);
+        return getNextBills(updatedBills, false);
       });
     } else if ("bdgt" in obj) {
       // Update on firebase
@@ -305,7 +305,10 @@ export default function DataContextProvider({ children }: Props) {
 
               // Delete locally
               setBills((prevState) => {
-                return getNextBills(prevState.filter((b) => b.id !== obj.id));
+                return getNextBills(
+                  prevState.filter((b) => b.id !== obj.id),
+                  false
+                );
               });
             } else {
               // Delete on firebase

@@ -63,7 +63,6 @@ export interface Messages {
     color: string;
     spent: string;
     left: string;
-    noBills: string;
     hello: string;
     totalBalance: string;
     upcoming: string;
@@ -77,6 +76,9 @@ export interface Messages {
     google: string;
     learnMore: string;
     chooseA: string;
-    language: string
+    language: string;
+    paid: string;
+    yes: string;
+    no: string;
   };
 }

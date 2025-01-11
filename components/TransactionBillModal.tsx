@@ -129,7 +129,7 @@ export default function TransactionBillModal({
           {isTransaction(selectedObj)
             ? messages.other.transaction
             : messages.other.bill}
-          {isEditing ? " " : " " + messages.button.details}
+          {isEditing ? " " : " - " + messages.button.details}
         </h2>
 
         {!isEditing ? (
@@ -157,6 +157,7 @@ export default function TransactionBillModal({
               <strong>{messages.form.amount}:</strong>
               <p>{formatCurrency(selectedObj.amount)}</p>
             </div>
+
             {isTransaction(selectedObj) ? (
               <div className="flex justify-between items-center">
                 <strong>{messages.form.date}:</strong>
@@ -168,6 +169,16 @@ export default function TransactionBillModal({
                 <p>{selectedObj.paymentDay}</p>
               </div>
             )}
+
+            {!isTransaction(selectedObj) && (
+              <div className="flex justify-between items-center">
+                <strong>{messages.other.paid}:</strong>
+                <p>
+                  {selectedObj.paid ? messages.other.yes : messages.other.no}
+                </p>
+              </div>
+            )}
+
             <div className="flex flex-col gap-2 mt-5">
               <button
                 className="w-full font-bold rounded-lg bg-blue-500 p-2 text-center"

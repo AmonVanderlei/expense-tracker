@@ -20,22 +20,34 @@ export default function BillsComponent({
     throw new Error("AuthContext must be used within a AuthContextProvider");
   }
   const { messages } = authContext;
+
+  const unpaidBills = bills.filter(
+    (bill) => !bill.paid && bill.nextPayment.getTime() <= new Date().getTime()
+  );
+  const paidBills = bills.filter(
+    (bill) => bill.paid || bill.nextPayment.getTime() > new Date().getTime()
+  );
   return (
     <div className="flex flex-col items-center w-full gap-4">
-      {bills?.length > 0 ? (
-        bills?.map((bill: Bill) => (
+      {unpaidBills.length > 0 &&
+        unpaidBills.map((bill: Bill) => (
           <BillComponent
             obj={bill}
             key={bill.id}
             setSelectedObj={setSelectedObj}
             openModal={openModal}
           />
-        ))
-      ) : (
-        <p className="text-center text-lg text-blue-500">
-          {messages.other.noBills}
-        </p>
-      )}
+        ))}
+
+      {paidBills.length > 0 &&
+        paidBills.map((bill: Bill) => (
+          <BillComponent
+            obj={bill}
+            key={bill.id}
+            setSelectedObj={setSelectedObj}
+            openModal={openModal}
+          />
+        ))}
     </div>
   );
 }

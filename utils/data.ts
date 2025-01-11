@@ -260,14 +260,25 @@ export function getRecentTransactions(
   return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
 }
 
-export function getNextBills(bills: Bill[], limit?: number): Bill[] {
-  const validBills = bills.filter((bill) => {
-    return !bill.paid && bill.nextPayment.getTime() <= new Date().getTime();
-  });
-  const sortedTransactions = validBills.sort(
-    (a, b) => a.paymentDay - b.paymentDay
-  );
-  return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
+export function getNextBills(
+  bills: Bill[],
+  filter: boolean = true,
+  limit?: number
+): Bill[] {
+  if (filter) {
+    const validBills = bills.filter((bill) => {
+      return !bill.paid && bill.nextPayment.getTime() <= new Date().getTime();
+    });
+    const sortedTransactions = validBills.sort(
+      (a, b) => a.paymentDay - b.paymentDay
+    );
+    return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
+  } else {
+    const sortedTransactions = bills.sort(
+      (a, b) => a.paymentDay - b.paymentDay
+    );
+    return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
+  }
 }
 
 export function getBalance(transactions: Transaction[]): number {

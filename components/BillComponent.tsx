@@ -31,42 +31,24 @@ export default function BillComponent({
   const { user, messages } = authContext;
 
   function bill2transactionHandler(bill: Bill) {
-    if (bill.type === "income") {
-      addObj({
-        id: "",
-        type: "income",
-        destiny: bill.destiny,
-        date: new Date(),
-        amount: bill.amount,
-        categoryId: bill.categoryId,
-        uid: user?.uid as string,
-      });
-    } else {
-      addObj({
-        id: "",
-        type: "expense",
-        destiny: bill.destiny,
-        date: new Date(),
-        amount: bill.amount,
-        categoryId: bill.categoryId,
-        uid: user?.uid as string,
-      });
-    }
+    addObj({
+      id: "",
+      type: bill.type,
+      destiny: bill.destiny,
+      date: new Date(),
+      amount: bill.amount,
+      categoryId: bill.categoryId,
+      uid: user?.uid as string,
+    });
 
     updateObj({
-      id: bill.id,
-      type: bill.type,
+      ...bill,
       paid: true,
-      destiny: bill.destiny,
-      paymentDay: bill.paymentDay,
       nextPayment: new Date(
         new Date().getFullYear(),
         new Date().getMonth() + 1,
         1
       ),
-      amount: bill.amount,
-      categoryId: bill.categoryId,
-      uid: user?.uid as string,
     });
 
     setShowTransactionOrBill("transactions");
@@ -79,10 +61,15 @@ export default function BillComponent({
 
   const category = categories.find((cat) => cat.id === obj.categoryId);
   return (
-    <div className="flex flex-col items-center w-full gap-2">
+    <div
+      className={clsx(
+        "flex flex-col items-center w-full gap-2",
+        obj.paid && "opacity-50"
+      )}
+    >
       <div className="flex justify-between items-center w-full">
         <div
-          className="grow flex items-center justify-between mr-2"
+          className="grow flex items-center justify-between mr-2 gap-1"
           onClick={() => {
             setSelectedObj(obj);
             openModal(true);
@@ -104,27 +91,29 @@ export default function BillComponent({
             {formatCurrency(obj.amount)}
           </p>
         </div>
-        {obj.type === "income" ? (
-          <button
-            className="bg-green-500 bg-opacity-75 py-2 px-4 rounded-lg"
-            onClick={(e) => {
-              e.preventDefault();
-              bill2transactionHandler(obj);
-            }}
-          >
-            {messages.button.receive}
-          </button>
-        ) : (
-          <button
-            className="bg-red-500 bg-opacity-75 py-2 px-4 rounded-lg"
-            onClick={(e) => {
-              e.preventDefault();
-              bill2transactionHandler(obj);
-            }}
-          >
-            {messages.button.pay}
-          </button>
-        )}
+
+        {!obj.paid &&
+          (obj.type === "income" ? (
+            <button
+              className="bg-green-500 bg-opacity-75 py-2 px-4 rounded-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                bill2transactionHandler(obj);
+              }}
+            >
+              {messages.button.receive}
+            </button>
+          ) : (
+            <button
+              className="bg-red-500 bg-opacity-75 py-2 px-4 rounded-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                bill2transactionHandler(obj);
+              }}
+            >
+              {messages.button.pay}
+            </button>
+          ))}
       </div>
     </div>
   );
