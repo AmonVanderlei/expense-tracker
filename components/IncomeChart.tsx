@@ -50,7 +50,10 @@ export default function ExpensesChart({ setYear, dataPerYear }: Props) {
   }, [dataPerYear, setYear]);
 
   return (
-    <div className="w-11/12 bg-slate-900 rounded-lg py-4">
+    <div
+      className="w-11/12 bg-slate-900 rounded-lg py-4"
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <h1 className="text-xl font-bold ml-4">
         {messages.other.income} {messages.other.and.toLowerCase()}{" "}
         {messages.other.expenses}

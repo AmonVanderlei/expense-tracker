@@ -60,7 +60,10 @@ export default function ExpensesChart({
   }
 
   return (
-    <div className="w-11/12 bg-slate-900 rounded-lg p-4">
+    <div
+      className="w-11/12 bg-slate-900 rounded-lg p-4"
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <h1 className="text-xl font-bold">
         {messages.other.expenses} - {setMonth} {setYear}
       </h1>
