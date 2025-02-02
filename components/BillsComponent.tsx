@@ -14,12 +14,8 @@ export default function BillsComponent({
   setSelectedObj,
   openModal,
 }: Props) {
-  const unpaidBills = bills.filter(
-    (bill) => !bill.paid && bill.nextPayment.getTime() <= new Date().getTime()
-  );
-  const paidBills = bills.filter(
-    (bill) => bill.paid || bill.nextPayment.getTime() > new Date().getTime()
-  );
+  const unpaidBills = bills.filter((bill) => !bill.paid);
+  const paidBills = bills.filter((bill) => bill.paid);
   return (
     <div className="flex flex-col items-center w-full gap-4">
       {unpaidBills.length > 0 &&

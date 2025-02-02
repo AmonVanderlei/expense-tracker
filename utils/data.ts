@@ -77,7 +77,7 @@ export async function getDocuments(
       });
     } else if (col == "bills") {
       return docsSnap.docs.map((doc) => {
-        return {
+        return updateBill({
           id: doc.id,
           type: doc.data().type as string,
           paid: doc.data().paid as boolean,
@@ -86,7 +86,7 @@ export async function getDocuments(
           nextPayment: new Date(doc.data().nextPayment.toMillis()),
           amount: +doc.data().amount,
           categoryId: doc.data().categoryId,
-        } as Bill;
+        } as Bill);
       });
     } else if (col == "budgets") {
       return docsSnap.docs.map((doc) => {
@@ -278,6 +278,16 @@ export function getNextBills(
       (a, b) => a.paymentDay - b.paymentDay
     );
     return limit ? sortedTransactions.slice(0, limit) : sortedTransactions;
+  }
+}
+
+export function updateBill(bill: Bill): Bill {
+  if (bill.nextPayment.getTime() < new Date().getTime() && bill.paid) {
+    const updatedBill = { ...bill, paid: false };
+    updateDocument("bills", updatedBill);
+    return updatedBill;
+  } else {
+    return bill;
   }
 }
 
