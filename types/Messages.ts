@@ -66,7 +66,7 @@ export interface Messages {
     hello: string;
     totalBalance: string;
     upcoming: string;
-    recent: string;
+    last: string;
     all: string;
     history: string;
     about: string;

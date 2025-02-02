@@ -161,7 +161,7 @@ export default function Home() {
       <div className="w-11/12">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl text-blue-500 font-bold">
-            {messages.other.recent} {messages.other.transactions}
+            {messages.other.last} {messages.other.transactions}
           </h2>
           <Link
             href="/transactions"
