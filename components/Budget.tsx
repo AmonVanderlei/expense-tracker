@@ -100,19 +100,21 @@ export default function Budget({ expenses }: Props) {
       onClick={handleToast}
       className="w-11/12 bg-blue-950 p-2 rounded-lg bg-opacity-50"
     >
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center flex-wrap">
         <h2 className="text-lg text-blue-500 font-bold">{messages.form.budget}</h2>
         <p className="text-lg text-blue-700 font-black">
           {formatCurrency(budget?.bdgt)}
         </p>
       </div>
+
       <div className="h-2 bg-gray-900 rounded-full overflow-hidden">
         <div
           className="h-2 bg-blue-200 w-0 transition-all"
           style={{ width: `${Math.max((100 * expenses) / budget?.bdgt, 0)}%` }}
         ></div>
       </div>
-      <div className="flex justify-between text-sm">
+
+      <div className="flex justify-between text-sm flex-wrap">
         <p className="text-blue-500">
           {messages.other.spent}: {formatCurrency(expenses)}/
           {Math.round((100 * expenses) / budget?.bdgt) || 0}%

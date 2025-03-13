@@ -246,8 +246,8 @@ export default function Add() {
             {messages.form.bank2bank}
           </label>
           <div className="relative group">
-            <IoMdInformationCircleOutline className="text-lg cursor-pointer" />
-            <div className="bg-slate-700 p-2 rounded-lg text-sm absolute bottom-full mb-1 left-0 w-52 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <IoMdInformationCircleOutline className="text-lg cursor-pointer group-hover:opacity-50" />
+            <div className="bg-slate-700 p-2 rounded-lg text-sm absolute bottom-full mb-1 left-0 w-52 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
               {messages.form.bank2bankInfo}
             </div>
           </div>

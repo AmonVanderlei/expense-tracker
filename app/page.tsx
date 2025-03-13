@@ -93,7 +93,7 @@ export default function Home() {
         className="w-11/12 bg-slate-900 rounded-lg py-4 flex flex-col"
         onClick={() => setBankMenu((prevState) => !prevState)}
       >
-        <div className="flex items-center justify-between mb-6 px-4">
+        <div className="flex items-center justify-between mb-6 px-4 flex-wrap">
           <div>
             <h2 className="text-base">{messages.other.totalBalance}</h2>
             <p className="text-3xl font-semibold">
@@ -111,7 +111,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex w-full justify-between px-4 mb-2">
+        <div className="flex w-full justify-between px-4 mb-2 flex-wrap">
           <div className="flex flex-col items-start justify-center">
             <div className="flex items-center gap-2">
               <div className="bg-slate-50 bg-opacity-25 p-1 rounded-full">
@@ -145,7 +145,7 @@ export default function Home() {
                   color: bankData.bank.color,
                   borderColor: bankData.bank.color,
                 }}
-                className="flex justify-between p-4 border-x-2 items-center"
+                className="flex justify-between p-4 border-x-2 items-center flex-wrap"
               >
                 <div className="max-w-[50%]">
                   <p className="text-xl font-bold">{bankData.bank.bankName}</p>
@@ -181,7 +181,7 @@ export default function Home() {
       {/* Upcoming Bills */}
       {nextBills?.length > 0 ? (
         <div className="w-11/12">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-2 flex-wrap">
             <h2 className="text-xl text-blue-500 font-bold">
               {messages.other.upcoming} {messages.other.bills}
             </h2>
@@ -205,7 +205,7 @@ export default function Home() {
 
       {/* Recent Transactions */}
       <div className="w-11/12">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-2 flex-wrap">
           <h2 className="text-xl text-blue-500 font-bold">
             {messages.other.last} {messages.other.transactions}
           </h2>

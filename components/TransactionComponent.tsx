@@ -32,7 +32,7 @@ export default function Transactions({
   return (
     <div
       style={{ borderBlockColor: bank?.color }}
-      className="flex justify-between items-center w-full border-b-2 pb-2"
+      className="flex justify-between items-center w-full border-b-2 pb-2 flex-wrap"
       onClick={() => {
         setSelectedObj(obj);
         openModal(true);

@@ -159,7 +159,7 @@ export default function Profile() {
           }}
         >
           <MdOutlineBookmarkAdd className="text-3xl" />
-          {messages.other.manage} {messages.other.category}
+          {messages.other.manage} {messages.other.categories}
         </li>
         <li
           className="flex gap-2"
