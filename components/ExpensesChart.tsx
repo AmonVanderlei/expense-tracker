@@ -4,7 +4,7 @@ import { styled } from "@mui/material";
 import { useDrawingArea } from "@mui/x-charts";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { useContext, useEffect, useState } from "react";
-import { ExpensesPerCategory, YearData } from "@/types/Data";
+import { YearData } from "@/types/Data";
 import { AuthContext } from "@/contexts/authContext";
 
 interface Props {
