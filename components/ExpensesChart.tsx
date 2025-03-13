@@ -26,7 +26,7 @@ export default function ExpensesChart({
 
   const [expenses, setExpenses] = useState<number>(0);
   const [expensesPerCategory, setExpensesPerCategory] = useState<
-    ExpensesPerCategory[]
+    { id: string; color: string; label: string; value: number }[]
   >([]);
 
   useEffect(() => {
@@ -35,10 +35,17 @@ export default function ExpensesChart({
     const monthObj = data.find((obj) => obj.monthStr === setMonth);
     if (monthObj) {
       setExpenses(monthObj.expenses);
-      const dataset = monthObj.expensesPerCategory.filter(
+      const filteredObj = monthObj.expensesPerCategory.filter(
         (cat) => cat.value !== 0
       );
-      console.log(dataset);
+      const dataset = filteredObj.map((cat) => {
+        return {
+          id: cat.category.id,
+          color: cat.category.color,
+          label: cat.category.name,
+          value: cat.value,
+        };
+      });
       setExpensesPerCategory(dataset);
     }
   }, [dataPerYear, setMonth, setYear]);

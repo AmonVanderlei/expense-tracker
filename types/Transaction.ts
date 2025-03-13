@@ -5,5 +5,7 @@ export default interface Transaction {
   date: Date;
   amount: number;
   categoryId: string;
+  bankId: string;
+  bank2bank: boolean;
   uid: string;
 }

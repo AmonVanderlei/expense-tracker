@@ -9,15 +9,25 @@ import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import { HiLanguage } from "react-icons/hi2";
 import { toast } from "react-toastify";
+import { PiBank } from "react-icons/pi";
+import BankModal from "@/components/BankModal";
+import { DataContext } from "@/contexts/dataContext";
 
 export default function Profile() {
-  const context = useContext(AuthContext);
+  const context = useContext(DataContext);
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { user, loading, logout, messages } = context;
+  const { banks, categories } = context;
+
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const { user, loading, logout, messages } = authContext;
 
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [bankModalIsOpen, setBankModalIsOpen] = useState<boolean>(false);
   const [language, setLanguage] = useState<string>(
     typeof window !== "undefined"
       ? localStorage.getItem("language") || "en-us"
@@ -87,6 +97,15 @@ export default function Profile() {
     }
   }, [loading, user, router]);
 
+  useEffect(() => {
+    if (banks.length < 1) {
+      toast.warning(messages.other.atLeastBank)
+    }
+    if (categories.length < 1) {
+      toast.warning(messages.other.atLeastCategory)
+    }
+  }, [banks, categories]);
+
   if (loading || !user) {
     return (
       <div className="grow w-full h-full flex items-center justify-center">
@@ -96,7 +115,10 @@ export default function Profile() {
   }
   return (
     <div className="grow">
+      {/* Modals */}
       <CategoryModal show={modalIsOpen} onClose={setModalIsOpen} />
+      <BankModal show={bankModalIsOpen} onClose={setBankModalIsOpen} />
+
       {/* Header */}
       <header className="w-full flex items-center justify-center relative pt-4">
         <h1 className="text-xl font-bold">{messages.other.profile}</h1>
@@ -138,6 +160,16 @@ export default function Profile() {
         >
           <MdOutlineBookmarkAdd className="text-3xl" />
           {messages.other.manage} {messages.other.category}
+        </li>
+        <li
+          className="flex gap-2"
+          onClick={(e) => {
+            e.preventDefault();
+            setBankModalIsOpen(true);
+          }}
+        >
+          <PiBank className="text-3xl" />
+          {messages.other.manage} {messages.other.banks}
         </li>
         <li className="flex gap-2" onClick={handleLanguage}>
           <HiLanguage className="text-3xl" />

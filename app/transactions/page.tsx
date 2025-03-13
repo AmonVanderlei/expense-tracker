@@ -21,6 +21,7 @@ export default function Transactions() {
     setShowTransactionOrBill,
     transactions,
     bills,
+    banks,
     categories,
     balance,
   } = context;
@@ -70,7 +71,9 @@ export default function Transactions() {
       {/* Total Balance */}
       <div className="flex flex-col items-center">
         <p className="text-base">{messages.other.totalBalance}</p>
-        <p className="text-xl font-bold">{formatCurrency(balance)}</p>
+        <p className="text-xl font-bold">
+          {formatCurrency(balance.totalBalance)}
+        </p>
       </div>
 
       {/* Transactions | Upcoming Bills */}
@@ -108,6 +111,7 @@ export default function Transactions() {
             <h1 className="text-2xl font-bold">{messages.other.history}</h1>
             <TransactionsComponent
               transactionsList={transactions}
+              banks={banks}
               categories={categories}
               setSelectedObj={setSelectedObj}
               openModal={setModalIsOpen}

@@ -31,6 +31,8 @@ export interface Messages {
     type: string;
     select: string;
     selectBoth: string;
+    bank2bank: string;
+    bank2bankInfo: string;
   };
   button: {
     confirmation: string;
@@ -55,6 +57,8 @@ export interface Messages {
     expenses: string;
     category: string;
     categories: string;
+    bank: string;
+    banks: string;
     home: string;
     reports: string;
     profile: string;
@@ -80,5 +84,7 @@ export interface Messages {
     paid: string;
     yes: string;
     no: string;
+    atLeastCategory: string;
+    atLeastBank: string;
   };
 }

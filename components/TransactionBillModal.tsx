@@ -32,7 +32,7 @@ export default function TransactionBillModal({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { categories, updateObj, deleteObj } = context;
+  const { banks, categories, updateObj, deleteObj } = context;
 
   const authContext = useContext(AuthContext);
   if (!authContext) {
@@ -47,6 +47,10 @@ export default function TransactionBillModal({
   const [categoryId, setCategoryId] = useState<string>(
     selectedObj?.categoryId.toString() || ""
   );
+  const [bank2bank, setBank2Bank] = useState<boolean>(
+    selectedObj?.bank2bank || false
+  );
+  const [bankId, setBankId] = useState<string>(selectedObj?.bankId || "");
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const amountRef = useRef<HTMLInputElement | null>(null);
@@ -70,7 +74,7 @@ export default function TransactionBillModal({
     const name = nameRef.current?.value.trim();
     const amount = amountRef.current?.value.trim();
 
-    if (!name || !amount || !type || !categoryId) {
+    if (!name || !amount || !type || !categoryId || !bankId) {
       toast.warning(messages.form.fillAll);
       return;
     }
@@ -82,6 +86,8 @@ export default function TransactionBillModal({
         destiny: name,
         amount: +amount,
         categoryId: categoryId,
+        bank2bank,
+        bankId,
       };
 
       updateObj(updatedTransaction);
@@ -99,6 +105,8 @@ export default function TransactionBillModal({
         amount: +amount,
         paymentDay: +paymentDay,
         categoryId: categoryId,
+        bank2bank,
+        bankId,
       };
 
       updateObj(updatedBill);
@@ -115,6 +123,9 @@ export default function TransactionBillModal({
     setSelectedObj(null);
     onClose(false);
   };
+
+  const category = categories.find((cat) => cat.id === selectedObj.categoryId);
+  const bank = banks?.find((b) => b.id === selectedObj.bankId);
 
   return (
     <Modal
@@ -169,6 +180,23 @@ export default function TransactionBillModal({
                 <p>{selectedObj.paymentDay}</p>
               </div>
             )}
+
+            <div className="flex justify-between items-center">
+              <strong>{messages.other.category}:</strong>
+              <p>{category?.name}</p>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <strong>{messages.other.bank}:</strong>
+              <p>{bank?.bankName}</p>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <strong>{messages.form.bank2bank}:</strong>
+              <p>
+                {selectedObj.bank2bank ? messages.other.yes : messages.other.no}
+              </p>
+            </div>
 
             {!isTransaction(selectedObj) && (
               <div className="flex justify-between items-center">
@@ -280,6 +308,38 @@ export default function TransactionBillModal({
                   </option>
                 ))}
               </select>
+            </div>
+
+            {/* Bank Selection */}
+            <div className="flex flex-col gap-1">
+              <label className="font-bold text-sm" htmlFor="bank">
+                {messages.form.select} {messages.other.bank.toLowerCase()}
+              </label>
+              <select
+                name="bank"
+                className="text-slate-800 rounded-md p-2 w-full"
+                onChange={(e) => setBankId(e.target.value)}
+                value={bankId}
+              >
+                {banks.map((bank) => (
+                  <option key={bank.id} value={bank.id}>
+                    {bank.bankName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Bank to Bank Transfer */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="bank2bank"
+                checked={bank2bank}
+                onChange={() => setBank2Bank(!bank2bank)}
+              />
+              <label htmlFor="bank2bank" className="text-sm">
+                {messages.form.bank2bank}
+              </label>
             </div>
 
             {/* Action Buttons */}

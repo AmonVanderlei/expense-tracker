@@ -25,6 +25,7 @@ export default function Home() {
     balance,
     recentTransactions,
     nextBills,
+    banks,
     categories,
     setShowTransactionOrBill,
   } = context;
@@ -39,6 +40,7 @@ export default function Home() {
   const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
     null
   );
+  const [bankMenu, setBankMenu] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -87,11 +89,16 @@ export default function Home() {
       </div>
 
       {/* Incomes and Expenses */}
-      <div className="w-11/12 bg-slate-900 rounded-lg p-4 flex flex-col gap-6">
-        <div className="flex items-center justify-between">
+      <div
+        className="w-11/12 bg-slate-900 rounded-lg py-4 flex flex-col"
+        onClick={() => setBankMenu((prevState) => !prevState)}
+      >
+        <div className="flex items-center justify-between mb-6 px-4">
           <div>
             <h2 className="text-base">{messages.other.totalBalance}</h2>
-            <p className="text-3xl font-semibold">{formatCurrency(balance)}</p>
+            <p className="text-3xl font-semibold">
+              {formatCurrency(balance.totalBalance)}
+            </p>
           </div>
           <p
             className={clsx(
@@ -103,7 +110,8 @@ export default function Home() {
             {formatCurrency(dataCurrentMonth.diff)}
           </p>
         </div>
-        <div className="flex w-full justify-between">
+
+        <div className="flex w-full justify-between px-4 mb-2">
           <div className="flex flex-col items-start justify-center">
             <div className="flex items-center gap-2">
               <div className="bg-slate-50 bg-opacity-25 p-1 rounded-full">
@@ -127,6 +135,44 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        {bankMenu &&
+          dataCurrentMonth.dataPerBank.map((bankData) => {
+            return (
+              <div
+                key={bankData.bank.id}
+                style={{
+                  color: bankData.bank.color,
+                  borderColor: bankData.bank.color,
+                }}
+                className="flex justify-between p-4 border-x-2 items-center"
+              >
+                <div className="max-w-[50%]">
+                  <p className="text-xl font-bold">{bankData.bank.bankName}</p>
+                  <p>
+                    {formatCurrency(balance[bankData.bank.bankName] as number)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-green-500">
+                    {formatCurrency(bankData.income)}
+                  </p>
+                  <p className="text-red-500">
+                    {formatCurrency(bankData.expenses)}
+                  </p>
+                  <p
+                    className={clsx(
+                      "text-base border-t-2 border-slate-600",
+                      bankData.diff > 0 && "text-green-500",
+                      bankData.diff < 0 && "text-red-500"
+                    )}
+                  >
+                    {formatCurrency(bankData.diff)}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
       </div>
 
       {/* Monthly Budget */}
@@ -175,6 +221,7 @@ export default function Home() {
         </div>
         <TransactionsComponent
           transactionsList={recentTransactions}
+          banks={banks}
           categories={categories}
           setSelectedObj={setSelectedObj}
           openModal={setModalIsOpen}

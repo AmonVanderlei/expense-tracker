@@ -18,16 +18,17 @@ import {
   deleteDocument,
   updateDocument,
 } from "@/utils/data";
-import { YearData, MonthData } from "@/types/Data";
+import { YearData, MonthData, Balance } from "@/types/Data";
 import Transaction from "@/types/Transaction";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import { toast, ToastContentProps } from "react-toastify";
 import { AuthContext } from "./authContext";
 import Budget from "@/types/Budget";
+import Bank from "@/types/Bank";
 
 export interface DataContextType {
-  balance: number;
+  balance: Balance;
   budget: Budget;
   showTransactionOrBill: string;
   setShowTransactionOrBill: Dispatch<SetStateAction<string>>;
@@ -36,11 +37,12 @@ export interface DataContextType {
   bills: Bill[];
   nextBills: Bill[];
   categories: Category[];
+  banks: Bank[];
   dataCurrentMonth: MonthData;
   dataPerYear: YearData[];
-  addObj: (obj: Transaction | Bill | Category | Budget) => void;
-  updateObj: (obj: Transaction | Bill | Category | Budget) => void;
-  deleteObj: (obj: Transaction | Bill | Category) => void;
+  addObj: (obj: Transaction | Bill | Category | Bank | Budget) => void;
+  updateObj: (obj: Transaction | Bill | Category | Bank | Budget) => void;
+  deleteObj: (obj: Transaction | Bill | Category | Bank) => void;
 }
 
 export const DataContext = createContext<DataContextType | null>(null);
@@ -56,7 +58,7 @@ export default function DataContextProvider({ children }: Props) {
   }
   const { user, messages } = authContext;
 
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState<Balance>({ totalBalance: 0 });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
     []
@@ -64,6 +66,7 @@ export default function DataContextProvider({ children }: Props) {
   const [bills, setBills] = useState<Bill[]>([]);
   const [nextBills, setNextBills] = useState<Bill[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [banks, setBanks] = useState<Bank[]>([]);
   const [budget, setBudget] = useState<Budget>({
     id: "",
     bdgt: 0,
@@ -75,6 +78,7 @@ export default function DataContextProvider({ children }: Props) {
     diff: 0,
     monthStr: "",
     expensesPerCategory: [],
+    dataPerBank: [],
   });
   const [dataPerYear, setDataPerYear] = useState<YearData[]>([]);
   const [showTransactionOrBill, setShowTransactionOrBill] =
@@ -88,12 +92,14 @@ export default function DataContextProvider({ children }: Props) {
         const transactionsData = await getDocuments("transactions", user.uid);
         const billsData = await getDocuments("bills", user.uid);
         const categoriesData = await getDocuments("categories", user.uid);
+        const banksData = await getDocuments("banks", user.uid);
 
         setTransactions(
           getRecentTransactions(transactionsData as Transaction[])
         );
         setBills(getNextBills(billsData as Bill[], false));
         setCategories(categoriesData as Category[]);
+        setBanks(banksData as Bank[]);
 
         if (budget.id == "") {
           const budgetsData = await getDocuments("budgets", user.uid);
@@ -110,18 +116,19 @@ export default function DataContextProvider({ children }: Props) {
   useEffect(() => {
     const updateData = async () => {
       try {
-        setBalance(getBalance(transactions));
+        setBalance(getBalance(transactions, banks));
         setRecentTransactions(getRecentTransactions(transactions, 5));
         setNextBills(getNextBills(bills, true, 5));
         setDataCurrentMonth(
           getDataPerMonth(
             transactions,
             categories,
+            banks,
             new Date().getFullYear(),
             new Date().getMonth()
           )
         );
-        setDataPerYear(getDataPerYear(transactions, categories));
+        setDataPerYear(getDataPerYear(transactions, categories, banks));
       } catch (error) {
         toast.error(messages.error.update + error);
       }
@@ -130,7 +137,7 @@ export default function DataContextProvider({ children }: Props) {
     updateData();
   }, [transactions, bills, categories]);
 
-  async function addObj(obj: Transaction | Bill | Category | Budget) {
+  async function addObj(obj: Transaction | Bill | Category | Bank | Budget) {
     const { id, ...objWithoutId } = obj;
     if ("date" in obj) {
       // Add to firebase
@@ -176,6 +183,18 @@ export default function DataContextProvider({ children }: Props) {
         bdgt: obj.bdgt,
         uid: user?.uid as string,
       });
+    } else if ("bankName" in obj) {
+      // Add to firebase
+      const newId = await toast.promise(addDocument("banks", obj), {
+        pending: messages.loading.add,
+        success: messages.success.add,
+        error: messages.error.something,
+      });
+
+      // Add locally
+      setBanks((prevState) => {
+        return [...prevState, { id: newId, ...objWithoutId } as Bank];
+      });
     } else {
       // Add to firebase
       const newId = await toast.promise(addDocument("categories", obj), {
@@ -191,7 +210,7 @@ export default function DataContextProvider({ children }: Props) {
     }
   }
 
-  function updateObj(obj: Transaction | Bill | Category | Budget) {
+  function updateObj(obj: Transaction | Bill | Category | Bank | Budget) {
     if ("date" in obj) {
       // Update on firebase
       toast.promise(updateDocument("transactions", obj), {
@@ -232,16 +251,31 @@ export default function DataContextProvider({ children }: Props) {
 
       // Update locally
       setBudget(obj);
-    } else {
-      setCategories((prevState) => {
-        // Update on firebase
-        toast.promise(updateDocument("categories", obj), {
-          pending: messages.loading.update,
-          success: messages.success.update,
-          error: messages.error.something,
-        });
+    } else if ("bankName" in obj) {
+      // Update on firebase
+      toast.promise(updateDocument("banks", obj), {
+        pending: messages.loading.update,
+        success: messages.success.update,
+        error: messages.error.something,
+      });
 
-        // Update locally
+      // Update locally
+      setBanks((prevState) => {
+        const updatedBanks = prevState.map((b) =>
+          b.id === obj.id ? { ...b, ...obj } : b
+        );
+        return updatedBanks;
+      });
+    } else {
+      // Update on firebase
+      toast.promise(updateDocument("categories", obj), {
+        pending: messages.loading.update,
+        success: messages.success.update,
+        error: messages.error.something,
+      });
+
+      // Update locally
+      setCategories((prevState) => {
         const updatedCategories = prevState.map((c) =>
           c.id === obj.id ? { ...c, ...obj } : c
         );
@@ -272,7 +306,7 @@ export default function DataContextProvider({ children }: Props) {
     );
   }
 
-  function deleteObj(obj: Transaction | Bill | Category) {
+  function deleteObj(obj: Transaction | Bill | Category | Bank) {
     toast(CustomNotification, {
       closeButton: false,
       position: "bottom-center",
@@ -310,6 +344,18 @@ export default function DataContextProvider({ children }: Props) {
                   false
                 );
               });
+            } else if ("bankName" in obj) {
+              // Delete on firebase
+              toast.promise(deleteDocument("banks", obj.id), {
+                pending: messages.loading.delete,
+                success: messages.success.delete,
+                error: messages.error.something,
+              });
+
+              // Delete locally
+              setBanks((prevState) => {
+                return prevState.filter((bank) => bank.id !== obj.id);
+              });
             } else {
               // Delete on firebase
               toast.promise(deleteDocument("categories", obj.id), {
@@ -338,6 +384,7 @@ export default function DataContextProvider({ children }: Props) {
     bills,
     nextBills,
     categories,
+    banks,
     dataCurrentMonth,
     dataPerYear,
     addObj,

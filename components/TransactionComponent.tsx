@@ -1,4 +1,5 @@
 import { AuthContext } from "@/contexts/authContext";
+import Bank from "@/types/Bank";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
 import Transaction from "@/types/Transaction";
@@ -8,12 +9,14 @@ import { Dispatch, SetStateAction, useContext } from "react";
 
 interface Props {
   obj: Transaction;
+  banks: Bank[];
   categories: Category[];
   setSelectedObj: Dispatch<SetStateAction<Transaction | Bill | null>>;
   openModal: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Transactions({
+  banks,
   categories,
   obj,
   setSelectedObj,
@@ -25,9 +28,11 @@ export default function Transactions({
   }
   const { messages } = authContext;
   const category = categories.find((cat) => cat.id === obj.categoryId);
+  const bank = banks?.find((b) => b.id === obj.bankId);
   return (
     <div
-      className="flex justify-between items-center w-full"
+      style={{ borderBlockColor: bank?.color }}
+      className="flex justify-between items-center w-full border-b-2 pb-2"
       onClick={() => {
         setSelectedObj(obj);
         openModal(true);

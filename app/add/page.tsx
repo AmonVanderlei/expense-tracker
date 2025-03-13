@@ -5,19 +5,22 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/authContext";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 
 export default function Add() {
   const context = useContext(DataContext);
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { addObj, categories } = context;
+  const { addObj, categories, banks } = context;
 
   const router = useRouter();
 
   const [show, setShow] = useState<string>("Transaction");
-  const [type, setType] = useState<string>("Income");
+  const [type, setType] = useState<string>("Expense");
   const [categoryId, setCategoryId] = useState<string>("");
+  const [bankId, setBankId] = useState<string>("");
+  const [bank2bank, setBank2Bank] = useState<boolean>(false);
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const amountRef = useRef<HTMLInputElement | null>(null);
@@ -34,7 +37,7 @@ export default function Add() {
     const name = nameRef.current?.value.trim();
     const amount = amountRef.current?.value.trim();
 
-    if (!name || !amount || !type || !categoryId) {
+    if (!name || !amount || !type || !categoryId || !bankId) {
       toast.warning(messages.form.fillAll);
       return;
     }
@@ -46,7 +49,9 @@ export default function Add() {
         destiny: name,
         date: new Date(),
         amount: +amount,
-        categoryId: categoryId,
+        categoryId,
+        bankId,
+        bank2bank,
         uid: user?.uid as string,
       });
     } else if (show === "Bill") {
@@ -64,7 +69,9 @@ export default function Add() {
         paymentDay: +paymentDay,
         nextPayment: new Date(),
         amount: +amount,
-        categoryId: categoryId,
+        categoryId,
+        bankId,
+        bank2bank,
         uid: user?.uid as string,
       });
     }
@@ -77,6 +84,12 @@ export default function Add() {
       router.push("/auth");
     }
   }, [loading, user, router]);
+
+  useEffect(() => {
+    if (banks.length < 1 || categories.length < 1) {
+      router.push("/profile");
+    }
+  }, [banks, categories]);
 
   if (loading || !user) {
     return (
@@ -197,6 +210,47 @@ export default function Add() {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Bank */}
+        <div className="flex flex-col gap-1">
+          <label className="font-bold text-sm" htmlFor="bank">
+            {messages.form.select} {messages.other.bank.toLowerCase()}
+          </label>
+          <select
+            name="bank"
+            value={bankId}
+            className="text-slate-800 rounded-md p-2 w-full"
+            onChange={(e) => setBankId(e.target.value)}
+          >
+            <option value="">
+              {messages.other.chooseA} {messages.other.bank.toLowerCase()}
+            </option>
+            {banks.map((bank) => (
+              <option key={bank.id} value={bank.id}>
+                {bank.bankName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Bank to Bank Transfer */}
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="bank2bank"
+            checked={bank2bank}
+            onChange={() => setBank2Bank(!bank2bank)}
+          />
+          <label htmlFor="bank2bank" className="text-sm">
+            {messages.form.bank2bank}
+          </label>
+          <div className="relative group">
+            <IoMdInformationCircleOutline className="text-lg cursor-pointer" />
+            <div className="bg-slate-700 p-2 rounded-lg text-sm absolute bottom-full mb-1 left-0 w-52 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              {messages.form.bank2bankInfo}
+            </div>
+          </div>
         </div>
 
         {/* Submit Button */}

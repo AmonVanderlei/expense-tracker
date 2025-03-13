@@ -7,5 +7,7 @@ export default interface Bill {
   nextPayment: Date;
   amount: number;
   categoryId: string;
+  bankId: string;
+  bank2bank: boolean;
   uid: string;
 }

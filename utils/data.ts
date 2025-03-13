@@ -1,6 +1,6 @@
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
-import { ExpensesPerCategory, MonthData, YearData } from "@/types/Data";
+import { Balance, MonthData, YearData } from "@/types/Data";
 import Transaction from "@/types/Transaction";
 import {
   addDoc,
@@ -14,10 +14,11 @@ import {
 } from "firebase/firestore";
 import { db } from "@/utils/firebase/index";
 import Budget from "@/types/Budget";
+import Bank from "@/types/Bank";
 
 export async function addDocument(
   col: string,
-  obj: Transaction | Bill | Category | Budget
+  obj: Transaction | Bill | Category | Bank | Budget
 ) {
   try {
     const { id, ...objWithoutId } = obj;
@@ -32,7 +33,7 @@ export async function addDocument(
 
 export async function updateDocument(
   col: string,
-  obj: Transaction | Bill | Category | Budget
+  obj: Transaction | Bill | Category | Bank | Budget
 ) {
   try {
     const docRef = doc(db, col, obj.id);
@@ -57,7 +58,7 @@ export async function deleteDocument(col: string, objId: string) {
 export async function getDocuments(
   col: string,
   uid: string
-): Promise<Transaction[] | Bill[] | Category[] | Budget[]> {
+): Promise<Transaction[] | Bill[] | Category[] | Bank[] | Budget[]> {
   try {
     const collectionRef = collection(db, col);
     const q = query(collectionRef, where("uid", "==", uid));
@@ -73,6 +74,8 @@ export async function getDocuments(
           date: new Date(doc.data().date.toMillis()),
           amount: +doc.data().amount,
           categoryId: doc.data().categoryId,
+          bankId: doc.data().bankId,
+          bank2bank: doc.data().bank2bank,
         } as Transaction;
       });
     } else if (col == "bills") {
@@ -86,6 +89,8 @@ export async function getDocuments(
           nextPayment: new Date(doc.data().nextPayment.toMillis()),
           amount: +doc.data().amount,
           categoryId: doc.data().categoryId,
+          bankId: doc.data().bankId,
+          bank2bank: doc.data().bank2bank,
         } as Bill);
       });
     } else if (col == "budgets") {
@@ -94,6 +99,14 @@ export async function getDocuments(
           id: doc.id,
           bdgt: doc.data().bdgt,
         } as Budget;
+      });
+    } else if (col == "banks") {
+      return docsSnap.docs.map((doc) => {
+        return {
+          id: doc.id,
+          color: doc.data().color as string,
+          bankName: doc.data().bankName as string,
+        } as Bank;
       });
     } else {
       return docsSnap.docs.map((doc) => {
@@ -111,84 +124,29 @@ export async function getDocuments(
 
 export function getDataPerYear(
   transactions: Transaction[],
-  categories: Category[]
+  categories: Category[],
+  banks: Bank[]
 ): YearData[] {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
   const years = Array.from(
     new Set(transactions.map((t) => t.date.getFullYear()))
   );
 
-  const dataByYear = years.map((year) => {
-    const data: MonthData[] = months.map((monthStr, index) => {
-      const monthlyTransactions: Transaction[] = transactions.filter(
-        (t: Transaction) =>
-          t.date.getMonth() === index && t.date.getFullYear() === year
-      );
-
-      const income: number = monthlyTransactions
-        .filter((t: Transaction) => t.type === "income")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const expenses: number = monthlyTransactions
-        .filter((t: Transaction) => t.type === "expense")
-        .reduce((sum, t) => sum + t.amount, 0);
-
-      const diff: number = income - expenses;
-
-      const expensesPerCategory: ExpensesPerCategory[] = categories.map(
-        (category) => {
-          const totalSpent = monthlyTransactions
-            .filter(
-              (transaction) =>
-                transaction.categoryId === category.id &&
-                transaction.type === "expense"
-            )
-            .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-          return {
-            id: category.id,
-            color: category.color,
-            label: category.name,
-            value: totalSpent,
-          };
-        }
-      );
-
-      return {
-        income,
-        expenses,
-        diff,
-        monthStr,
-        expensesPerCategory,
-      } as MonthData;
-    });
+  return years.map((year) => {
+    const data: MonthData[] = Array.from({ length: 12 }, (_, month) =>
+      getDataPerMonth(transactions, categories, banks, year, month)
+    );
 
     return {
       year,
       data,
     };
   });
-
-  return dataByYear;
 }
 
 export function getDataPerMonth(
   transactions: Transaction[],
   categories: Category[],
+  banks: Bank[],
   year: number,
   month: number
 ): MonthData {
@@ -209,7 +167,9 @@ export function getDataPerMonth(
 
   const monthlyTransactions = transactions.filter(
     (t: Transaction) =>
-      t.date.getMonth() === month && t.date.getFullYear() === year
+      t.date.getMonth() === month &&
+      t.date.getFullYear() === year &&
+      !t.bank2bank
   );
 
   const income = monthlyTransactions
@@ -234,10 +194,31 @@ export function getDataPerMonth(
       .reduce((sum, transaction) => sum + transaction.amount, 0);
 
     return {
-      id: category.id,
-      color: category.color,
-      label: category.name,
+      category: category,
       value: totalSpent,
+    };
+  });
+
+  const dataPerBank = banks.map((bank) => {
+    const bankTransactions = monthlyTransactions.filter(
+      (t: Transaction) => t.bankId === bank.id
+    );
+
+    const bankIncome = bankTransactions
+      .filter((t: Transaction) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const bankExpenses = bankTransactions
+      .filter((t: Transaction) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const bankDiff = bankIncome - bankExpenses;
+
+    return {
+      bank: bank,
+      income: bankIncome,
+      expenses: bankExpenses,
+      diff: bankDiff,
     };
   });
 
@@ -247,6 +228,7 @@ export function getDataPerMonth(
     diff,
     monthStr,
     expensesPerCategory,
+    dataPerBank,
   };
 }
 
@@ -291,16 +273,34 @@ export function updateBill(bill: Bill): Bill {
   }
 }
 
-export function getBalance(transactions: Transaction[]): number {
+export function getBalance(
+  transactions: Transaction[],
+  banks: Bank[]
+): Balance {
   const income = transactions
-    .filter((t: Transaction) => t.type === "income")
+    .filter((t) => t.type === "income")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const expenses = transactions
-    .filter((t: Transaction) => t.type === "expense")
+    .filter((t) => t.type === "expense")
     .reduce((sum, t) => sum + t.amount, 0);
 
-  const balance = income - expenses;
+  const totalBalance = income - expenses;
 
-  return balance;
+  const balancePerBank = banks.reduce((acc, bank) => {
+    const bankTransactions = transactions.filter((t) => t.bankId === bank.id);
+
+    const bankIncome = bankTransactions
+      .filter((t) => t.type === "income")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const bankExpenses = bankTransactions
+      .filter((t) => t.type === "expense")
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    acc[bank.bankName] = bankIncome - bankExpenses;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return { totalBalance, ...balancePerBank };
 }

@@ -23,7 +23,8 @@ export default function BillComponent({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { categories, addObj, updateObj, setShowTransactionOrBill } = context;
+  const { banks, categories, addObj, updateObj, setShowTransactionOrBill } =
+    context;
   const authContext = useContext(AuthContext);
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
@@ -38,6 +39,8 @@ export default function BillComponent({
       date: new Date(),
       amount: bill.amount,
       categoryId: bill.categoryId,
+      bankId: bill.bankId,
+      bank2bank: bill.bank2bank,
       uid: user?.uid as string,
     });
 
@@ -60,6 +63,7 @@ export default function BillComponent({
   }
 
   const category = categories.find((cat) => cat.id === obj.categoryId);
+  const bank = banks?.find((b) => b.id === obj.bankId);
   return (
     <div
       className={clsx(
@@ -67,7 +71,10 @@ export default function BillComponent({
         obj.paid && "opacity-50"
       )}
     >
-      <div className="flex justify-between items-center w-full">
+      <div
+        style={{ borderBlockColor: bank?.color }}
+        className="flex justify-between items-center w-full border-b-2 pb-2"
+      >
         <div
           className="grow flex items-center justify-between mr-2 gap-1"
           onClick={() => {
