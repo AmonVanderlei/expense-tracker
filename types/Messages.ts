@@ -33,6 +33,8 @@ export interface Messages {
     selectBoth: string;
     bank2bank: string;
     bank2bankInfo: string;
+    sameBank: string;
+    invalidBank: string;
   };
   button: {
     confirmation: string;

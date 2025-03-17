@@ -20,6 +20,7 @@ export default function Add() {
   const [type, setType] = useState<string>("Expense");
   const [categoryId, setCategoryId] = useState<string>("");
   const [bankId, setBankId] = useState<string>("");
+  const [bankIncomeId, setBankIncomeId] = useState<string>("");
   const [bank2bank, setBank2Bank] = useState<boolean>(false);
 
   const nameRef = useRef<HTMLInputElement | null>(null);
@@ -79,6 +80,62 @@ export default function Add() {
     router.push("/");
   };
 
+  const bank2bankSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const amount = amountRef.current?.value.trim();
+
+    if (!amount || !type || !categoryId || !bankId || !bankIncomeId) {
+      toast.warning(messages.form.fillAll);
+      return;
+    }
+
+    if (bankId === bankIncomeId) {
+      toast.warning(messages.form.sameBank);
+      return;
+    }
+
+    const bankExpense = banks.find((bank) => bank.id === bankId);
+    const bankIncome = banks.find((bank) => bank.id === bankIncomeId);
+
+    if (!bankExpense || !bankIncome) {
+      toast.warning(messages.form.invalidBank);
+      return;
+    }
+
+    addObj({
+      id: "",
+      type: "expense",
+      destiny: bankIncome.bankName,
+      date: new Date(),
+      amount: +amount,
+      categoryId,
+      bankId: bankExpense.id,
+      bank2bank,
+      uid: user?.uid as string,
+    });
+
+    addObj({
+      id: "",
+      type: "income",
+      destiny: bankExpense.bankName,
+      date: new Date(),
+      amount: +amount,
+      categoryId,
+      bankId: bankIncome.id,
+      bank2bank,
+      uid: user?.uid as string,
+    });
+
+    router.push("/");
+  };
+
+  useEffect(() => {
+    if (show == "Bill") {
+      setBank2Bank(false);
+    }
+  }, [show]);
+
   useEffect(() => {
     if (!loading && !user) {
       router.push("/auth");
@@ -116,7 +173,7 @@ export default function Add() {
       </header>
 
       {/* Select type of form */}
-      <div className="flex items-center justify-between w-11/12 gap-2">
+      <div className="flex items-center justify-center w-11/12 gap-2">
         <select
           name="transactionOrBill"
           value={show}
@@ -127,32 +184,45 @@ export default function Add() {
           <option value="Bill">{messages.other.bill}</option>
         </select>
 
-        <select
-          name="selectType"
-          value={type}
-          className="text-slate-800 rounded-md p-2 w-1/2"
-          onChange={(e) => setType(e.target.value)}
-        >
-          <option value="Income">{messages.other.income}</option>
-          <option value="Expense">{messages.other.expense}</option>
-        </select>
+        {!bank2bank && (
+          <select
+            name="selectType"
+            value={type}
+            className="text-slate-800 rounded-md p-2 w-1/2"
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="Income">{messages.other.income}</option>
+            <option value="Expense">{messages.other.expense}</option>
+          </select>
+        )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-11/12">
+      <form
+        onSubmit={(e) => {
+          if (bank2bank) {
+            bank2bankSubmit(e);
+          } else {
+            handleSubmit(e);
+          }
+        }}
+        className="flex flex-col gap-4 w-11/12"
+      >
         {/* Name */}
-        <div className="flex flex-col gap-1">
-          <label className="font-bold text-sm" htmlFor="name">
-            {type === "Income" ? messages.form.from : messages.form.to}
-          </label>
-          <input
-            type="text"
-            name="name"
-            className="p-2 rounded-xl bg-slate-700 border"
-            ref={nameRef}
-            placeholder={messages.form.type}
-            required
-          />
-        </div>
+        {!bank2bank && (
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-sm" htmlFor="name">
+              {type === "Income" ? messages.form.from : messages.form.to}
+            </label>
+            <input
+              type="text"
+              name="name"
+              className="p-2 rounded-xl bg-slate-700 border"
+              ref={nameRef}
+              placeholder={messages.form.type}
+              required
+            />
+          </div>
+        )}
 
         {/* Payment day */}
         {show === "Bill" && (
@@ -212,10 +282,11 @@ export default function Add() {
           </select>
         </div>
 
-        {/* Bank */}
+        {/* Bank - Expense */}
         <div className="flex flex-col gap-1">
           <label className="font-bold text-sm" htmlFor="bank">
             {messages.form.select} {messages.other.bank.toLowerCase()}
+            {bank2bank && " - " + messages.other.expense}
           </label>
           <select
             name="bank"
@@ -234,24 +305,51 @@ export default function Add() {
           </select>
         </div>
 
+        {/* Bank - Income */}
+        {bank2bank && (
+          <div className="flex flex-col gap-1">
+            <label className="font-bold text-sm" htmlFor="bankIncome">
+              {messages.form.select} {messages.other.bank.toLowerCase()} -{" "}
+              {messages.other.income}
+            </label>
+            <select
+              name="bankIncome"
+              value={bankIncomeId}
+              className="text-slate-800 rounded-md p-2 w-full"
+              onChange={(e) => setBankIncomeId(e.target.value)}
+            >
+              <option value="">
+                {messages.other.chooseA} {messages.other.bank.toLowerCase()}
+              </option>
+              {banks.map((bank) => (
+                <option key={bank.id} value={bank.id}>
+                  {bank.bankName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         {/* Bank to Bank Transfer */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="bank2bank"
-            checked={bank2bank}
-            onChange={() => setBank2Bank(!bank2bank)}
-          />
-          <label htmlFor="bank2bank" className="text-sm">
-            {messages.form.bank2bank}
-          </label>
-          <div className="relative group">
-            <IoMdInformationCircleOutline className="text-lg cursor-pointer group-hover:opacity-50" />
-            <div className="bg-slate-700 p-2 rounded-lg text-sm absolute bottom-full mb-1 left-0 w-52 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
-              {messages.form.bank2bankInfo}
+        {show == "Transaction" && (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="bank2bank"
+              checked={bank2bank}
+              onChange={() => setBank2Bank(!bank2bank)}
+            />
+            <label htmlFor="bank2bank" className="text-sm">
+              {messages.form.bank2bank}
+            </label>
+            <div className="relative group">
+              <IoMdInformationCircleOutline className="text-lg cursor-pointer group-hover:opacity-50" />
+              <div className="bg-slate-700 p-2 rounded-lg text-sm absolute bottom-full mb-1 left-0 w-52 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200">
+                {messages.form.bank2bankInfo}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Submit Button */}
         <button

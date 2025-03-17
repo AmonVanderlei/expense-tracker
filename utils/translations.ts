@@ -39,6 +39,8 @@ export const languages: { lang: string; messages: Messages }[] = [
         bank2bank: "Internal Transfer",
         bank2bankInfo:
           "Transfer from you to yourself. It'll not appear in the statistics.",
+        sameBank: "Select different banks!",
+        invalidBank: "Select a valid bank!",
       },
       button: {
         confirmation: "Are you sure you want to delete it?",
@@ -133,6 +135,8 @@ export const languages: { lang: string; messages: Messages }[] = [
         bank2bank: "Transferência Interna",
         bank2bankInfo:
           "Transferência de você para você mesmo. Ela não aparecerá nas estatíticas.",
+        sameBank: "Selecione bancos diferentes!",
+        invalidBank: "Selecione um banco válido!",
       },
       button: {
         confirmation: "Tem certeza de que deseja excluir?",
