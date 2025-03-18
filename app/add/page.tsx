@@ -174,26 +174,24 @@ export default function Add() {
 
       {/* Select type of form */}
       <div className="flex items-center justify-center w-11/12 gap-2">
-        <select
-          name="transactionOrBill"
-          value={show}
-          className="text-slate-800 rounded-md p-2 w-1/2"
-          onChange={(e) => setShow(e.target.value)}
+        <button
+          className="rounded-lg p-2 w-1/2 border-2"
+          onClick={() =>
+            setShow(show === "Transaction" ? "Bill" : "Transaction")
+          }
         >
-          <option value="Transaction">{messages.other.transaction}</option>
-          <option value="Bill">{messages.other.bill}</option>
-        </select>
+          {show === "Transaction"
+            ? messages.other.transaction
+            : messages.other.bill}
+        </button>
 
         {!bank2bank && (
-          <select
-            name="selectType"
-            value={type}
-            className="text-slate-800 rounded-md p-2 w-1/2"
-            onChange={(e) => setType(e.target.value)}
+          <button
+            className="rounded-lg p-2 w-1/2 border-2"
+            onClick={() => setType(type === "Income" ? "Expense" : "Income")}
           >
-            <option value="Income">{messages.other.income}</option>
-            <option value="Expense">{messages.other.expense}</option>
-          </select>
+            {type === "Income" ? messages.other.expense : messages.other.income}
+          </button>
         )}
       </div>
 
