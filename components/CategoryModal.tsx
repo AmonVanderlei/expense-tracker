@@ -80,7 +80,7 @@ export default function CategoryModal({ show, onClose }: Props) {
 
         {!isEditing ? (
           <div className="flex flex-col gap-4">
-            <ul className="flex flex-col gap-3 max-h-[70vh] overflow-scroll">
+            <ul className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
               {categories.map((category) => (
                 <li
                   key={category.id}

@@ -152,7 +152,7 @@ export default function Profile() {
           <LiaInfoSolid className="text-3xl" /> {messages.other.about}
         </a>
         <li
-          className="flex gap-2"
+          className="flex gap-2 cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             setModalIsOpen(true);
@@ -162,7 +162,7 @@ export default function Profile() {
           {messages.other.manage} {messages.other.categories}
         </li>
         <li
-          className="flex gap-2"
+          className="flex gap-2 cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             setBankModalIsOpen(true);
@@ -171,11 +171,11 @@ export default function Profile() {
           <PiBank className="text-3xl" />
           {messages.other.manage} {messages.other.banks}
         </li>
-        <li className="flex gap-2" onClick={handleLanguage}>
+        <li className="flex gap-2 cursor-pointer" onClick={handleLanguage}>
           <HiLanguage className="text-3xl" />
           {messages.form.select} {messages.other.language}
         </li>
-        <li className="flex gap-2" onClick={logout}>
+        <li className="flex gap-2 cursor-pointer" onClick={logout}>
           <VscSignOut className="text-3xl" />
           {messages.other.logout}
         </li>

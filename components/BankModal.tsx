@@ -78,7 +78,7 @@ export default function BankModal({ show, onClose }: Props) {
 
         {!isEditing ? (
           <div className="flex flex-col gap-4">
-            <ul className="flex flex-col gap-3 max-h-[70vh] overflow-scroll">
+            <ul className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
               {banks.map((bank) => (
                 <li
                   key={bank.id}

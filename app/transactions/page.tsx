@@ -19,6 +19,7 @@ export default function Transactions() {
   const {
     showTransactionOrBill,
     setShowTransactionOrBill,
+    dataCurrentMonth,
     transactions,
     bills,
     banks,
@@ -64,17 +65,38 @@ export default function Transactions() {
       )}
 
       {/* Header */}
-      <header className="w-full flex items-center justify-center relative pt-4">
-        <h1 className="text-xl font-bold">{messages.other.transactions}</h1>
-      </header>
+      <header className="w-full flex flex-col items-center pt-4 gap-4">
+        {/* Total Balance */}
+        <div className="flex flex-col items-center">
+          <p className="text-base">{messages.other.totalBalance}</p>
+          <p className="text-xl font-bold">
+            {formatCurrency(balance.totalBalance)}
+          </p>
+        </div>
 
-      {/* Total Balance */}
-      <div className="flex flex-col items-center">
-        <p className="text-base">{messages.other.totalBalance}</p>
-        <p className="text-xl font-bold">
-          {formatCurrency(balance.totalBalance)}
-        </p>
-      </div>
+        <div className="flex w-11/12 overflow-x-auto bg-slate-900 p-4 rounded-lg">
+          {dataCurrentMonth.dataPerBank.map((bankData) => {
+            return (
+              <div
+                key={bankData.bank.id}
+                className="flex flex-col justify-end pr-4 mr-4 min-w-fit border-r-2"
+              >
+                <p
+                  style={{
+                    color: bankData.bank.color,
+                  }}
+                  className="text-xl font-bold"
+                >
+                  {bankData.bank.bankName}
+                </p>
+                <p>
+                  {formatCurrency(balance[bankData.bank.bankName] as number)}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </header>
 
       {/* Transactions | Upcoming Bills */}
       <div className="w-full flex justify-around">
@@ -105,7 +127,7 @@ export default function Transactions() {
         </button>
       </div>
 
-      <div className="w-11/12">
+      <div className="w-11/12 max-h-[80vh] overflow-y-auto">
         {showTransactionOrBill === "transactions" ? (
           <div className="flex flex-col gap-2 items-center">
             <h1 className="text-2xl font-bold">{messages.other.history}</h1>
