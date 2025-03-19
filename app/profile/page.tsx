@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { PiBank } from "react-icons/pi";
 import BankModal from "@/components/BankModal";
 import { DataContext } from "@/contexts/dataContext";
+import Loading from "@/components/Loading";
 
 export default function Profile() {
   const context = useContext(DataContext);
@@ -33,6 +34,7 @@ export default function Profile() {
       ? localStorage.getItem("language") || "en-us"
       : "en-us"
   );
+  const [hasMounted, setHasMounted] = useState(false);
 
   const router = useRouter();
 
@@ -92,6 +94,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!loading && !user) {
       router.push("/auth");
     }
@@ -99,20 +105,21 @@ export default function Profile() {
 
   useEffect(() => {
     if (banks.length < 1) {
-      toast.warning(messages.other.atLeastBank)
+      toast.warning(messages.other.atLeastBank);
     }
     if (categories.length < 1) {
-      toast.warning(messages.other.atLeastCategory)
+      toast.warning(messages.other.atLeastCategory);
     }
   }, [banks, categories]);
 
-  if (loading || !user) {
+  if (!hasMounted || loading) {
     return (
-      <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">{messages.loading.loading}</p>
+      <div className="absolute top-1/2 left-[47%]">
+        <Loading />
       </div>
     );
   }
+
   return (
     <div className="grow">
       {/* Modals */}

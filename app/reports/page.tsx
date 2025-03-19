@@ -5,6 +5,7 @@ import IncomeChart from "@/components/IncomeChart";
 import { DataContext } from "@/contexts/dataContext";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const months = [
   "January",
@@ -30,6 +31,7 @@ export default function Reports() {
 
   const [month, setMonth] = useState<string>("");
   const [year, setYear] = useState<string>("");
+  const [hasMounted, setHasMounted] = useState(false);
 
   const years = Array.from(
     new Set(transactions.map((t) => t.date.getFullYear()))
@@ -43,15 +45,19 @@ export default function Reports() {
   const router = useRouter();
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!loading && !user) {
       router.push("/auth");
     }
   }, [loading, user, router]);
 
-  if (loading || !user) {
+  if (!hasMounted || loading) {
     return (
-      <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">{messages.loading.loading}</p>
+      <div className="absolute top-1/2 left-[47%]">
+        <Loading />
       </div>
     );
   }

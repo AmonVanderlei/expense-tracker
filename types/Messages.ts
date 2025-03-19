@@ -16,7 +16,6 @@ export interface Messages {
     add: string;
     update: string;
     delete: string;
-    loading: string;
   };
   form: {
     fillAll: string;

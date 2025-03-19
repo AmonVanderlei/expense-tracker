@@ -1,0 +1,91 @@
+:root {
+  --uib-size: 28px;
+  --uib-color: #bcccd1;
+  --uib-speed: 3.5s;
+  --uib-stroke: 4px;
+  /* mult = size/stroke */
+  --uib-mult: 8;
+}
+
+.loading-container {
+  position: relative;
+  height: var(--uib-size);
+  width: var(--uib-size);
+}
+
+.loading-line {
+  position: absolute;
+  top: calc(50% - var(--uib-stroke) / 2);
+  left: calc(50% - var(--uib-stroke) / 2);
+  width: var(--uib-stroke);
+  height: var(--uib-stroke);
+  background-color: var(--uib-color);
+  animation: center-line var(--uib-speed) ease infinite;
+}
+
+.loading-container::before,
+.loading-container::after {
+  content: "";
+  position: absolute;
+  width: var(--uib-stroke);
+  height: var(--uib-stroke);
+  background-color: var(--uib-color);
+  animation: explore var(--uib-speed) ease infinite;
+}
+
+.loading-container::after {
+  animation-delay: calc(var(--uib-speed) * -0.5);
+}
+
+@keyframes center-line {
+  0%,
+  25%,
+  50%,
+  75%,
+  100% {
+    transform: scaleX(1) scaleY(1);
+  }
+  12.5%,
+  62.5% {
+    transform: scaleX(var(--uib-mult)) scaleY(1);
+  }
+  37.5%,
+  87.5% {
+    transform: scaleX(1) scaleY(var(--uib-mult));
+  }
+}
+
+@keyframes explore {
+  0%,
+  100% {
+    transform: scaleX(1) scaleY(1) translate(0%, 0%);
+    top: 0;
+    left: 0;
+  }
+  12.5% {
+    transform: scaleX(var(--uib-mult)) scaleY(1);
+  }
+  25% {
+    transform: scaleX(1) scaleY(1);
+    left: initial;
+    right: 0;
+  }
+  37.5% {
+    transform: scaleX(1) scaleY(var(--uib-mult));
+  }
+  50% {
+    transform: scaleX(1) scaleY(1);
+    top: initial;
+    bottom: 0;
+  }
+  62.5% {
+    transform: scaleX(var(--uib-mult)) scaleY(1);
+  }
+  75% {
+    transform: scaleX(1) scaleY(1);
+    left: 0;
+  }
+  87.5% {
+    transform: scaleX(1) scaleY(var(--uib-mult));
+  }
+}

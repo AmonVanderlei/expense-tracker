@@ -10,6 +10,7 @@ import Bill from "@/types/Bill";
 import TransactionBillModal from "@/components/TransactionBillModal";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/authContext";
+import Loading from "@/components/Loading";
 
 export default function Transactions() {
   const context = useContext(DataContext);
@@ -31,6 +32,7 @@ export default function Transactions() {
   const [selectedObj, setSelectedObj] = useState<Transaction | Bill | null>(
     null
   );
+  const [hasMounted, setHasMounted] = useState(false);
 
   const authContext = useContext(AuthContext);
   if (!authContext) {
@@ -40,15 +42,19 @@ export default function Transactions() {
   const router = useRouter();
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (!loading && !user) {
       router.push("/auth");
     }
   }, [loading, user, router]);
 
-  if (loading || !user) {
+  if (!hasMounted || loading) {
     return (
-      <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">{messages.loading.loading}</p>
+      <div className="absolute top-1/2 left-[47%]">
+        <Loading />
       </div>
     );
   }

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { AuthContext } from "@/contexts/authContext";
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import Loading from "@/components/Loading";
 
 export default function Add() {
   const context = useContext(DataContext);
@@ -22,6 +23,7 @@ export default function Add() {
   const [bankId, setBankId] = useState<string>("");
   const [bankIncomeId, setBankIncomeId] = useState<string>("");
   const [bank2bank, setBank2Bank] = useState<boolean>(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const amountRef = useRef<HTMLInputElement | null>(null);
@@ -131,6 +133,10 @@ export default function Add() {
   };
 
   useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
     if (show == "Bill") {
       setBank2Bank(false);
     }
@@ -148,10 +154,10 @@ export default function Add() {
     }
   }, [banks, categories]);
 
-  if (loading || !user) {
+  if (!hasMounted || loading) {
     return (
-      <div className="grow w-full h-full flex items-center justify-center">
-        <p className="text-xl">{messages.loading.loading}</p>
+      <div className="absolute top-1/2 left-[47%]">
+        <Loading />
       </div>
     );
   }

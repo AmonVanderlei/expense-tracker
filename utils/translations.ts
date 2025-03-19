@@ -21,7 +21,6 @@ export const languages: { lang: string; messages: Messages }[] = [
         add: "Adding...",
         update: "Updating...",
         delete: "Deleting...",
-        loading: "Loading...",
       },
       form: {
         fillAll: "Please fill out all fields.",
@@ -117,7 +116,6 @@ export const languages: { lang: string; messages: Messages }[] = [
         add: "Adicionando...",
         update: "Atualizando...",
         delete: "Excluindo...",
-        loading: "Carregando...",
       },
       form: {
         fillAll: "Por favor, preencha todos os campos.",
