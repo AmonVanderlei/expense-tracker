@@ -181,8 +181,8 @@ export default function Add() {
           }
         >
           {show === "Transaction"
-            ? messages.other.transaction
-            : messages.other.bill}
+            ? messages.other.bill
+            : messages.other.transaction}
         </button>
 
         {!bank2bank && (
