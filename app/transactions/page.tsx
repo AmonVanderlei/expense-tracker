@@ -20,7 +20,6 @@ export default function Transactions() {
   }
   const {
     visibleValues,
-    setVisibleValues,
     showTransactionOrBill,
     setShowTransactionOrBill,
     dataCurrentMonth,
