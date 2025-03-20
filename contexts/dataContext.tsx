@@ -28,6 +28,8 @@ import Budget from "@/types/Budget";
 import Bank from "@/types/Bank";
 
 export interface DataContextType {
+  visibleValues: boolean;
+  setVisibleValues: Dispatch<SetStateAction<boolean>>;
   balance: Balance;
   budget: Budget;
   showTransactionOrBill: string;
@@ -58,6 +60,7 @@ export default function DataContextProvider({ children }: Props) {
   }
   const { user, messages } = authContext;
 
+  const [visibleValues, setVisibleValues] = useState<boolean>(false);
   const [balance, setBalance] = useState<Balance>({ totalBalance: 0 });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
@@ -375,6 +378,8 @@ export default function DataContextProvider({ children }: Props) {
   }
 
   const values: DataContextType = {
+    visibleValues,
+    setVisibleValues,
     balance,
     budget,
     showTransactionOrBill,

@@ -11,6 +11,7 @@ import TransactionBillModal from "@/components/TransactionBillModal";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/authContext";
 import Loading from "@/components/Loading";
+import Eye from "@/components/Eye";
 
 export default function Transactions() {
   const context = useContext(DataContext);
@@ -18,6 +19,8 @@ export default function Transactions() {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const {
+    visibleValues,
+    setVisibleValues,
     showTransactionOrBill,
     setShowTransactionOrBill,
     dataCurrentMonth,
@@ -73,11 +76,14 @@ export default function Transactions() {
       {/* Header */}
       <header className="w-full flex flex-col items-center pt-4 gap-4">
         {/* Total Balance */}
-        <div className="flex flex-col items-center">
-          <p className="text-base">{messages.other.totalBalance}</p>
-          <p className="text-xl font-bold">
-            {formatCurrency(balance.totalBalance)}
-          </p>
+        <div className="w-full flex items-center justify-between px-8">
+          <div className="flex flex-col items-center">
+            <p className="text-base">{messages.other.totalBalance}</p>
+            <p className="text-xl font-bold">
+              {visibleValues ? formatCurrency(balance.totalBalance) : "* * * *"}
+            </p>
+          </div>
+          <Eye />
         </div>
 
         <div className="flex w-11/12 overflow-x-auto bg-slate-900 p-4 rounded-lg">
@@ -96,7 +102,9 @@ export default function Transactions() {
                   {bankData.bank.bankName}
                 </p>
                 <p>
-                  {formatCurrency(balance[bankData.bank.bankName] as number)}
+                  {visibleValues
+                    ? formatCurrency(balance[bankData.bank.bankName] as number)
+                    : "* * * *"}
                 </p>
               </div>
             );

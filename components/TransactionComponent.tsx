@@ -1,4 +1,5 @@
 import { AuthContext } from "@/contexts/authContext";
+import { DataContext } from "@/contexts/dataContext";
 import Bank from "@/types/Bank";
 import Bill from "@/types/Bill";
 import Category from "@/types/Category";
@@ -22,6 +23,12 @@ export default function Transactions({
   setSelectedObj,
   openModal,
 }: Props) {
+  const dataContext = useContext(DataContext);
+  if (!dataContext) {
+    throw new Error("DataContext must be used within a DataContextProvider");
+  }
+  const { visibleValues } = dataContext;
+
   const authContext = useContext(AuthContext);
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
@@ -43,14 +50,17 @@ export default function Transactions({
         <p className="text-sm">{obj.date.toDateString()}</p>
       </div>
       <p>{category ? category.name : messages.other.noCategory}</p>
-      <p
-        className={clsx(
-          obj.type == "income" && "text-green-500",
-          obj.type == "expense" && "text-red-500"
-        )}
-      >
-        {formatCurrency(obj.amount)}
-      </p>
+
+      {visibleValues ? (
+        <p
+          className={clsx(
+            obj.type == "income" && "text-green-500",
+            obj.type == "expense" && "text-red-500"
+          )}
+        >
+          {formatCurrency(obj.amount)}
+        </p>
+      ) : <p className="text-xl font-bold">* * * *</p>}
     </div>
   );
 }

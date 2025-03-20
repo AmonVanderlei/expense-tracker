@@ -23,8 +23,14 @@ export default function BillComponent({
   if (!context) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { banks, categories, addObj, updateObj, setShowTransactionOrBill } =
-    context;
+  const {
+    visibleValues,
+    banks,
+    categories,
+    addObj,
+    updateObj,
+    setShowTransactionOrBill,
+  } = context;
   const authContext = useContext(AuthContext);
   if (!authContext) {
     throw new Error("AuthContext must be used within a AuthContextProvider");
@@ -89,14 +95,18 @@ export default function BillComponent({
             </p>
           </div>
           <p>{category ? category.name : messages.other.noCategory}</p>
-          <p
-            className={clsx(
-              obj.type == "income" && "text-green-500",
-              obj.type == "expense" && "text-red-500"
-            )}
-          >
-            {formatCurrency(obj.amount)}
-          </p>
+          {visibleValues ? (
+            <p
+              className={clsx(
+                obj.type == "income" && "text-green-500",
+                obj.type == "expense" && "text-red-500"
+              )}
+            >
+              {formatCurrency(obj.amount)}
+            </p>
+          ) : (
+            <p className="text-xl font-bold">* * * *</p>
+          )}
         </div>
 
         {!obj.paid &&

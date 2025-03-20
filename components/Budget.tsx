@@ -13,7 +13,7 @@ export default function Budget({ expenses }: Props) {
   if (!dataContext) {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
-  const { budget, addObj, updateObj } = dataContext;
+  const { visibleValues, budget, addObj, updateObj } = dataContext;
 
   const authContext = useContext(AuthContext);
   if (!authContext) {
@@ -101,9 +101,11 @@ export default function Budget({ expenses }: Props) {
       className="w-11/12 bg-blue-950 p-2 rounded-lg bg-opacity-50"
     >
       <div className="flex justify-between items-center flex-wrap">
-        <h2 className="text-lg text-blue-500 font-bold">{messages.form.budget}</h2>
+        <h2 className="text-lg text-blue-500 font-bold">
+          {messages.form.budget}
+        </h2>
         <p className="text-lg text-blue-700 font-black">
-          {formatCurrency(budget?.bdgt)}
+          {visibleValues ? formatCurrency(budget?.bdgt) : "* * * *"}
         </p>
       </div>
 
@@ -114,16 +116,27 @@ export default function Budget({ expenses }: Props) {
         ></div>
       </div>
 
-      <div className="flex justify-between text-sm flex-wrap">
-        <p className="text-blue-500">
-          {messages.other.spent}: {formatCurrency(expenses)}/
-          {Math.round((100 * expenses) / budget?.bdgt) || 0}%
-        </p>
-        <p className="text-blue-300">
-          {messages.other.left}: {formatCurrency(budget?.bdgt - expenses)}/
-          {100 - Math.round((100 * expenses) / budget?.bdgt) || 100}%
-        </p>
-      </div>
+      {visibleValues ? (
+        <div className="flex justify-between text-sm flex-wrap">
+          <p className="text-blue-500">
+            {messages.other.spent}: {formatCurrency(expenses)}/
+            {Math.round((100 * expenses) / budget?.bdgt) || 0}%
+          </p>
+          <p className="text-blue-300">
+            {messages.other.left}: {formatCurrency(budget?.bdgt - expenses)}/
+            {100 - Math.round((100 * expenses) / budget?.bdgt) || 100}%
+          </p>
+        </div>
+      ) : (
+        <div className="flex justify-between text-sm flex-wrap">
+          <p className="text-blue-500">
+            {messages.other.spent}: * * * *
+          </p>
+          <p className="text-blue-300">
+            {messages.other.left}: * * * *
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -15,6 +15,7 @@ import Bill from "@/types/Bill";
 import { AuthContext } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import Eye from "@/components/Eye";
 
 export default function Home() {
   const context = useContext(DataContext);
@@ -22,6 +23,7 @@ export default function Home() {
     throw new Error("DataContext must be used within a DataContextProvider");
   }
   const {
+    visibleValues,
     dataCurrentMonth,
     balance,
     recentTransactions,
@@ -76,7 +78,7 @@ export default function Home() {
       )}
 
       {/* User Info */}
-      <div className="w-full flex justify-between px-3 pt-3">
+      <div className="w-full flex justify-between items-center px-3 pt-3">
         <div className="flex items-center gap-3">
           {user?.photoURL && (
             <Image
@@ -92,6 +94,7 @@ export default function Home() {
             <p className="text-lg font-bold">{user?.displayName}</p>
           </div>
         </div>
+        <Eye />
       </div>
 
       {/* Incomes and Expenses */}
@@ -103,18 +106,22 @@ export default function Home() {
           <div>
             <h2 className="text-base">{messages.other.totalBalance}</h2>
             <p className="text-3xl font-semibold">
-              {formatCurrency(balance.totalBalance)}
+              {visibleValues ? formatCurrency(balance.totalBalance) : "* * * *"}
             </p>
           </div>
-          <p
-            className={clsx(
-              "text-lg",
-              dataCurrentMonth.diff > 0 && "text-green-500",
-              dataCurrentMonth.diff < 0 && "text-red-500"
-            )}
-          >
-            {formatCurrency(dataCurrentMonth.diff)}
-          </p>
+          {visibleValues ? (
+            <p
+              className={clsx(
+                "text-lg",
+                dataCurrentMonth.diff > 0 && "text-green-500",
+                dataCurrentMonth.diff < 0 && "text-red-500"
+              )}
+            >
+              {formatCurrency(dataCurrentMonth.diff)}
+            </p>
+          ) : (
+            <p className="text-xl font-bold">* * * *</p>
+          )}
         </div>
 
         <div className="flex w-full justify-between px-4 mb-2 flex-wrap">
@@ -126,7 +133,9 @@ export default function Home() {
               <h3 className="font-semibold">{messages.other.income}</h3>
             </div>
             <p className="font-medium text-lg">
-              {formatCurrency(dataCurrentMonth.income)}
+              {visibleValues
+                ? formatCurrency(dataCurrentMonth.income)
+                : "* * * *"}
             </p>
           </div>
           <div className="flex flex-col items-end justify-center">
@@ -137,7 +146,9 @@ export default function Home() {
               <h3 className="font-semibold">{messages.other.expenses}</h3>
             </div>
             <p className="font-medium text-lg">
-              {formatCurrency(dataCurrentMonth.expenses)}
+              {visibleValues
+                ? formatCurrency(dataCurrentMonth.expenses)
+                : "* * * *"}
             </p>
           </div>
         </div>
@@ -156,25 +167,37 @@ export default function Home() {
                 <div className="max-w-[50%]">
                   <p className="text-xl font-bold">{bankData.bank.bankName}</p>
                   <p>
-                    {formatCurrency(balance[bankData.bank.bankName] as number)}
+                    {visibleValues
+                      ? formatCurrency(
+                          balance[bankData.bank.bankName] as number
+                        )
+                      : "* * * *"}
                   </p>
                 </div>
                 <div>
                   <p className="text-green-500">
-                    {formatCurrency(bankData.income)}
+                    {visibleValues
+                      ? formatCurrency(bankData.income)
+                      : "* * * *"}
                   </p>
                   <p className="text-red-500">
-                    {formatCurrency(bankData.expenses)}
+                    {visibleValues
+                      ? formatCurrency(bankData.expenses)
+                      : "* * * *"}
                   </p>
-                  <p
-                    className={clsx(
-                      "text-base border-t-2 border-slate-600",
-                      bankData.diff > 0 && "text-green-500",
-                      bankData.diff < 0 && "text-red-500"
-                    )}
-                  >
-                    {formatCurrency(bankData.diff)}
-                  </p>
+                  {visibleValues ? (
+                    <p
+                      className={clsx(
+                        "text-base border-t-2 border-slate-600",
+                        bankData.diff > 0 && "text-green-500",
+                        bankData.diff < 0 && "text-red-500"
+                      )}
+                    >
+                      {formatCurrency(bankData.diff)}
+                    </p>
+                  ) : (
+                    <p className="text-base border-t-2 border-slate-600">* * * *</p>
+                  )}
                 </div>
               </div>
             );
