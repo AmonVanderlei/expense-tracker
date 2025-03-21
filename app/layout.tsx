@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://expense-tracker-amonvanderlei.vercel.app/android-chrome-512x512.png",
+        url: "https://expense-tracker-amonvanderlei.vercel.app/icons/android-chrome-512x512.png",
         width: 512,
         height: 512,
         alt: "Expense Tracker - Manage your finances easily",
@@ -55,10 +55,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { rel: "icon", url: "/favicon.ico" },
-      { rel: "icon", sizes: "16x16", url: "/favicon-16x16.png" },
-      { rel: "icon", sizes: "32x32", url: "/favicon-32x32.png" },
+      { rel: "icon", sizes: "16x16", url: "/icons/favicon-16x16.png" },
+      { rel: "icon", sizes: "32x32", url: "/icons/favicon-32x32.png" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: "/icons/apple-touch-icon.png",
   },
   viewport: "width=device-width, initial-scale=1.0",
   robots: {

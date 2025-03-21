@@ -35,7 +35,7 @@ export default function Auth() {
     <div className="grow flex flex-col items-center justify-between h-[80vh]">
       <div className="flex flex-col items-center w-11/12 gap-16 mt-20">
         <Image
-          src="/android-chrome-512x512.png"
+          src="/icons/android-chrome-512x512.png"
           alt="Logo"
           width={512}
           height={512}

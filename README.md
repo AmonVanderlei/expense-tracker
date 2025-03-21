@@ -2,7 +2,7 @@
 <h4>Manage your finances easily and smartly.</h4>  
 
 <p align="center">  
-<image src="public/android-chrome-512x512.png" width="150"/></br>  
+<image src="public/icons/android-chrome-512x512.png" width="150"/></br>  
 </p>  
 
 <p align="center">  
