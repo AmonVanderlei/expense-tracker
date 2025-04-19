@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { AuthContext } from "@/contexts/authContext";
 import Loading from "@/components/Loading";
 import Eye from "@/components/Eye";
+import Filters from "@/components/Filters";
 
 export default function Transactions() {
   const context = useContext(DataContext);
@@ -35,6 +36,9 @@ export default function Transactions() {
     null
   );
   const [hasMounted, setHasMounted] = useState(false);
+  const [filteredTransactions, setFilteredTransactions] =
+    useState<Transaction[]>(transactions);
+  const [filteredBills, setFilteredBills] = useState<Bill[]>(bills);
 
   const authContext = useContext(AuthContext);
   if (!authContext) {
@@ -45,6 +49,8 @@ export default function Transactions() {
 
   useEffect(() => {
     setHasMounted(true);
+    setFilteredTransactions(transactions);
+    setFilteredBills(bills);
   }, []);
 
   useEffect(() => {
@@ -140,12 +146,18 @@ export default function Transactions() {
         </button>
       </div>
 
+      <Filters
+        transactions={transactions}
+        bills={bills}
+        setFilteredTransactions={setFilteredTransactions}
+        setFilteredBills={setFilteredBills}
+      />
+
       <div className="w-11/12 max-h-[80vh] overflow-y-auto">
         {showTransactionOrBill === "transactions" ? (
           <div className="flex flex-col gap-2 items-center">
-            <h1 className="text-2xl font-bold">{messages.other.history}</h1>
             <TransactionsComponent
-              transactionsList={transactions}
+              transactionsList={filteredTransactions}
               banks={banks}
               categories={categories}
               setSelectedObj={setSelectedObj}
@@ -154,7 +166,7 @@ export default function Transactions() {
           </div>
         ) : (
           <BillsComponent
-            bills={bills}
+            bills={filteredBills}
             setSelectedObj={setSelectedObj}
             openModal={setModalIsOpen}
           />

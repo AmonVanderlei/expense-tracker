@@ -73,7 +73,6 @@ export interface Messages {
     upcoming: string;
     last: string;
     all: string;
-    history: string;
     about: string;
     logout: string;
     madeBy: string;
